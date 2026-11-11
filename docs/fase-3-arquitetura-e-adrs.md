@@ -59,6 +59,15 @@ comarca. Corrigido em 1, 4.2, 4.4, ADR-006, 5.6, seções 8 e 9, Apêndices A, C
 testado roda com `locais`). As revisões 3 a 6 mantêm o nome antigo de propósito: são registro datado do
 que se decidiu então.
 
+**Revisão 8 (11/11/2026, preparação para publicar).** Passada de anonimização: o documento e o `db/`
+exemplificavam as quatro grafias de telefone com os **números reais** do Ofício 432/2024 — justamente o
+que o seed do v2 mascara (`(27) 9XXXX-XXXX`). Agora os exemplos são de forma (`(27) 9XXXX-XXXX`,
+`(27) 9XXXXXXXX`, `(27) 3XXXXXXX`, `(27) 9XXXX.XXXX`) e os `INSERT` de `db/verificar-schema.sql` usam
+dígitos fictícios, com as invariantes de normalização ajustadas e verdes. Os nomes de unidade
+*continuam*: são unidades públicas do tribunal (catálogo de ramais), não estrutura interna sigilosa —
+trocá-los por genéricos apagaria a conferência que dá valor à 5.6. Nome de pessoa não existe em nenhum
+artefato: os rótulos de gabinete/comissário já entram como `NN`.
+
 **Precedência.** Este documento detalha a Fase 3 e **refina** `docs/arquitetura-v3.md` em dois
 pontos (separação em dois bancos lógicos e contrato `/api/v1`), sem reabrir o que já está fechado
 lá: Laravel como casca, FastAPI como motor, Postgres gerenciado, um serviço Docker no Render free.
@@ -566,10 +575,11 @@ Três consequências para o modelo:
    DDL, `contatos` recebe `fonte` (nome do arquivo) e `vigente_desde`, e o que veio do ofício fica com
    `vigente_desde = '2024-03'` e `fonte = 'SEI__7001802_03.2024.8.08.0024.pdf'` — a tela marca "confirmar
    vigência" a partir da coluna, não de string.
-3. **Quatro grafias de telefone no mesmo documento** — `(27) 9XXXX-XXXX`, `(27) 9XXXXXXXX`,
-   `(27) 3XXXXXXX` (fixo sem hífen) e `(27) 9XXXX.XXXX` (ponto no lugar do hífen). Nada disso sobrevive à
-   importação: o valor é normalizado em `(27) 9XXXX-XXXX` / `(27) 3XXX-XXXX` e `busca_digitos` (4.5)
-   garante que qualquer grafia digitada ache o registro.
+3. **Quatro grafias de telefone no mesmo documento** — móvel com hífen `(27) 9XXXX-XXXX`, móvel sem
+   hífen `(27) 9XXXXXXXX`, fixo sem hífen `(27) 3XXXXXXX` e ponto no lugar do hífen `(27) 9XXXX.XXXX`.
+   (Os números vão mascarados, como no seed do v2: o que importa é a forma, não o dígito.) Nada disso
+   sobrevive à importação: o valor é normalizado em `(27) 9XXXX-XXXX` / `(27) 3XXX-XXXX` e `busca_digitos`
+   (4.5) garante que qualquer grafia digitada ache o registro.
 
 **Divergência aberta (uma):** o seed marca o telefone da **2ª Contadoria** como `WhatsApp`, e este
 documento não traz essa anotação — ele anota *(whatsapp)* só na Auditoria Militar e na Diretoria do Foro.
