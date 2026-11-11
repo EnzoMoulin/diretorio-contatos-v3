@@ -16,7 +16,7 @@ número que eu havia citado errado: a estrutura central são **286 contatos**, n
 **Revisão 4 (11/11/2026, catálogo oficial em mãos).** Os dois volumes do catálogo — Comarcas
 (`Ramais__COMARCAS_26_06_26-2.pdf`, 41 páginas) e Sede (`Ramais_TJES_28_08_26.pdf`, 1 página) — confirmam
 que cada órgão abre com um bloco de contatos que não pertence a unidade nem setor (*Geral · Sala ADM ·
-Recepção · Segurança*; na Sede, `Geral 3334-XXXX · Telefonista 2000•2001•9 · Recepção 2060`). Isso fecha
+Recepção · Segurança*; na Sede, `Geral 3334-XXXX · Telefonista XXXX•XXXX•X · Recepção XXXX`). Isso fecha
 a pergunta dos contatos sem nó: entra a **5.6** (contato pertence a nó **ou** a órgão, com `orgao_id`
 obrigatório e `no_id` nulo), sai a necessidade de setor virtual; os 5 contatos da Sede são o telefone
 geral, três ramais de telefonista e a recepção. O volume da Sede também valida a árvore: as 21 unidades
@@ -513,7 +513,7 @@ O catálogo oficial vem em **dois volumes**: `Ramais__COMARCAS_26_06_26-2.pdf` (
 25/06/2026) e `Ramais_TJES_28_08_26.pdf` (1 página, Sede, 28/08/2026). A fonte tem ainda um **terceiro
 documento**, que não é catálogo e é tratado ao fim desta seção. Os dois volumes abrem cada local com um
 bloco que **não pertence a nenhuma unidade ou setor** — nos fóruns *Geral · Sala ADM · Recepção ·
-Segurança*; na Sede, literalmente `Geral 3334-XXXX · Telefonista 2000•2001•9 · Recepção 2060`, antes
+Segurança*; na Sede, literalmente `Geral 3334-XXXX · Telefonista XXXX•XXXX•X · Recepção XXXX`, antes
 da primeira seção (Presidência). Esses contatos são do local.
 
 Medido no seed: **626 contatos têm `forum` e não têm `uo`** — é exatamente esse bloco, por local. E
