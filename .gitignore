@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Laravel / PHP (a v3 começa de fato aqui)
+/vendor/
+/node_modules/
+/public/build/
+/public/hot
+/storage/*.key
+.env
+.env.*
+!.env.example
+composer.phar
+
+# Postgres / dump local
+*.sql.gz
+*.dump
+*.db
+/tmp/
+
+# Editores e sistema
+.idea/
+.vscode/
+.DS_Store
+*.swp
