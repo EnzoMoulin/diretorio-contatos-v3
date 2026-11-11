@@ -1,9 +1,17 @@
 # v3 — Identidade visual e arquitetura de interface (Fase 1)
 
-> **Status: PAUSADO — decisão adiada de propósito.**
-> As três direções estão prontas para avaliação em `direcoes-visuais.html`.
-> O Enzo decidiu não escolher agora: a decisão volta **depois do deploy do v2
-> no Render e do início efetivo do v3**. Não retomar sem ele pedir.
+> **Status: DIREÇÃO ESCOLHIDA (11/11/2026) — implementação fica para o início do v3.**
+> O Enzo confirmou a **Direção A — Mapa protagonista** como direção do v3, a ser
+> implementada em **Laravel (Blade + TALL)**, e não em Python/JS.
+>
+> O que se preserva é a **direção** (paleta slate + turquesa, tipografia, mapa
+> como porta de entrada, painel flutuante, contato como unidade de leitura),
+> não o código de `direcoes-visuais.html`: aquele arquivo é instrumento de
+> decisão e **não pode** virar markup do v3 — promovê-lo reproduziria o porte
+> que o v3 existe para consertar (o v2 herdou 42% das linhas do
+> `ForumNavigationJS` do v1) e queimaria o critério de ≤10% de similaridade.
+> Um protótipo descartável em `http.server` é permitido para ver a direção com
+> dado real, desde que marcado como descartável e nunca promovido.
 
 > Documento de decisão. Nada aqui é código ainda: é o que o v3 precisa
 > satisfazer para ser **evolução** (mesmo produto, mesma modelagem, mesmo arco)
@@ -76,7 +84,7 @@ O v3 só pode usar a palavra se a diferença for medível:
 - Dados fictícios, sem nome, marca ou domínio do órgão.
 
 ## Aceite da Fase 1
-- [ ] Direção escolhida (A, B ou C, ou mistura declarada).
+- [x] Direção escolhida: **A — Mapa protagonista** (11/11/2026), implementação em Laravel.
 - [ ] Paleta final com contrastes AA medidos.
 - [ ] Dupla tipográfica definida.
 - [ ] Wireframe das 4 telas: início/busca, resultado, detalhe do local, contato.
