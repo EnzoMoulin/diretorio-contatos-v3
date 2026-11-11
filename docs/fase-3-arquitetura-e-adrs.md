@@ -1148,9 +1148,11 @@ que roda. Nada aqui foi escrito de cabeça — cada número abaixo saiu de execu
 | Arquivo | O que é |
 | :--- | :--- |
 | `db/schema.sql` | DDL completo: extensões, `norm_texto`/`so_digitos`, 8 tabelas, índices, `CHECK`s, triggers. Idempotente (`CREATE … IF NOT EXISTS`, `DROP TRIGGER IF EXISTS`). |
-| `db/verificar-schema.sql` | 39 invariantes em `DO`/`plpgsql`: cada `CHECK` que deve recusar, cada um que deve aceitar, as colunas geradas, a busca e a ausência de cascata. |
+| `db/verificar-schema.sql` | 41 invariantes em `DO`/`plpgsql`: cada `CHECK` que deve recusar, cada um que deve aceitar, as colunas geradas, a busca e a ausência de cascata. |
 | `db/carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` (só stdlib). Não é o ingestão oficial do motor: é a prova de que o schema aguenta os dados medidos. |
 | `db/verificar-carga.sql` | 20 invariantes sobre a base carregada: volumes, vínculos, profundidade, procedência e busca. |
+| `db/verificar-plano.sql` | 5 invariantes de **plano**: o índice GIN serve a `busca_texto ILIKE norm_texto(…)`; a forma ingênua `lower(unaccent(valor))` não usa índice nenhum; `busca_digitos LIKE '273134%'` usa o `text_pattern_ops`. |
+| `db/medir-limiar.sql` | Medição, não invariante: `similarity`/`word_similarity` contra o vocabulário real, para o limiar de sugestão sair de número medido. |
 | `db/testar-schema.sh` | Orquestra: cria `<base>_teste`, aplica o DDL **duas vezes**, roda as invariantes, e opcionalmente carrega o seed (`SEED_JSON=…`). Apaga o banco no fim. |
 
 ### D.2 Como rodar
@@ -1198,6 +1200,21 @@ bloqueie a criação de um item com o mesmo nome depois — o v2 não tinha como
    única repetição, mas o mascaramento colapsa 1.510 valores (`XXXX` 444 vezes, `(27) 3246-XXXX` 117),
    então o índice único recusaria dado legítimo da base pública. A deduplicação fica na aplicação.
 
+4. **O índice de busca só serve se a consulta escrever a mesma expressão.** Criar o GIN não basta:
+   `busca_texto ILIKE '%' || norm_texto(:q) || '%'` usa o índice; `lower(unaccent(valor)) ILIKE …` não
+   usa — e as duas devolvem o mesmo resultado hoje, com 1.807 linhas, o que esconde o defeito até a base
+   crescer. `db/verificar-plano.sql` lê o `EXPLAIN` e trava as duas coisas: o índice **é** usado pela
+   forma correta (com `enable_seqscan` desligado) e **não** é usado pela ingênua. Medido com as
+   configurações de fábrica: `cartorio` (68 linhas) sai por Bitmap Index Scan; `vara` (65) e `de` (291)
+   saem por Seq Scan — nesta escala o planejador escolhe bem dos dois jeitos.
+5. **O limiar de similaridade depende do vocabulário, não é constante.** Medido com
+   `db/medir-limiar.sql`: `similarity('vitora','vitoria')` = 0,500, mas o vizinho mais próximo entre os
+   nomes **inteiros** é `diretora` — nome longo dilui o trigrama e a sugestão erra. Reduzindo o
+   vocabulário a palavras (4+ letras, 467 tokens no seed), as cinco consultas com erro de digitação
+   (`vitora`, `cartoro`, `ciminal`, `unificad`, `jecrim`) caem no token certo com o limiar **0,45** do
+   padrão, 1 candidato cada. Regra para o motor: busca principal por `ILIKE` (sem limiar); sugestão de
+   erro comparando **palavra** com `similarity ≥ 0,45` e `ORDER BY similarity DESC LIMIT 5`.
+
 Além disso, dois ajustes de forma: `nos.origem` (`seed` | `app`) separa o que veio do catálogo do que
 foi criado na tela, e a Sede entra como `locais` de `chave = 'MUN0000'` — a chave lógica do seed é
 imutável, então não se renomeia para `ORG…`; o `tipo = 'SEDE'` é o que a distingue.
@@ -1206,9 +1223,10 @@ imutável, então não se renomeia para `ORG…`; o `tipo = 'SEDE'` é o que a d
 
 | Verificação | Resultado |
 | :--- | ---: |
-| Invariantes estruturais | 39 PASS |
+| Invariantes estruturais | 41 PASS |
 | DDL aplicado duas vezes seguidas | sem erro |
 | Invariantes de carga | 20 PASS |
+| Invariantes de plano | 5 PASS |
 | comarcas / locais / fóruns | 69 / 73 / 72 |
 | nós (1º nível / total) | 226 / 838 |
 | contatos (no local / em nó) | 631 / 1.176 |
@@ -1247,12 +1265,16 @@ Isso também fecha, com ressalva, a hipótese sobre a diferença de volume entre
 é que o v1 não tem base versionada de contatos para comparar (`24_DadosExemplo.gs` tem 122 linhas de
 exemplo), então isso continua **hipótese**, não fato medido.
 
-### D.7 Fora de escopo deste apêndice
+### D.7 O que ficou fora, e por quê
 
-- **v2 não foi tocado.** A sugestão de levar `fonte`/`vigente_desde` para o v2 via `ALTER TABLE` fica
-  registrada e não aplicada: o v2 está congelado por decisão (ADR do repositório) e mexer no schema
-  dele às vésperas do deploy trocaria risco real por ganho que o v3 já entrega. Se for feito, é
-  aditivo (`ADD COLUMN` nulo, carga por `UPDATE` a partir de `obs`) e não muda nenhuma rota.
+- **Migrations do Laravel (`db_admin`) e esqueleto do motor: adiados por decisão do Enzo
+  (11/11/2026).** Só fazem sentido quando a v3 começar de fato; escrever agora seria código para um
+  projeto que ainda não abriu. O que existe hoje é o DDL do banco de dados (`db_diretorio`), que é
+  justamente o que não muda quando o motor começar.
+- **`fonte` + `vigente_desde` foram aplicados no v2** (não no v3 apenas): colunas aditivas, carga por
+  `UPDATE` a partir da observação, backfill idempotente no boot, edição manual de telefone/e-mail
+  marcada como `edição manual` com a data. Nenhuma rota mudou; `/api/contatos` e `/api/hierarquia`
+  passaram a expor os dois campos.
 - RBAC, paginação e migrações: seções 8 e 9, ainda abertas.
 - O ingestão oficial (normalização, `fonte` por documento, reconciliação de nome) é do motor FastAPI;
   `db/carregar-seed.py` é o andaime de teste.

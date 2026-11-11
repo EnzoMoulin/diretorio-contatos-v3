@@ -12,6 +12,8 @@ Materializa as seções 4.4, 4.5, 5.2, 5.3, 5.6 e 6.3 de
 | `verificar-schema.sql` | 39 invariantes estruturais (o que cada `CHECK` deve recusar e aceitar). |
 | `carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` do v2. Andaime de teste, não o ingestão oficial. |
 | `verificar-carga.sql` | 20 invariantes sobre a base carregada (volumes, vínculos, profundidade, procedência, busca). |
+| `verificar-plano.sql` | 5 invariantes de **plano**: prova que o índice GIN serve a `busca_texto ILIKE norm_texto(...)` e que `lower(unaccent(valor))` não usa índice nenhum. |
+| `medir-limiar.sql` | Mede `similarity`/`word_similarity` no vocabulário real e mostra de onde sai o `similarity_threshold` do motor. Não é invariante: é medição, com tabela na tela. |
 | `testar-schema.sh` | Cria `<base>_teste`, aplica o DDL duas vezes, roda tudo e apaga o banco. |
 
 ## Rodar
@@ -44,7 +46,34 @@ O `CHECK` não enxerga outra linha; estas ficam na aplicação (e o `verificar-c
 - deduplicação de contato — **não** existe `UNIQUE (local, nó, tipo, valor)` porque o mascaramento
   da base pública colapsa 1.510 valores em repetições falsas;
 - vigência ("reconfirmar este contato") a partir de `fonte` + `vigente_desde`;
+- `historico.entidade` só aceita entidade do **motor** (`contato`, `no`, `local`, `comarca`, `util`):
+  `escopo_acesso`, `pedido` e `usuario` são auditoria administrativa e moram em `db_admin`;
 - expurgo do `historico` aos 180 dias (job do motor).
+
+## Vocabulário: local, não órgão
+
+A tabela âncora chama-se **`locais`** porque **fórum não é órgão**: o fórum é o prédio onde as varas
+estão instaladas, o órgão é a Sede. Os dois ocupam o mesmo nível, então `locais.tipo` distingue
+`FORUM` (sempre com comarca) de `SEDE` (nunca com comarca). Se aparecer `orgao` em algum lugar do
+projeto, é texto antigo.
+
+## O que a medição de limiar mostrou
+
+`medir-limiar.sql` roda contra a base carregada. Resultado no seed (1.807 contatos, 467 palavras no
+vocabulário de nomes):
+
+| consulta | vizinho mais próximo entre **nomes inteiros** | entre **palavras** | `similarity` |
+| :--- | :--- | :--- | ---: |
+| `vitora` | `diretora` (errado) | `vitoria` | 0,500 |
+| `cartoro` | `cartorio` | `cartorio` | 0,545 |
+| `ciminal` | — | `criminal` | 0,545 |
+| `unificad` | `2ª secretaria unificada` | `unificada` | 0,727 |
+
+Conclusão que virou regra de projeto: **a sugestão de erro de digitação compara palavra, não nome
+completo** — nome longo dilui o trigrama e `vitora` cai em `diretora`. Com o vocabulário reduzido a
+palavras, o limiar **0,45** (o padrão do PostgreSQL) resolve os cinco casos de teste com 1 candidato
+cada; não é preciso inventar número. A busca principal não usa limiar nenhum: é `ILIKE` sobre
+`busca_texto`, filtrando por substring.
 
 ## Pegadinhas já pagas
 
