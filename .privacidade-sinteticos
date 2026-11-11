@@ -1,0 +1,16 @@
+# Valores sintéticos declarados à mão para a varredura de privacidade
+# (scripts/varrer_privacidade.py). Use só para fixture de teste; nunca para
+# silenciar dado real. Uma linha por valor literal, ou `re:<regex>`.
+#
+# db/verificar-schema.sql: as quatro grafias de telefone usadas para testar o
+# normalizador (hífen, sem hífen, ponto, com e sem DDD) e o telefone útil da
+# central. Todas são fictícias e terminam em 000N, mas o formato varia de
+# propósito — é o que o teste mede.
+(27) 99111-0001
+(27) 991110002
+(27) 33110003
+(27) 99110.0004
+(27) 3134-0007
+(27) 3232-0000
+27991110001
+27991100004
