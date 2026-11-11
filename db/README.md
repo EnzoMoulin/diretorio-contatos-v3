@@ -8,13 +8,14 @@ Materializa as seções 4.4, 4.5, 5.2, 5.3, 5.6 e 6.3 de
 
 | Arquivo | Papel |
 | :--- | :--- |
-| `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 8 tabelas, índices, `CHECK`s, triggers. |
+| `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 9 tabelas (8 de dado + 1 de agregado do expurgo), índices, `CHECK`s, triggers. |
 | `verificar-schema.sql` | 39 invariantes estruturais (o que cada `CHECK` deve recusar e aceitar). |
 | `carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` do v2. Andaime de teste, não o ingestão oficial. |
 | `verificar-carga.sql` | 20 invariantes sobre a base carregada (volumes, vínculos, profundidade, procedência, busca). |
 | `verificar-plano.sql` | 5 invariantes de **plano**: prova que o índice GIN serve a `busca_texto ILIKE norm_texto(...)` e que `lower(unaccent(valor))` não usa índice nenhum. |
 | `medir-limiar.sql` | Mede `similarity`/`word_similarity` no vocabulário real e mostra de onde sai o `similarity_threshold` do motor. Não é invariante: é medição, com tabela na tela. |
 | `testar-schema.sh` | Cria `<base>_teste`, aplica o DDL duas vezes, roda tudo e apaga o banco. |
+| `expurgar-historico.sql` | Retenção de 180 dias: agrega em `historico_mensal` e apaga as linhas cruas, na mesma transação. `-v dias=N` muda o prazo; rodar de novo não faz nada (medido: 150 → 0). |
 
 ## Rodar
 
@@ -74,6 +75,19 @@ completo** — nome longo dilui o trigrama e `vitora` cai em `diretora`. Com o v
 palavras, o limiar **0,45** (o padrão do PostgreSQL) resolve os cinco casos de teste com 1 candidato
 cada; não é preciso inventar número. A busca principal não usa limiar nenhum: é `ILIKE` sobre
 `busca_texto`, filtrando por substring.
+
+## Expurgo do histórico
+
+`historico` guarda o retrato do contato; não pode ser arquivo permanente de dado pessoal. Passados
+180 dias, o script agrega em `historico_mensal` (mês, ação, entidade, quantidade — sem nome, telefone,
+e-mail, chave ou autor) e apaga a linha crua, tudo na mesma transação:
+
+```bash
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -v dias=180 -f db/expurgar-historico.sql
+```
+
+Medido: 150 linhas velhas → 2 agregados, 5 linhas recentes intactas; segunda execução apaga 0. Sem
+produção ainda, rode à mão depois de carga grande; com o motor no ar, cron diário às 03:00.
 
 ## Pegadinhas já pagas
 

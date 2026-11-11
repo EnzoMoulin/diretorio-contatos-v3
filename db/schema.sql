@@ -304,6 +304,20 @@ COMMENT ON COLUMN historico.criado_em IS
 
 CREATE INDEX IF NOT EXISTS ix_historico_expurgo ON historico (criado_em);
 CREATE INDEX IF NOT EXISTS ix_historico_contato ON historico (contato_chave) WHERE contato_chave IS NOT NULL;
+
+-- 7b. historico_mensal — o que sobrevive ao expurgo de 180 dias
+-- O expurgo apaga a linha crua; sobra a contagem por mês, ação e entidade. Sem
+-- nome, telefone, e-mail, chave lógica ou autor: não dá para reidentificar
+-- ninguém a partir desta tabela, e ela responde "quantas mudanças houve em
+-- julho/2026?" — que é o que uma auditoria de dados precisa saber depois.
+CREATE TABLE IF NOT EXISTS historico_mensal (
+  mes        DATE   NOT NULL,
+  acao       TEXT   NOT NULL,
+  entidade   TEXT   NOT NULL,
+  quantidade BIGINT NOT NULL CHECK (quantidade > 0),
+  PRIMARY KEY (mes, acao, entidade),
+  CONSTRAINT historico_mensal_mes_dia_um CHECK (EXTRACT(DAY FROM mes) = 1)
+);
 CREATE INDEX IF NOT EXISTS ix_historico_request ON historico (request_id) WHERE request_id <> '';
 
 -- -----------------------------------------------------------------------------

@@ -36,7 +36,7 @@ do 3º JECrim) e acrescenta três exigências ao DDL de `contatos`: `descricao` 
 ponto a confirmar.
 
 **Revisão 6 (11/11/2026, DDL executável).** O modelo desta especificação virou código: `db/schema.sql`
-cria as 8 tabelas, as duas funções de normalização, os índices de busca e os `CHECK` que dão para
+cria as 9 tabelas (8 de dado + `historico_mensal`, o agregado que sobrevive ao expurgo), as duas funções de normalização, os índices de busca e os `CHECK` que dão para
 garantir no banco; `db/testar-schema.sh` aplica o DDL duas vezes num banco descartável e roda 39
 invariantes; com `SEED_JSON=…` ele também carrega os 1.807 contatos e confere mais 20 números.
 Tudo verde em PostgreSQL 16.15. Três achados que o papel não tinha: (i) `lower(unaccent(…))` **não**
@@ -1147,12 +1147,13 @@ que roda. Nada aqui foi escrito de cabeça — cada número abaixo saiu de execu
 
 | Arquivo | O que é |
 | :--- | :--- |
-| `db/schema.sql` | DDL completo: extensões, `norm_texto`/`so_digitos`, 8 tabelas, índices, `CHECK`s, triggers. Idempotente (`CREATE … IF NOT EXISTS`, `DROP TRIGGER IF EXISTS`). |
+| `db/schema.sql` | DDL completo: extensões, `norm_texto`/`so_digitos`, 9 tabelas, índices, `CHECK`s, triggers. Idempotente (`CREATE … IF NOT EXISTS`, `DROP TRIGGER IF EXISTS`). |
 | `db/verificar-schema.sql` | 41 invariantes em `DO`/`plpgsql`: cada `CHECK` que deve recusar, cada um que deve aceitar, as colunas geradas, a busca e a ausência de cascata. |
 | `db/carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` (só stdlib). Não é o ingestão oficial do motor: é a prova de que o schema aguenta os dados medidos. |
 | `db/verificar-carga.sql` | 20 invariantes sobre a base carregada: volumes, vínculos, profundidade, procedência e busca. |
 | `db/verificar-plano.sql` | 5 invariantes de **plano**: o índice GIN serve a `busca_texto ILIKE norm_texto(…)`; a forma ingênua `lower(unaccent(valor))` não usa índice nenhum; `busca_digitos LIKE '273134%'` usa o `text_pattern_ops`. |
 | `db/medir-limiar.sql` | Medição, não invariante: `similarity`/`word_similarity` contra o vocabulário real, para o limiar de sugestão sair de número medido. |
+| `db/expurgar-historico.sql` | Retenção: agrega em `historico_mensal` e apaga as linhas com mais de 180 dias, na mesma transação; idempotente. |
 | `db/testar-schema.sh` | Orquestra: cria `<base>_teste`, aplica o DDL **duas vezes**, roda as invariantes, e opcionalmente carrega o seed (`SEED_JSON=…`). Apaga o banco no fim. |
 
 ### D.2 Como rodar
@@ -1275,6 +1276,9 @@ exemplo), então isso continua **hipótese**, não fato medido.
   `UPDATE` a partir da observação, backfill idempotente no boot, edição manual de telefone/e-mail
   marcada como `edição manual` com a data. Nenhuma rota mudou; `/api/contatos` e `/api/hierarquia`
   passaram a expor os dois campos.
+- **Expurgo do histórico** existe como script (`db/expurgar-historico.sql`), não como agendamento: sem
+  produção não há o que expurgar. O agregado (`historico_mensal`) é o que sobrevive — contagem por mês,
+  ação e entidade, sem dado pessoal.
 - RBAC, paginação e migrações: seções 8 e 9, ainda abertas.
 - O ingestão oficial (normalização, `fonte` por documento, reconciliação de nome) é do motor FastAPI;
   `db/carregar-seed.py` é o andaime de teste.

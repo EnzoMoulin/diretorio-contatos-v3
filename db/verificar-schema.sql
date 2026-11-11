@@ -52,12 +52,12 @@ DECLARE faltando TEXT;
 BEGIN
   SELECT string_agg(t, ', ') INTO faltando
   FROM unnest(ARRAY['comarcas', 'locais', 'nos', 'contatos', 'telefones_uteis',
-                    'historico', 'referencias_externas', 'idempotencia']) AS t
+                    'historico', 'historico_mensal', 'referencias_externas', 'idempotencia']) AS t
   WHERE to_regclass('public.' || t) IS NULL;
   IF faltando IS NOT NULL THEN
     RAISE EXCEPTION 'FALHOU: tabelas ausentes: %', faltando;
   END IF;
-  PERFORM _passa('as 8 tabelas do db_diretorio existem');
+  PERFORM _passa('as 9 tabelas do db_diretorio existem');
 END $$;
 
 -- ---------------------------------------------------------------------------
