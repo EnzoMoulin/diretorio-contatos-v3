@@ -1,0 +1,65 @@
+name: Testes
+
+# Duas coisas ficam verdes antes de o repositório ficar público:
+#
+# 1. varredura — mesma régua do v2 (`tests/test_sem_telefone_real.py`), na versão
+#    de bolso: `scripts/varrer_privacidade.py` sai com código 1 ao achar telefone
+#    ou e-mail fora do padrão sintético. Leva ~5s e roda em paralelo com o DDL,
+#    então continua sendo a primeira coisa a ficar vermelha.
+# 2. ddl — aplica `db/schema.sql` num Postgres 16 de verdade, aplica de novo
+#    (idempotência) e roda as invariantes estruturais de `db/verificar-schema.sql`.
+#
+# O seed fica de fora de propósito: `SEED_JSON` mora no repositório do v2, e
+# CI que depende de download de outro repositório falha por motivo que não é o
+# código deste. As invariantes de carga (20) e de plano (5) continuam rodando
+# à mão, com o seed ao lado:
+#     SEED_JSON=../diretorio-contatos-v2/seed_mascarado.json ./db/testar-schema.sh
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  varredura:
+    name: Varredura de privacidade
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Varrer telefone e e-mail
+        run: python3 scripts/varrer_privacidade.py
+
+  ddl:
+    name: DDL e invariantes (Postgres 16)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: enzo
+          POSTGRES_PASSWORD: enzo
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: enzo
+      PGPASSWORD: enzo
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar schema.sql duas vezes e rodar as invariantes
+        run: bash db/testar-schema.sh
