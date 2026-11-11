@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>v3 — Direções visuais</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:34px 30px 60px;background:#08090d;color:#e7e9ee;
+       font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       -webkit-font-smoothing:antialiased}
+  .head{max-width:1180px;margin:0 auto 34px}
+  .kicker{font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.22em;
+          text-transform:uppercase;color:#7c8698;margin:0 0 12px}
+  h1{margin:0 0 10px;font-size:30px;letter-spacing:-.025em;font-weight:700}
+  .sub{margin:0;color:#98a2b3;font-size:14px;line-height:1.6;max-width:74ch}
+  .grid{max-width:1180px;margin:0 auto;display:grid;gap:30px}
+
+  .dir{border:1px solid #1c2230;border-radius:18px;overflow:hidden;background:#0c0f16}
+  .dir-head{display:flex;align-items:flex-start;gap:14px;padding:20px 22px 16px}
+  .badge{flex:0 0 34px;height:34px;border-radius:10px;display:grid;place-items:center;
+         font:700 15px/1 ui-monospace,monospace;color:#0a0c11}
+  .d-a .badge{background:#2dd4bf}
+  .d-b .badge{background:#a78bfa;color:#140b26}
+  .d-c .badge{background:#e0793f;color:#1a0e07}
+  h2{margin:0 0 4px;font-size:17px;letter-spacing:-.01em}
+  .d-a h2{color:#5eead4}.d-b h2{color:#c4b5fd}.d-c h2{color:#f3a97f}
+  .dir-head p{margin:0;font-size:13px;color:#8b93a4;line-height:1.55}
+
+  .screen{height:430px;position:relative;overflow:hidden}
+
+  /* ---------- A: mapa protagonista ---------- */
+  .sA{background:radial-gradient(120% 90% at 20% 0%,#132033 0%,#0a1220 55%,#070c14 100%)}
+  .sA .map{position:absolute;inset:0}
+  .sA .glass{position:absolute;top:18px;right:18px;bottom:18px;width:320px;
+    background:rgba(14,22,36,.72);backdrop-filter:blur(18px);
+    border:1px solid rgba(94,234,212,.18);border-radius:16px;padding:16px 16px 12px;
+    display:flex;flex-direction:column;gap:12px;
+    box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.05)}
+  .sA .search{height:38px;border-radius:10px;background:rgba(255,255,255,.06);
+    border:1px solid rgba(94,234,212,.22);display:flex;align-items:center;gap:9px;
+    padding:0 12px;color:#9fb3c8;font-size:12.5px}
+  .sA .dot{width:6px;height:6px;border-radius:50%;background:#2dd4bf;box-shadow:0 0 0 4px rgba(45,212,191,.16)}
+  .sA .lbl{font:600 10px/1 ui-monospace,monospace;letter-spacing:.16em;
+    text-transform:uppercase;color:#5d7a8f}
+  .sA .row{display:flex;align-items:center;justify-content:space-between;
+    padding:9px 10px;border-radius:9px;background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.05);font-size:12.5px;color:#cfe0ee}
+  .sA .row b{font-weight:600}
+  .sA .row span{font:500 11px/1 ui-monospace,monospace;color:#6f8aa0}
+  .sA .row--on{background:rgba(45,212,191,.13);border-color:rgba(45,212,191,.4);color:#eafffb}
+  .sA .row--on span{color:#5eead4}
+  .sA .crumb{position:absolute;left:20px;bottom:20px;display:flex;align-items:center;gap:8px;
+    background:rgba(10,16,26,.82);border:1px solid rgba(94,234,212,.2);
+    border-radius:999px;padding:8px 15px;font-size:11.5px;color:#9fb3c8}
+  .sA .crumb b{color:#eafffb;font-weight:600}
+  .sA .chip{position:absolute;left:20px;top:20px;display:flex;align-items:center;gap:8px;
+    background:rgba(10,16,26,.82);border:1px solid rgba(255,255,255,.1);
+    border-radius:999px;padding:7px 14px;font:600 10.5px/1 ui-monospace,monospace;
+    letter-spacing:.12em;text-transform:uppercase;color:#7f9aad}
+
+  /* ---------- B: command-first ---------- */
+  .sB{background:#fafaf8;color:#18181b;padding:20px 22px;display:flex;gap:18px}
+  .sB .main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:13px}
+  .sB .top{display:flex;align-items:center;justify-content:space-between}
+  .sB .brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:13.5px;letter-spacing:-.01em}
+  .sB .mark{width:22px;height:22px;border-radius:6px;background:#7c3aed;display:grid;place-items:center;
+    color:#fff;font:700 11px/1 ui-monospace,monospace}
+  .sB .cmd{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#71717a;
+    border:1px solid #e4e4e7;border-radius:8px;padding:6px 9px;background:#fff}
+  .sB kbd{font:600 10px/1 ui-monospace,monospace;background:#f4f4f5;border:1px solid #e4e4e7;
+    border-bottom-width:2px;border-radius:5px;padding:3px 5px;color:#52525b}
+  .sB .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .sB .c{font-size:11.5px;padding:5px 10px;border-radius:999px;border:1px solid #e4e4e7;
+    background:#fff;color:#52525b;display:flex;align-items:center;gap:6px}
+  .sB .c.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
+  .sB .list{display:flex;flex-direction:column;border-top:1px solid #e4e4e7}
+  .sB .it{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:11px;
+    padding:9px 2px;border-bottom:1px solid #efeff1;font-size:12.8px}
+  .sB .it .n{font:600 10.5px/1 ui-monospace,monospace;color:#a1a1aa}
+  .sB .it b{font-weight:600;color:#18181b}
+  .sB .it .meta{font:500 10.5px/1 ui-monospace,monospace;color:#a1a1aa;letter-spacing:.02em}
+  .sB .it.sel{background:linear-gradient(90deg,rgba(124,58,237,.09),transparent 70%);
+    border-radius:8px;padding-left:8px;margin-left:-6px}
+  .sB .it.sel b{color:#5b21b6}
+  .sB .side{flex:0 0 236px;display:flex;flex-direction:column;gap:10px}
+  .sB .mapcard{height:196px;border-radius:12px;border:1px solid #e4e4e7;background:
+    radial-gradient(120% 100% at 30% 0%,#f1e9ff,#fafaf8 70%);position:relative;overflow:hidden}
+  .sB .stat{border:1px solid #e4e4e7;border-radius:12px;background:#fff;padding:11px 13px}
+  .sB .stat .k{font:600 9.5px/1 ui-monospace,monospace;letter-spacing:.14em;
+    text-transform:uppercase;color:#a1a1aa}
+  .sB .stat .v{font:700 20px/1.15 ui-sans-serif,system-ui;letter-spacing:-.03em;margin-top:6px;
+    font-variant-numeric:tabular-nums;color:#18181b}
+  .sB .stat .v small{font:500 11px/1 ui-monospace,monospace;color:#a1a1aa;letter-spacing:0}
+
+  /* ---------- C: editorial ---------- */
+  .sC{background:#f7f4ef;color:#141210;padding:22px 26px;display:flex;gap:26px;
+      font-family:ui-serif,Georgia,"Times New Roman",serif}
+  .sC .lead{flex:1 1 auto;min-width:0}
+  .sC .top{display:flex;justify-content:space-between;align-items:baseline;
+    border-bottom:1.5px solid #141210;padding-bottom:9px;margin-bottom:16px}
+  .sC .top strong{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+  .sC .top span{font:500 10.5px/1 ui-monospace,monospace;letter-spacing:.1em;color:#6b6257}
+  .sC h3{margin:0 0 3px;font-size:31px;line-height:1.02;letter-spacing:-.025em;font-weight:600}
+  .sC .deck{margin:0 0 16px;font-size:12.5px;color:#6b6257;font-style:italic;line-height:1.5}
+  .sC .idx{border-top:1px solid #d8d1c5}
+  .sC .e{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:baseline;
+    padding:8px 0;border-bottom:1px solid #e6e0d6;font-size:13px}
+  .sC .e .no{font:600 11px/1 ui-monospace,monospace;color:#b4532a}
+  .sC .e .cnt{font:500 10.5px/1 ui-monospace,monospace;color:#8b8377;letter-spacing:.04em}
+  .sC .e.sel{color:#b4532a}
+  .sC .e.sel .cnt{color:#b4532a}
+  .sC .art{flex:0 0 216px;border-left:1px solid #d8d1c5;padding-left:20px}
+  .sC .art .fig{height:180px;background:#efe9df;border:1px solid #d8d1c5;position:relative;overflow:hidden}
+  .sC .art .cap{font:500 10px/1.45 ui-monospace,monospace;color:#8b8377;margin-top:9px;
+    letter-spacing:.03em;text-transform:uppercase}
+  .sC .art .rule{height:1px;background:#141210;margin:14px 0 12px}
+
+  /* ---------- meta ---------- */
+  .meta{display:grid;grid-template-columns:1.15fr 1fr;gap:0;border-top:1px solid #1c2230}
+  .meta > div{padding:16px 22px}
+  .meta > div + div{border-left:1px solid #1c2230}
+  .mlbl{font:600 9.5px/1 ui-monospace,monospace;letter-spacing:.18em;text-transform:uppercase;
+    color:#5f6a7d;margin:0 0 10px}
+  .sw{display:flex;gap:7px;flex-wrap:wrap}
+  .sw i{width:52px;height:34px;border-radius:7px;border:1px solid rgba(255,255,255,.08);
+    display:block;position:relative}
+  .sw i::after{content:attr(data-h);position:absolute;bottom:-15px;left:1px;
+    font:500 8.5px/1 ui-monospace,monospace;color:#606b7d}
+  .sw{padding-bottom:16px}
+  .type{font-size:12.5px;line-height:1.7;color:#9aa4b5}
+  .type b{color:#e7e9ee;font-weight:600}
+  .type code{font:500 11px/1 ui-monospace,monospace;color:#7dd3fc}
+  .note{max-width:1180px;margin:32px auto 0;padding:18px 20px;border-radius:14px;
+    border:1px solid #1c2230;background:#0b0e14;color:#8b93a4;font-size:12.5px;line-height:1.65}
+  .note b{color:#e7e9ee}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <p class="kicker">Diretório de Contatos · v3 · Fase 1</p>
+  <h1>Três direções visuais</h1>
+  <p class="sub">Cada direção muda paleta, tipografia e — principalmente — o modelo de
+  navegação. Recolorir a interface atual não afasta o v3 do v1; mudar o fluxo, sim.
+  Escolha uma (ou diga o que combinar de duas).</p>
+</div>
+
+<div class="grid">
+
+  <!-- ============ A ============ -->
+  <article class="dir d-a">
+    <div class="dir-head">
+      <div class="badge">A</div>
+      <div>
+        <h2>Mapa protagonista</h2>
+        <p>O mapa é o app: tela cheia, painel de vidro flutuante, busca sempre visível.
+        Clicar no município troca o conteúdo do painel, sem trocar de tela.</p>
+      </div>
+    </div>
+    <div class="screen sA">
+      <svg class="map" viewBox="0 0 900 430" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="ga" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#1b3a52"/><stop offset="1" stop-color="#0d1c2b"/>
+          </linearGradient>
+        </defs>
+        <path d="M330 40 L470 22 L560 70 L600 150 L700 200 L690 300 L580 360 L470 400 L380 372 L300 300 L250 210 L270 120 Z"
+              fill="url(#ga)" stroke="#2dd4bf" stroke-width="1.4" stroke-opacity=".55"/>
+        <path d="M380 120 L470 100 L520 150 L500 215 L420 240 L360 200 Z"
+              fill="#2dd4bf" fill-opacity=".16" stroke="#5eead4" stroke-width="1.1" stroke-opacity=".7"/>
+        <path d="M430 250 L510 240 L540 300 L470 340 L400 320 Z"
+              fill="#2dd4bf" fill-opacity=".09" stroke="#5eead4" stroke-width="1" stroke-opacity=".45"/>
+        <line x1="250" y1="150" x2="330" y2="160" stroke="#2dd4bf" stroke-opacity=".18"/>
+        <line x1="520" y1="150" x2="600" y2="150" stroke="#2dd4bf" stroke-opacity=".18"/>
+      </svg>
+      <div class="chip"><span class="dot"></span> 69 comarcas · 1.807 contatos</div>
+      <aside class="glass">
+        <div class="search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          Buscar contato, setor, unidade…
+        </div>
+        <p class="lbl" style="margin:2px 0 0">Comarcas</p>
+        <div class="row row--on"><b>Vitória</b><span>166</span></div>
+        <div class="row"><b>Vila Velha</b><span>92</span></div>
+        <div class="row"><b>Cariacica</b><span>137</span></div>
+        <div class="row"><b>Serra</b><span>59</span></div>
+      </aside>
+      <div class="crumb">Comarcas <span style="opacity:.45">/</span> <b>Vitória</b> <span style="opacity:.45">/</span> 1ª Vara Cível</div>
+    </div>
+    <div class="meta">
+      <div>
+        <p class="mlbl">Paleta</p>
+        <div class="sw">
+          <i data-h="#0B1220" style="background:#0B1220"></i>
+          <i data-h="#111C2E" style="background:#111C2E"></i>
+          <i data-h="#2DD4BF" style="background:#2DD4BF"></i>
+          <i data-h="#5EEAD4" style="background:#5EEAD4"></i>
+          <i data-h="#EAFBFF" style="background:#EAFBFF"></i>
+        </div>
+      </div>
+      <div>
+        <p class="mlbl">Tipografia &amp; navegação</p>
+        <p class="type"><b>Grotesk</b> nos títulos · <code>mono</code> nos números.<br>
+        Fluxo: mapa → painel lateral → contato. Sem tela de cascata.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ B ============ -->
+  <article class="dir d-b">
+    <div class="dir-head">
+      <div class="badge">B</div>
+      <div>
+        <h2>Command-first</h2>
+        <p>Lista filtrável com chips no topo e atalho de teclado; mapa vira cartão
+        secundário. Pensado para ler 1.800 contatos rápido e para uso por teclado.</p>
+      </div>
+    </div>
+    <div class="screen sB">
+      <div class="main">
+        <div class="top">
+          <div class="brand"><span class="mark">DC</span> Diretório</div>
+          <div class="cmd">Buscar <kbd>⌘</kbd><kbd>K</kbd></div>
+        </div>
+        <div class="chips">
+          <span class="c on">Comarca: Vitória ×</span>
+          <span class="c">Unidade</span>
+          <span class="c">Setor</span>
+          <span class="c">Tipo: Telefone ×</span>
+          <span class="c">+ filtro</span>
+        </div>
+        <div class="list">
+          <div class="it sel"><span class="n">01</span><b>1ª Vara Cível</b><span class="meta">18 contatos</span></div>
+          <div class="it"><span class="n">02</span><b>2ª Vara Cível</b><span class="meta">16 contatos</span></div>
+          <div class="it"><span class="n">03</span><b>Vara Criminal</b><span class="meta">14 contatos</span></div>
+          <div class="it"><span class="n">04</span><b>Juizado Especial Cível</b><span class="meta">12 contatos</span></div>
+          <div class="it"><span class="n">05</span><b>Secretaria</b><span class="meta">9 contatos</span></div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="mapcard">
+          <svg viewBox="0 0 240 200" width="100%" height="100%" aria-hidden="true">
+            <path d="M60 30 L140 18 L180 60 L176 130 L120 178 L66 150 L40 96 Z"
+                  fill="#7c3aed" fill-opacity=".14" stroke="#7c3aed" stroke-opacity=".5" stroke-width="1.3"/>
+            <circle cx="120" cy="96" r="5" fill="#7c3aed"/>
+            <circle cx="120" cy="96" r="11" fill="none" stroke="#7c3aed" stroke-opacity=".35"/>
+          </svg>
+        </div>
+        <div class="stat"><div class="k">Contatos</div><div class="v">1.807</div></div>
+        <div class="stat"><div class="k">Comarcas</div><div class="v">69 <small>/ 70</small></div></div>
+      </div>
+    </div>
+    <div class="meta">
+      <div>
+        <p class="mlbl">Paleta</p>
+        <div class="sw">
+          <i data-h="#FAFAF8" style="background:#FAFAF8"></i>
+          <i data-h="#F4F4F5" style="background:#F4F4F5"></i>
+          <i data-h="#18181B" style="background:#18181B"></i>
+          <i data-h="#7C3AED" style="background:#7C3AED"></i>
+          <i data-h="#A78BFA" style="background:#A78BFA"></i>
+        </div>
+      </div>
+      <div>
+        <p class="mlbl">Tipografia &amp; navegação</p>
+        <p class="type"><b>Inter</b> com tracking apertado · <code>mono</code> tabular nos dados.<br>
+        Fluxo: filtro → lista → contato. Hierarquia como filtro, não como caminho.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- ============ C ============ -->
+  <article class="dir d-c">
+    <div class="dir-head">
+      <div class="badge">C</div>
+      <div>
+        <h2>Editorial / catálogo</h2>
+        <p>O diretório como índice impresso: numerado, com réguas finas e hierarquia
+        tipográfica forte. Detalhe em página própria, mapa como ilustração.</p>
+      </div>
+    </div>
+    <div class="screen sC">
+      <div class="lead">
+        <div class="top"><strong>Diretório de Contatos</strong><span>ED. 2026 · ES</span></div>
+        <h3>Comarcas</h3>
+        <p class="deck">Sessenta e nove comarcas, mil oitocentos e sete contatos.</p>
+        <div class="idx">
+          <div class="e sel"><span class="no">01</span><span>Vitória</span><span class="cnt">2F · 26U · 166C</span></div>
+          <div class="e"><span class="no">02</span><span>Vila Velha</span><span class="cnt">2F · 18U · 92C</span></div>
+          <div class="e"><span class="no">03</span><span>Cariacica</span><span class="cnt">1F · 18U · 137C</span></div>
+          <div class="e"><span class="no">04</span><span>Serra</span><span class="cnt">1F · 10U · 59C</span></div>
+          <div class="e"><span class="no">05</span><span>Guarapari</span><span class="cnt">1F · 1U · 84C</span></div>
+        </div>
+      </div>
+      <aside class="art">
+        <div class="fig">
+          <svg viewBox="0 0 200 180" width="100%" height="100%" aria-hidden="true">
+            <path d="M40 26 L118 16 L156 56 L150 124 L92 166 L46 140 L24 88 Z"
+                  fill="#b4532a" fill-opacity=".1" stroke="#b4532a" stroke-opacity=".55" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <p class="cap">Fig. 1 — Vitória<br>166 contatos em 26 unidades</p>
+        <div class="rule"></div>
+        <p class="cap">Índice por comarca,<br>ordem do catálogo</p>
+      </aside>
+    </div>
+    <div class="meta">
+      <div>
+        <p class="mlbl">Paleta</p>
+        <div class="sw">
+          <i data-h="#F7F4EF" style="background:#F7F4EF"></i>
+          <i data-h="#EFE9DF" style="background:#EFE9DF"></i>
+          <i data-h="#141210" style="background:#141210"></i>
+          <i data-h="#B4532A" style="background:#B4532A"></i>
+          <i data-h="#8B8377" style="background:#8B8377"></i>
+        </div>
+      </div>
+      <div>
+        <p class="mlbl">Tipografia &amp; navegação</p>
+        <p class="type"><b>Serifada</b> nos títulos · sans no corpo · <code>mono</code> nos dados.<br>
+        Fluxo: índice → página do local → contato. Mais publicação que sistema.</p>
+      </div>
+    </div>
+  </article>
+
+</div>
+
+<div class="note">
+  <b>O que não entra em nenhuma das três:</b> o azul institucional (#2563eb/#1d4ed8),
+  a sidebar navy com marca fixa, a cascata de selects Comarca → Fórum → Unidade → Setor
+  como caminho obrigatório, e as classes <code>fc-*</code>. São exatamente os pontos
+  que fazem o v2 parecer o v1 — e o que a medição de similaridade vai acusar.
+</div>
+
+</body>
+</html>

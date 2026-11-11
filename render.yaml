@@ -1,0 +1,54 @@
+# Blueprint do v3 no Render free.
+#
+# Um único serviço (Laravel serve HTML e JSON). Banco no Neon free, fora do
+# Render: o Postgres free do Render expira em 30 dias e o demo quebraria
+# sozinho um mês depois de publicado.
+#
+# Valores com sync: false são preenchidos no painel, nunca no repositório.
+
+services:
+  - type: web
+    name: diretorio-contatos-v3
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: Diretório de Contatos
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: warning
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        sync: false
+      - key: DB_SSLMODE
+        value: require
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+      - key: FASTAPI_URL
+        sync: false
+      - key: FASTAPI_TOKEN
+        sync: false
