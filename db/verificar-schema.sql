@@ -83,16 +83,16 @@ VALUES ('UNI0064', (SELECT id FROM locais WHERE chave = 'FOR0002'),
 -- contatos: as quatro grafias de telefone do ofício de março/2024
 INSERT INTO contatos (chave, local_id, no_id, tipo, descricao, valor, fonte, vigente_desde)
 VALUES ('C000001', (SELECT id FROM locais WHERE chave = 'FOR0002'),
-        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 9XXXX-XXXX',
+        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 99111-0001',
         'oficio-2024-03.pdf', '2024-03-01'),
        ('C000002', (SELECT id FROM locais WHERE chave = 'FOR0002'),
-        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 9XXXXXXXX',
+        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 991110002',
         'oficio-2024-03.pdf', '2024-03-01'),
        ('C000003', (SELECT id FROM locais WHERE chave = 'FOR0002'),
-        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 3XXXXXXX',
+        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 33110003',
         'oficio-2024-03.pdf', '2024-03-01'),
        ('C000004', (SELECT id FROM locais WHERE chave = 'FOR0002'),
-        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 9XXXX.XXXX',
+        (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 99110.0004',
         'oficio-2024-03.pdf', '2024-03-01'),
        -- dois e-mails no mesmo nó, separados por descricao (2º JECrim)
        ('C000005', (SELECT id FROM locais WHERE chave = 'FOR0002'),
@@ -102,7 +102,7 @@ VALUES ('C000001', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'E-mail', 'Cartório', '3jecriminal-vitoria@exemplo.jus.br',
         'oficio-2024-03.pdf', '2024-03-01'),
        -- contato DO ÓRGÃO: no_id NULL é válido e não é dado incompleto
-       ('C000007', (SELECT id FROM locais WHERE chave = 'FOR0002'), NULL, 'Telefone', 'Geral', '(27) 3134-XXXX',
+       ('C000007', (SELECT id FROM locais WHERE chave = 'FOR0002'), NULL, 'Telefone', 'Geral', '(27) 3134-0007',
         'catalogo-comarcas-2026-06-26.pdf', '2026-06-25');
 
 -- ---------------------------------------------------------------------------
@@ -112,17 +112,17 @@ DO $$
 DECLARE d TEXT; t TEXT;
 BEGIN
   SELECT busca_digitos, busca_texto INTO d, t FROM contatos WHERE chave = 'C000001';
-  IF d <> '279XXXXXXXX' THEN RAISE EXCEPTION 'busca_digitos errada: %', d; END IF;
+  IF d <> '27991110001' THEN RAISE EXCEPTION 'busca_digitos errada: %', d; END IF;
   IF t NOT LIKE '%99111%' THEN RAISE EXCEPTION 'busca_texto errada: %', t; END IF;
   PERFORM _passa('busca_digitos/busca_texto são calculadas na escrita');
 
   SELECT busca_digitos INTO d FROM contatos WHERE chave = 'C000004';
-  IF d <> '279XXXXXXXX' THEN RAISE EXCEPTION 'ponto no telefone não normalizou: %', d; END IF;
-  PERFORM _passa('grafia com ponto (27) 9XXXX.XXXX vira 279XXXXXXXX');
+  IF d <> '27991100004' THEN RAISE EXCEPTION 'ponto no telefone não normalizou: %', d; END IF;
+  PERFORM _passa('grafia com ponto (27) 99110.0004 vira 27991100004');
 
   SELECT busca_digitos INTO d FROM contatos WHERE chave = 'C000003';
   IF length(d) <> 10 THEN RAISE EXCEPTION 'fixo de 8 dígitos virou %', d; END IF;
-  PERFORM _passa('fixo sem hífen (27) 3XXXXXXX vira 10 dígitos');
+  PERFORM _passa('fixo sem hífen (27) 33110003 vira 10 dígitos');
 END $$;
 
 -- ---------------------------------------------------------------------------
@@ -261,7 +261,7 @@ END $$;
 DO $$
 BEGIN
   INSERT INTO historico (acao, entidade, contato_chave, contato_rotulo, detalhe, autor, request_id)
-  VALUES ('remover', 'contato', 'C000001', 'Institucional (27) 9XXXX-XXXX',
+  VALUES ('remover', 'contato', 'C000001', 'Institucional (27) 99111-0001',
           'removido a pedido', 'usr_00042:admin', '0193f0c2-0000-7000-8000-000000000001');
   PERFORM _passa('histórico aceita autor opaco + request_id');
 

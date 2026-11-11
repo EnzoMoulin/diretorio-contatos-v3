@@ -16,7 +16,7 @@ número que eu havia citado errado: a estrutura central são **286 contatos**, n
 **Revisão 4 (11/11/2026, catálogo oficial em mãos).** Os dois volumes do catálogo — Comarcas
 (`catalogo-comarcas-2026-06-26.pdf`, 41 páginas) e Sede (`catalogo-sede-2026-08-28.pdf`, 1 página) — confirmam
 que cada órgão abre com um bloco de contatos que não pertence a unidade nem setor (*Geral · Sala ADM ·
-Recepção · Segurança*; na Sede, `Geral 3334-XXXX · Telefonista 2000•2001•9 · Recepção 2060`). Isso fecha
+Recepção · Segurança*; na Sede, `Geral 3334-XXXX · Telefonista XXXX•XXXX•X · Recepção XXXX`). Isso fecha
 a pergunta dos contatos sem nó: entra a **5.6** (contato pertence a nó **ou** a órgão, com `orgao_id`
 obrigatório e `no_id` nulo), sai a necessidade de setor virtual; os 5 contatos da Sede são o telefone
 geral, três ramais de telefonista e a recepção. O volume da Sede também valida a árvore: as 21 unidades
@@ -58,6 +58,15 @@ reservado à Sede — inclusive na exceção da chave lógica `MUN0000`, que con
 comarca. Corrigido em 1, 4.2, 4.4, ADR-006, 5.6, seções 8 e 9, Apêndices A, C e D e em `db/` (o DDL
 testado roda com `locais`). As revisões 3 a 6 mantêm o nome antigo de propósito: são registro datado do
 que se decidiu então.
+
+**Revisão 8 (11/11/2026, preparação para publicar).** Passada de anonimização: o documento e o `db/`
+exemplificavam as quatro grafias de telefone com os **números reais** do ofício de março/2024 — justamente o
+que o seed do v2 mascara (`(27) 9XXXX-XXXX`). Agora os exemplos são de forma (`(27) 9XXXX-XXXX`,
+`(27) 9XXXXXXXX`, `(27) 3XXXXXXX`, `(27) 9XXXX.XXXX`) e os `INSERT` de `db/verificar-schema.sql` usam
+dígitos fictícios, com as invariantes de normalização ajustadas e verdes. Os nomes de unidade
+*continuam*: são unidades públicas do tribunal (catálogo de ramais), não estrutura interna sigilosa —
+trocá-los por genéricos apagaria a conferência que dá valor à 5.6. Nome de pessoa não existe em nenhum
+artefato: os rótulos de gabinete/comissário já entram como `NN`.
 
 **Precedência.** Este documento detalha a Fase 3 e **refina** `docs/arquitetura-v3.md` em dois
 pontos (separação em dois bancos lógicos e contrato `/api/v1`), sem reabrir o que já está fechado
@@ -504,7 +513,7 @@ O catálogo oficial vem em **dois volumes**: `catalogo-comarcas-2026-06-26.pdf` 
 25/06/2026) e `catalogo-sede-2026-08-28.pdf` (1 página, Sede, 28/08/2026). A fonte tem ainda um **terceiro
 documento**, que não é catálogo e é tratado ao fim desta seção. Os dois volumes abrem cada local com um
 bloco que **não pertence a nenhuma unidade ou setor** — nos fóruns *Geral · Sala ADM · Recepção ·
-Segurança*; na Sede, literalmente `Geral 3334-XXXX · Telefonista 2000•2001•9 · Recepção 2060`, antes
+Segurança*; na Sede, literalmente `Geral 3334-XXXX · Telefonista XXXX•XXXX•X · Recepção XXXX`, antes
 da primeira seção (Presidência). Esses contatos são do local.
 
 Medido no seed: **626 contatos têm `forum` e não têm `uo`** — é exatamente esse bloco, por local. E
@@ -565,10 +574,11 @@ Três consequências para o modelo:
    DDL, `contatos` recebe `fonte` (nome do arquivo) e `vigente_desde`, e o que veio do ofício fica com
    `vigente_desde = '2024-03'` e `fonte = 'oficio-2024-03.pdf'` — a tela marca "confirmar
    vigência" a partir da coluna, não de string.
-3. **Quatro grafias de telefone no mesmo documento** — `(27) 9XXXX-XXXX`, `(27) 9XXXXXXXX`,
-   `(27) 3XXXXXXX` (fixo sem hífen) e `(27) 9XXXX.XXXX` (ponto no lugar do hífen). Nada disso sobrevive à
-   importação: o valor é normalizado em `(27) 9XXXX-XXXX` / `(27) 3XXX-XXXX` e `busca_digitos` (4.5)
-   garante que qualquer grafia digitada ache o registro.
+3. **Quatro grafias de telefone no mesmo documento** — móvel com hífen `(27) 9XXXX-XXXX`, móvel sem
+   hífen `(27) 9XXXXXXXX`, fixo sem hífen `(27) 3XXXXXXX` e ponto no lugar do hífen `(27) 9XXXX.XXXX`.
+   (Os números vão mascarados, como no seed do v2: o que importa é a forma, não o dígito.) Nada disso
+   sobrevive à importação: o valor é normalizado em `(27) 9XXXX-XXXX` / `(27) 3XXX-XXXX` e `busca_digitos`
+   (4.5) garante que qualquer grafia digitada ache o registro.
 
 **Divergência aberta (uma):** o seed marca o telefone da **2ª Contadoria** como `WhatsApp`, e este
 documento não traz essa anotação — ele anota *(whatsapp)* só na Auditoria Militar e na Diretoria do Foro.
