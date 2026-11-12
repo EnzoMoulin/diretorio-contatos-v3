@@ -34,7 +34,7 @@ inteiro nesse caso, para separar erro de dado de erro do parser).
 | Comarcas | 69 | 69 | 0 | — |
 | Fóruns | 72 | 72 | 0 | 1 com nome ampliado |
 | Nós de comarca | 659 | 655 | 0 ausentes · 7 parciais | redação / atribuição |
-| E-mails de comarca | 297 | 295 | 2 | 1 correto, 1 placeholder |
+| E-mails de comarca | 297 | 296 | 1 | artefato de extração; base correta |
 | Nós da Sede | 179 | 177 | 0 ausentes · 2 parciais | redação |
 | Ofício 432/2024 | 23 e-mails | 23 | 0 | — |
 
@@ -42,16 +42,22 @@ Estrutura da base: **69 comarcas + Sede · 72 fóruns · 838 nós · 1.807 conta
 (1.019 telefone, 444 ramal, 297 e-mail, 47 WhatsApp) **· 11 telefones úteis**.
 Nenhuma comarca do catálogo falta na base e nenhuma comarca da base sobra.
 
-## As duas únicas divergências de conteúdo
+## A única divergência de conteúdo — e a correção aplicada
 
-1. **`C000978` — e-mail provisório no lugar do real.** A base traz `contato.demo@…` em
-   "PID • Central de Atendimento" da comarca de São José do Calçado; o catálogo de junho
-   traz o endereço institucional dessa central (`pid.sjcalcado@…`). É o único lugar em que
-   a base *inventou* onde a fonte tinha dado.
-2. **`C000033` — falso positivo, base correta.** O e-mail da 10ª Vara Criminal de Vitória
-   aparece no Ofício com hífen colado à palavra anterior ("1ª Vara Criminal -`10criminal`-…"),
-   e o extrator cria um endereço fantasma começando com hífen. A base gravou o endereço
-   certo.
+**`C000978`, "PID • Central de Atendimento" de São José do Calçado.** A base trazia
+`contato.demo1@exemplo.jus.br`, um preenchimento provisório; o catálogo de junho traz o
+endereço institucional dessa central (`pid.sjcalcado@…`). Era o único lugar em que a base
+tinha um valor inventado onde a fonte tinha dado.
+
+Corrigido em 12/11/2026 no CSV de origem e no `seed_mascarado.json` da v2, agora como
+`pid.sjcalcado@exemplo.jus.br` — parte local da fonte, domínio de demonstração, como os
+outros 296. Conferido no banco recriado: 1.807 contatos, nenhum e-mail `demo` restante.
+Depois da correção, a conferência fecha em **296 de 297**.
+
+**`C000033` — falso positivo, base correta.** O e-mail da 10ª Vara Criminal de Vitória
+aparece no Ofício com hífen colado à palavra anterior ("1ª Vara Criminal -`10criminal`-…"),
+e o extrator cria um endereço fantasma começando com hífen. A base gravou o endereço certo;
+nada a corrigir.
 
 ## O que é diferença de redação, não de dado
 
@@ -102,9 +108,11 @@ Comparação direta CSV ↔ `seed_mascarado.json` (o que o app carrega):
 ## Conclusão
 
 A base está **aderente aos três catálogos**: nenhuma comarca, nenhum fórum e nenhum nó
-ausente; 295 dos 297 e-mails confirmados por documento; os 286 contatos da Sede e os 43 do
-Ofício batem com suas fontes. A única correção de conteúdo é o e-mail placeholder de São
-José do Calçado. Não há segunda rodada a fazer enquanto a fonte não mudar.
+ausente; 296 dos 297 e-mails confirmados por documento; os 286 contatos da Sede e os 43 do
+Ofício batem com suas fontes. A única divergência de conteúdo que existia — o e-mail
+provisório de São José do Calçado — foi corrigida. As cinco diferenças de redação ficam como
+estão, porque a base desambiguou o que o PDF repete. Não há segunda rodada a fazer enquanto a
+fonte não mudar.
 
 ## Como repetir
 
