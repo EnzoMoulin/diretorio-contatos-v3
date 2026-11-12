@@ -20,6 +20,7 @@ ainda não começou — quando começar, entra por este README.
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `Dockerfile`, `docker/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
 | Plano vigente da v3 e da v4: o que migra, o que não migra, critério do FastAPI | `docs/v3-arquitetura-preparacao.md`, `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` |
+| **Decisão de 12/11/2026: a v4 mora neste repositório** — dois deployáveis (`apps/web`, `services/busca`), um `db/` | `docs/adr-009-um-repo-para-v3-e-v4.md` |
 | Briefing da direção A com mapa real e layout de celular (a executar) | `docs/v3-interface.md` |
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 838 nós,
@@ -38,6 +39,23 @@ ainda não começou — quando começar, entra por este README.
   demo quebraria sozinho.
 - **FastAPI na v4**, em serviço separado e com o Laravel da v3 mantido, quando houver medição
   que justifique — importação com `ftfy`, deduplicação e busca fonética em português.
+
+## Estrutura (v3 e v4 no mesmo repositório)
+
+Decidido em 12/11/2026 (`docs/adr-009-um-repo-para-v3-e-v4.md`). A v4 não é um quarto repositório:
+é um **segundo deployável** aqui dentro. Layout alvo, aplicado quando a primeira linha de Laravel
+for escrita — hoje a raiz continua como está:
+
+```
+apps/web/          Laravel 13 + TALL + Filament   → deployável 1 (Render, Dockerfile próprio)
+services/busca/    FastAPI                        → deployável 2 (v4, Dockerfile próprio)
+db/                schema.sql, invariantes, carga do seed — fonte única das duas fases
+infra/             render.yaml e docker/ do web
+docs/              ADRs, planos, backlog
+```
+
+A fronteira entre os dois é HTTP (`/api/v1`), não import de código. O seed continua no repositório
+do v2, lido por caminho relativo de irmão e nunca versionado aqui.
 
 ## Rodar o que existe
 
@@ -70,6 +88,8 @@ Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_J
 | `docs/v3-arquitetura-preparacao.md` | **Plano vigente**: o que a v3 entrega, o que o v2 deixa como especificação, escopo mínimo publicável e os candidatos da v4. |
 | `docs/v3-interface.md` | Briefing da direção A para o mockup: mapa real do ES, layout de celular, sete estados, restrições de marca. Ainda não executado. |
 | `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR da decisão de 12/11/2026: v3 com um serviço só, FastAPI na v4, banco único na v3. |
+| `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR da decisão de 12/11/2026: v3 e v4 num repositório, dois deployáveis, `db/` compartilhado. |
+| `docs/backlog-ideias.md` | Ideias de produto com fase, gatilho e veredito — inclusive as descartadas, com motivo. |
 | `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4. Tem aviso no topo; não é o plano da v3. |
 | `docs/identidade-visual.md` | Direção A, mapa protagonista. Inclui o que **não** fazer: `direcoes-visuais.html` é instrumento de decisão, não markup. |
 | `db/README.md` | O banco lógico: tabelas, invariantes, medições e as regras que ficam na aplicação. |
