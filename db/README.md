@@ -1,15 +1,18 @@
 # `db/` — o banco lógico `db_diretorio`
 
 Materializa as seções 4.4, 4.5, 5.2, 5.3, 5.6 e 6.3 de
-`docs/fase-3-arquitetura-e-adrs.md` (Apêndice D). O banco é do **motor FastAPI**; o Laravel
-(`db_admin`) não escreve aqui, exceto em `referencias_externas`.
+`docs/fase-3-arquitetura-e-adrs.md` (Apêndice D). O documento de origem descreve o desenho de
+**dois serviços**; na v3 o banco é **único** e este DDL é o baseline das migrations do Laravel
+(`docs/adr-008-v3-um-servico-e-fastapi-na-v4.md`). Onde os comentários do SQL dizem `db_admin`,
+leia-se "tabelas administrativas do Laravel": na v3 elas ficam no mesmo banco, e a separação é
+da v4.
 
 ## Arquivos
 
 | Arquivo | Papel |
 | :--- | :--- |
 | `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 9 tabelas (8 de dado + 1 de agregado do expurgo), índices, `CHECK`s, triggers. |
-| `verificar-schema.sql` | 39 invariantes estruturais (o que cada `CHECK` deve recusar e aceitar). |
+| `verificar-schema.sql` | 41 invariantes estruturais (o que cada `CHECK` deve recusar e aceitar). |
 | `carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` do v2. Andaime de teste, não o ingestão oficial. |
 | `verificar-carga.sql` | 20 invariantes sobre a base carregada (volumes, vínculos, profundidade, procedência, busca). |
 | `verificar-plano.sql` | 5 invariantes de **plano**: prova que o índice GIN serve a `busca_texto ILIKE norm_texto(...)` e que `lower(unaccent(valor))` não usa índice nenhum. |
