@@ -120,7 +120,10 @@ A Fase 2 não existe para virar produto: existe para **isolar o core do negócio
 contrato** antes de qualquer framework entrar. Cada rota que o Laravel vai consumir na Fase 3 foi
 exercitada aqui, com dados fictícios, sem ORM no meio.
 
-Medido no commit `1ee24ca` do v2:
+Medido no commit `1ee24ca` do v2 — **fotografia, não inventário vivo:** o v2 ganhou
+rotas depois (a conferência de contato, `POST /api/contatos/<id>/conferir`, é a mais
+recente) e o README de hoje documenta **33 pares método+rota, 31 deles em `/api`**.
+Os dois números não são comparáveis: a conta abaixo inclui página e asset.
 
 - `app.py`: **2.055 linhas**, `class Handler` com **1.027 linhas** e **26 rotas** (mais 3 de
   página/asset: `/healthz`, `/admin`, `/style.css` — 29 no total, o número do README).
@@ -1034,7 +1037,13 @@ A-1 a A-4 estão fechados nesta revisão: Neon free (B-1), árvore única de nó
 
 ---
 
-## Apêndice A — superfície do v2 (29 rotas) e destino na Fase 3
+## Apêndice A — superfície do v2 (29 rotas em `1ee24ca`) e destino na Fase 3
+
+> **Nota de época:** este mapa foi levantado no commit `1ee24ca` e não inclui as rotas
+> criadas depois — a conferência de contato (`POST /api/contatos/<id>/conferir`) é a
+> ausência conhecida. Para o inventário atual, a referência é a tabela de endpoints do
+> README do v2 (33 pares método+rota, 31 em `/api`): este apêndice continua valendo como
+> registro do que existia quando o desenho da Fase 3 foi fechado.
 
 | v2 (método e rota) | Destino na Fase 3 | Observação |
 | :--- | :--- | :--- |
