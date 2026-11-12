@@ -1,0 +1,1120 @@
+{
+ "amostra_contatos": [
+  {
+   "cargo": "Ramal",
+   "descricao": "Chefia de Gabinete",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Chefia de Gabinete",
+   "setor": "Chefia de Gabinete",
+   "unidade": "Presidência"
+  },
+  {
+   "cargo": "Ramal",
+   "descricao": "Assessoria Especial CNJ",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Assessoria Especial CNJ",
+   "setor": "Assessoria Especial CNJ",
+   "unidade": "Assessorias da Presidência"
+  },
+  {
+   "cargo": "Ramal",
+   "descricao": "Chefia de Gabinete",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Chefia de Gabinete",
+   "setor": "Chefia de Gabinete",
+   "unidade": "Vice-Presidência"
+  },
+  {
+   "cargo": "Telefone",
+   "descricao": "Geral",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Geral",
+   "setor": "Contatos Gerais",
+   "unidade": "Corregedoria-Geral de Justiça"
+  },
+  {
+   "cargo": "Telefone",
+   "descricao": "Geral",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Geral",
+   "setor": "Contatos Gerais",
+   "unidade": "Escola da Magistratura"
+  },
+  {
+   "cargo": "Telefone",
+   "descricao": "Geral",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Geral",
+   "setor": "Contatos Gerais",
+   "unidade": "Ouvidoria"
+  },
+  {
+   "cargo": "Ramal",
+   "descricao": "Criminal e Execução Penal",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Criminal e Execução Penal",
+   "setor": "Criminal e Execução Penal",
+   "unidade": "Coordenadorias"
+  },
+  {
+   "cargo": "Ramal",
+   "descricao": "Gabinete de Desembargador 01",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Gabinete de Desembargador 01",
+   "setor": "Gabinete de Desembargador 01",
+   "unidade": "Desembargadores"
+  },
+  {
+   "cargo": "Ramal",
+   "descricao": "Geral",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Geral",
+   "setor": "Contatos Gerais",
+   "unidade": "Tribunal do Pleno"
+  },
+  {
+   "cargo": "Ramal",
+   "descricao": "Geral",
+   "fonte": "catálogo de ramais — agosto/2026",
+   "forum": null,
+   "nome": "Geral",
+   "setor": "Contatos Gerais",
+   "unidade": "Conselho Superior da Magistratura"
+  }
+ ],
+ "fonte": "http://127.0.0.1:8011",
+ "notas": {
+  "setores": "v2 tem unidades + setores; a v3 tem uma árvore única de nos. Contagem de setores não é comparável — compare contatos e locais."
+ },
+ "rotas": {
+  "busca": {
+   "273134": {
+    "total": 0
+   },
+   "a": {
+    "total": 20
+   },
+   "atendimento": {
+    "total": 18
+   },
+   "cartorio": {
+    "total": 20
+   },
+   "cartorio de registro": {
+    "total": 20
+   },
+   "cartório": {
+    "total": 20
+   },
+   "civel": {
+    "total": 20
+   },
+   "distribuicao": {
+    "total": 9
+   },
+   "firma": {
+    "total": 0
+   },
+   "imobiliario": {
+    "total": 0
+   },
+   "juizado": {
+    "total": 11
+   },
+   "protocolo": {
+    "total": 20
+   },
+   "sede": {
+    "total": 1
+   },
+   "vara do trabalho": {
+    "total": 20
+   },
+   "vitoria": {
+    "total": 20
+   },
+   "vitória": {
+    "total": 20
+   }
+  },
+  "comarcas": {
+   "ordem": [
+    "Sede Administrativa",
+    "Vitória",
+    "Vila Velha",
+    "Serra",
+    "Cariacica",
+    "Viana",
+    "Guarapari",
+    "Fundão",
+    "Itaguaçu",
+    "Itarana",
+    "Santa Leopoldina",
+    "Santa Maria de Jetibá",
+    "Santa Teresa",
+    "Afonso Cláudio",
+    "Conceição do Castelo",
+    "Domingos Martins",
+    "Laranja da Terra",
+    "Marechal Floriano",
+    "Venda Nova do Imigrante",
+    "Alfredo Chaves",
+    "Anchieta",
+    "Iconha",
+    "Itapemirim",
+    "Marataízes",
+    "Piúma",
+    "Presidente Kennedy",
+    "Rio Novo do Sul",
+    "Apiacá",
+    "Atílio Vivacqua",
+    "Cachoeiro de Itapemirim",
+    "Castelo",
+    "Jerônimo Monteiro",
+    "Mimoso do Sul",
+    "Muqui",
+    "Vargem Alta",
+    "Alegre",
+    "Bom Jesus do Norte",
+    "Dores do Rio Preto",
+    "Guaçuí",
+    "Ibatiba",
+    "Ibitirama",
+    "Iúna",
+    "Muniz Freire",
+    "São José do Calçado",
+    "Aracruz",
+    "Ibiraçu",
+    "João Neiva",
+    "Linhares",
+    "Rio Bananal",
+    "Alto Rio Novo",
+    "Baixo Guandu",
+    "Colatina",
+    "Marilândia",
+    "Pancas",
+    "São Domingos do Norte",
+    "São Gabriel da Palha",
+    "Boa Esperança",
+    "Conceição da Barra",
+    "Jaguaré",
+    "Pedro Canário",
+    "Pinheiros",
+    "Montanha",
+    "Mucurici",
+    "São Mateus",
+    "Água Doce do Norte",
+    "Águia Branca",
+    "Barra de São Francisco",
+    "Ecoporanga",
+    "Mantenópolis",
+    "Nova Venécia"
+   ],
+   "por_comarca": {
+    "Afonso Cláudio": {
+     "n_foruns": 1,
+     "n_setores": 5,
+     "n_unidades": 3,
+     "total": 11
+    },
+    "Alegre": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 23
+    },
+    "Alfredo Chaves": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 10
+    },
+    "Alto Rio Novo": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 13
+    },
+    "Anchieta": {
+     "n_foruns": 1,
+     "n_setores": 8,
+     "n_unidades": 6,
+     "total": 9
+    },
+    "Apiacá": {
+     "n_foruns": 1,
+     "n_setores": 5,
+     "n_unidades": 3,
+     "total": 10
+    },
+    "Aracruz": {
+     "n_foruns": 1,
+     "n_setores": 16,
+     "n_unidades": 8,
+     "total": 26
+    },
+    "Atílio Vivacqua": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 12
+    },
+    "Baixo Guandu": {
+     "n_foruns": 1,
+     "n_setores": 9,
+     "n_unidades": 4,
+     "total": 18
+    },
+    "Barra de São Francisco": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 24
+    },
+    "Boa Esperança": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 10
+    },
+    "Bom Jesus do Norte": {
+     "n_foruns": 1,
+     "n_setores": 3,
+     "n_unidades": 3,
+     "total": 6
+    },
+    "Cachoeiro de Itapemirim": {
+     "n_foruns": 1,
+     "n_setores": 60,
+     "n_unidades": 16,
+     "total": 91
+    },
+    "Cariacica": {
+     "n_foruns": 1,
+     "n_setores": 81,
+     "n_unidades": 19,
+     "total": 137
+    },
+    "Castelo": {
+     "n_foruns": 1,
+     "n_setores": 5,
+     "n_unidades": 3,
+     "total": 6
+    },
+    "Colatina": {
+     "n_foruns": 1,
+     "n_setores": 30,
+     "n_unidades": 13,
+     "total": 49
+    },
+    "Conceição da Barra": {
+     "n_foruns": 1,
+     "n_setores": 7,
+     "n_unidades": 3,
+     "total": 16
+    },
+    "Conceição do Castelo": {
+     "n_foruns": 1,
+     "n_setores": 6,
+     "n_unidades": 2,
+     "total": 14
+    },
+    "Domingos Martins": {
+     "n_foruns": 1,
+     "n_setores": 11,
+     "n_unidades": 4,
+     "total": 19
+    },
+    "Dores do Rio Preto": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 2
+    },
+    "Ecoporanga": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 21
+    },
+    "Fundão": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 13
+    },
+    "Guarapari": {
+     "n_foruns": 1,
+     "n_setores": 11,
+     "n_unidades": 2,
+     "total": 84
+    },
+    "Guaçuí": {
+     "n_foruns": 1,
+     "n_setores": 3,
+     "n_unidades": 2,
+     "total": 12
+    },
+    "Ibatiba": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 10
+    },
+    "Ibiraçu": {
+     "n_foruns": 1,
+     "n_setores": 7,
+     "n_unidades": 4,
+     "total": 14
+    },
+    "Ibitirama": {
+     "n_foruns": 1,
+     "n_setores": 6,
+     "n_unidades": 3,
+     "total": 6
+    },
+    "Iconha": {
+     "n_foruns": 1,
+     "n_setores": 3,
+     "n_unidades": 2,
+     "total": 9
+    },
+    "Itaguaçu": {
+     "n_foruns": 1,
+     "n_setores": 3,
+     "n_unidades": 2,
+     "total": 9
+    },
+    "Itapemirim": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 39
+    },
+    "Itarana": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 17
+    },
+    "Iúna": {
+     "n_foruns": 1,
+     "n_setores": 11,
+     "n_unidades": 3,
+     "total": 17
+    },
+    "Jaguaré": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 9
+    },
+    "Jerônimo Monteiro": {
+     "n_foruns": 1,
+     "n_setores": 2,
+     "n_unidades": 2,
+     "total": 4
+    },
+    "João Neiva": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 4
+    },
+    "Laranja da Terra": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 10
+    },
+    "Linhares": {
+     "n_foruns": 1,
+     "n_setores": 35,
+     "n_unidades": 20,
+     "total": 41
+    },
+    "Mantenópolis": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 14
+    },
+    "Marataízes": {
+     "n_foruns": 1,
+     "n_setores": 22,
+     "n_unidades": 6,
+     "total": 37
+    },
+    "Marechal Floriano": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 11
+    },
+    "Marilândia": {
+     "n_foruns": 1,
+     "n_setores": 6,
+     "n_unidades": 3,
+     "total": 6
+    },
+    "Mimoso do Sul": {
+     "n_foruns": 1,
+     "n_setores": 7,
+     "n_unidades": 5,
+     "total": 8
+    },
+    "Montanha": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 13
+    },
+    "Mucurici": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 4
+    },
+    "Muniz Freire": {
+     "n_foruns": 1,
+     "n_setores": 3,
+     "n_unidades": 2,
+     "total": 4
+    },
+    "Muqui": {
+     "n_foruns": 1,
+     "n_setores": 3,
+     "n_unidades": 2,
+     "total": 5
+    },
+    "Nova Venécia": {
+     "n_foruns": 1,
+     "n_setores": 25,
+     "n_unidades": 9,
+     "total": 34
+    },
+    "Pancas": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 13
+    },
+    "Pedro Canário": {
+     "n_foruns": 1,
+     "n_setores": 9,
+     "n_unidades": 2,
+     "total": 14
+    },
+    "Pinheiros": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 11
+    },
+    "Piúma": {
+     "n_foruns": 1,
+     "n_setores": 12,
+     "n_unidades": 4,
+     "total": 16
+    },
+    "Presidente Kennedy": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 6
+    },
+    "Rio Bananal": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 12
+    },
+    "Rio Novo do Sul": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 9
+    },
+    "Santa Leopoldina": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 4
+    },
+    "Santa Maria de Jetibá": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 2
+    },
+    "Santa Teresa": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 2
+    },
+    "Sede Administrativa": {
+     "n_foruns": 0,
+     "n_setores": 166,
+     "n_unidades": 22,
+     "total": 286
+    },
+    "Serra": {
+     "n_foruns": 1,
+     "n_setores": 52,
+     "n_unidades": 11,
+     "total": 59
+    },
+    "São Domingos do Norte": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 7
+    },
+    "São Gabriel da Palha": {
+     "n_foruns": 1,
+     "n_setores": 5,
+     "n_unidades": 3,
+     "total": 8
+    },
+    "São José do Calçado": {
+     "n_foruns": 1,
+     "n_setores": 6,
+     "n_unidades": 6,
+     "total": 9
+    },
+    "São Mateus": {
+     "n_foruns": 1,
+     "n_setores": 31,
+     "n_unidades": 6,
+     "total": 52
+    },
+    "Vargem Alta": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 4
+    },
+    "Venda Nova do Imigrante": {
+     "n_foruns": 1,
+     "n_setores": 7,
+     "n_unidades": 4,
+     "total": 11
+    },
+    "Viana": {
+     "n_foruns": 2,
+     "n_setores": 22,
+     "n_unidades": 8,
+     "total": 37
+    },
+    "Vila Velha": {
+     "n_foruns": 2,
+     "n_setores": 73,
+     "n_unidades": 20,
+     "total": 92
+    },
+    "Vitória": {
+     "n_foruns": 2,
+     "n_setores": 79,
+     "n_unidades": 28,
+     "total": 166
+    },
+    "Água Doce do Norte": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 14
+    },
+    "Águia Branca": {
+     "n_foruns": 1,
+     "n_setores": 1,
+     "n_unidades": 1,
+     "total": 12
+    }
+   },
+   "total": 70
+  },
+  "contatos": {
+   "comarca_id=Sede Administrativa": {
+    "total": 286
+   },
+   "comarca_id=Vila Velha": {
+    "total": 92
+   },
+   "comarca_id=Vitória": {
+    "total": 166
+   },
+   "forum_id=Fórum Criminal": {
+    "total": 85
+   },
+   "forum_id=Fórum Cível": {
+    "total": 81
+   },
+   "unidade_id=1ª Secretaria Inteligente Regional – Órfãos e Sucessões da Capital": {
+    "total": 2
+   },
+   "unidade_id=Protocolo • Distribuição": {
+    "total": 2
+   }
+  },
+  "contatos_q": {
+   "": {
+    "total": 1807
+   },
+   "  ": {
+    "total": 1807
+   },
+   "273134": {
+    "total": 0
+   },
+   "a": {
+    "total": 1807
+   },
+   "atendimento": {
+    "total": 781
+   },
+   "cartorio": {
+    "total": 0
+   },
+   "cartorio de registro": {
+    "total": 0
+   },
+   "cartório": {
+    "total": 209
+   },
+   "civel": {
+    "total": 19
+   },
+   "distribuicao": {
+    "total": 4
+   },
+   "firma": {
+    "total": 0
+   },
+   "imobiliario": {
+    "total": 0
+   },
+   "juizado": {
+    "total": 127
+   },
+   "protocolo": {
+    "total": 37
+   },
+   "sede": {
+    "total": 286
+   },
+   "vara do trabalho": {
+    "total": 0
+   },
+   "vitoria": {
+    "total": 34
+   },
+   "vitória": {
+    "total": 166
+   }
+  },
+  "foruns": {
+   "Cariacica": {
+    "n_unidades": {
+     "Fórum Doutor Américo Ribeiro Coelho": 19
+    },
+    "ordem": [
+     "Fórum Doutor Américo Ribeiro Coelho"
+    ],
+    "totais": {
+     "Fórum Doutor Américo Ribeiro Coelho": 137
+    }
+   },
+   "Sede Administrativa": {
+    "n_unidades": {},
+    "ordem": [],
+    "totais": {}
+   },
+   "Serra": {
+    "n_unidades": {
+     "Fórum Desembargador Antônio José Miguel Feu Rosa": 11
+    },
+    "ordem": [
+     "Fórum Desembargador Antônio José Miguel Feu Rosa"
+    ],
+    "totais": {
+     "Fórum Desembargador Antônio José Miguel Feu Rosa": 59
+    }
+   },
+   "Viana": {
+    "n_unidades": {
+     "Fórum Desembargador Olival Pimentel": 5,
+     "Fórum de Viana (Areinha)": 3
+    },
+    "ordem": [
+     "Fórum Desembargador Olival Pimentel",
+     "Fórum de Viana (Areinha)"
+    ],
+    "totais": {
+     "Fórum Desembargador Olival Pimentel": 28,
+     "Fórum de Viana (Areinha)": 9
+    }
+   },
+   "Vila Velha": {
+    "n_unidades": {
+     "Fórum Desembargador Annibal de Athayde Lima": 16,
+     "Fórum da Prainha": 4
+    },
+    "ordem": [
+     "Fórum Desembargador Annibal de Athayde Lima",
+     "Fórum da Prainha"
+    ],
+    "totais": {
+     "Fórum Desembargador Annibal de Athayde Lima": 82,
+     "Fórum da Prainha": 10
+    }
+   },
+   "Vitória": {
+    "n_unidades": {
+     "Fórum Criminal": 12,
+     "Fórum Cível": 16
+    },
+    "ordem": [
+     "Fórum Cível",
+     "Fórum Criminal"
+    ],
+    "totais": {
+     "Fórum Criminal": 85,
+     "Fórum Cível": 81
+    }
+   }
+  },
+  "hierarquia": {
+   "foruns_total": 72,
+   "locais": 70,
+   "nos_total": 838,
+   "ordem": [
+    "Sede Administrativa",
+    "Vitória",
+    "Vila Velha",
+    "Serra",
+    "Cariacica",
+    "Viana",
+    "Guarapari",
+    "Fundão",
+    "Itaguaçu",
+    "Itarana",
+    "Santa Leopoldina",
+    "Santa Maria de Jetibá",
+    "Santa Teresa",
+    "Afonso Cláudio",
+    "Conceição do Castelo",
+    "Domingos Martins",
+    "Laranja da Terra",
+    "Marechal Floriano",
+    "Venda Nova do Imigrante",
+    "Alfredo Chaves",
+    "Anchieta",
+    "Iconha",
+    "Itapemirim",
+    "Marataízes",
+    "Piúma",
+    "Presidente Kennedy",
+    "Rio Novo do Sul",
+    "Apiacá",
+    "Atílio Vivacqua",
+    "Cachoeiro de Itapemirim",
+    "Castelo",
+    "Jerônimo Monteiro",
+    "Mimoso do Sul",
+    "Muqui",
+    "Vargem Alta",
+    "Alegre",
+    "Bom Jesus do Norte",
+    "Dores do Rio Preto",
+    "Guaçuí",
+    "Ibatiba",
+    "Ibitirama",
+    "Iúna",
+    "Muniz Freire",
+    "São José do Calçado",
+    "Aracruz",
+    "Ibiraçu",
+    "João Neiva",
+    "Linhares",
+    "Rio Bananal",
+    "Alto Rio Novo",
+    "Baixo Guandu",
+    "Colatina",
+    "Marilândia",
+    "Pancas",
+    "São Domingos do Norte",
+    "São Gabriel da Palha",
+    "Boa Esperança",
+    "Conceição da Barra",
+    "Jaguaré",
+    "Pedro Canário",
+    "Pinheiros",
+    "Montanha",
+    "Mucurici",
+    "São Mateus",
+    "Água Doce do Norte",
+    "Águia Branca",
+    "Barra de São Francisco",
+    "Ecoporanga",
+    "Mantenópolis",
+    "Nova Venécia"
+   ],
+   "uteis": 11
+  },
+  "setores": {
+   "1ª Secretaria Inteligente Regional – Órfãos e Sucessões da Capital": {
+    "nomes": [
+     "Atendimento",
+     "Contatos Gerais"
+    ],
+    "total": 2
+   },
+   "1ª Secretaria Inteligente – Família": {
+    "nomes": [
+     "Atendimento",
+     "Contatos Gerais"
+    ],
+    "total": 2
+   },
+   "5ª Secretaria Unificada": {
+    "nomes": [
+     "Atendimento",
+     "Gabinete da 1ª Vara da Fazenda Pública Estadual, Municipal, Registro Públicos, Meio Ambiente e Saúde e Acidentes de Trabalho",
+     "Gabinete da 2ª Vara da Fazenda Pública Estadual, Municipal, Registro Públicos, Meio Ambiente e Saúde e Acidentes de Trabalho",
+     "Assessoria 3ª Vara da Fazenda Pública Estadual, Municipal, Registro Públicos, Meio Ambiente e Saúde e Acidentes de Trabalho",
+     "Gabinete 3ª Vara da Fazenda Pública Estadual, Municipal, Registro Públicos, Meio Ambiente e Saúde e Acidentes de Trabalho",
+     "Gabinete 4ª Vara da Fazenda Pública Estadual, Municipal, Registro Públicos, Meio Ambiente e Saúde e Acidentes de Trabalho",
+     "Gabinete 5ª Vara da Fazenda Pública Estadual, Municipal, Registro Públicos, Meio Ambiente e Saúde e Acidentes de Trabalho",
+     "Contatos Gerais"
+    ],
+    "total": 8
+   },
+   "Protocolo • Distribuição": {
+    "nomes": [
+     "Atendimento",
+     "Contatos Gerais"
+    ],
+    "total": 2
+   },
+   "Secretaria Inteligente – Cíveis": {
+    "nomes": [
+     "Atendimento",
+     "Contatos Gerais"
+    ],
+    "total": 2
+   },
+   "Vara de Recuperação Judicial e Falência": {
+    "nomes": [
+     "Atendimento",
+     "Gabinete do Juiz",
+     "Contatos Gerais"
+    ],
+    "total": 3
+   }
+  },
+  "unidades": {
+   "Fórum Criminal": {
+    "ordem": [
+     "Distribuição",
+     "Diretoria do Fórum",
+     "7ª Secretaria Unificada",
+     "8ª Secretaria Unificada",
+     "9ª Secretaria Unificada",
+     "Auditoria da Justiça Militar",
+     "1ª Vara Especializada em Violência Doméstica e Familiar contra a Mulher",
+     "VEPEMA – Serviço Social e Psicológico",
+     "Colégio Recursal (1ª, 2ª e 3ª Turma)",
+     "Central de Mandados",
+     "Contadorias",
+     "Atendimento geral"
+    ],
+    "totais": {
+     "1ª Vara Especializada em Violência Doméstica e Familiar contra a Mulher": 4,
+     "7ª Secretaria Unificada": 22,
+     "8ª Secretaria Unificada": 2,
+     "9ª Secretaria Unificada": 11,
+     "Atendimento geral": 25,
+     "Auditoria da Justiça Militar": 5,
+     "Central de Mandados": 2,
+     "Colégio Recursal (1ª, 2ª e 3ª Turma)": 4,
+     "Contadorias": 3,
+     "Diretoria do Fórum": 2,
+     "Distribuição": 3,
+     "VEPEMA – Serviço Social e Psicológico": 2
+    }
+   },
+   "Fórum Cível": {
+    "ordem": [
+     "Protocolo • Distribuição",
+     "1ª Secretaria Inteligente Regional – Órfãos e Sucessões da Capital",
+     "1ª Secretaria Inteligente – Família",
+     "Secretaria Inteligente – Cíveis",
+     "Vara de Recuperação Judicial e Falência",
+     "5ª Secretaria Unificada",
+     "6ª Secretaria Unificada",
+     "Vara de Acidente de Trabalho",
+     "2ª Secretaria Inteligente Regional (Centro avançado da Infância e da Juventude)",
+     "2ª Vara da Infância e da Juventude",
+     "10ª Secretaria Inteligente",
+     "Secretarias Inteligentes das Turmas Recursais",
+     "CEJUSC Central Vitória",
+     "Justiça Comunitária",
+     "Centro Integrado de Atendimento Socioeducativo",
+     "Atendimento geral"
+    ],
+    "totais": {
+     "10ª Secretaria Inteligente": 13,
+     "1ª Secretaria Inteligente Regional – Órfãos e Sucessões da Capital": 2,
+     "1ª Secretaria Inteligente – Família": 3,
+     "2ª Secretaria Inteligente Regional (Centro avançado da Infância e da Juventude)": 1,
+     "2ª Vara da Infância e da Juventude": 4,
+     "5ª Secretaria Unificada": 19,
+     "6ª Secretaria Unificada": 2,
+     "Atendimento geral": 9,
+     "CEJUSC Central Vitória": 10,
+     "Centro Integrado de Atendimento Socioeducativo": 2,
+     "Justiça Comunitária": 3,
+     "Protocolo • Distribuição": 1,
+     "Secretaria Inteligente – Cíveis": 3,
+     "Secretarias Inteligentes das Turmas Recursais": 4,
+     "Vara de Acidente de Trabalho": 1,
+     "Vara de Recuperação Judicial e Falência": 4
+    }
+   },
+   "Fórum Desembargador Annibal de Athayde Lima": {
+    "ordem": [
+     "Central de Distribuição dos Juizados Especiais Cíveis",
+     "Contadoria",
+     "Central de Mandados",
+     "Central de Distribuição Criminal",
+     "Central de Distribuição Cível",
+     "Central de Apoio Multidisciplinar",
+     "8º CEJUSC – Centro Judiciário de Solução de Conflitos e Cidadania",
+     "6ª Secretaria Inteligente",
+     "1ª Secretaria Inteligente",
+     "2ª Secretaria Inteligente",
+     "3ª Secretaria Inteligente",
+     "4ª Secretaria Inteligente",
+     "5ª Secretaria Inteligente",
+     "1ª Vara de Órfãos e Sucessões e 2ª Vara de Órfãos e Sucessões",
+     "1ª Vara da Infância e da Juventude",
+     "Atendimento geral"
+    ],
+    "totais": {
+     "1ª Secretaria Inteligente": 11,
+     "1ª Vara da Infância e da Juventude": 5,
+     "1ª Vara de Órfãos e Sucessões e 2ª Vara de Órfãos e Sucessões": 3,
+     "2ª Secretaria Inteligente": 10,
+     "3ª Secretaria Inteligente": 11,
+     "4ª Secretaria Inteligente": 9,
+     "5ª Secretaria Inteligente": 4,
+     "6ª Secretaria Inteligente": 6,
+     "8º CEJUSC – Centro Judiciário de Solução de Conflitos e Cidadania": 1,
+     "Atendimento geral": 8,
+     "Central de Apoio Multidisciplinar": 2,
+     "Central de Distribuição Criminal": 2,
+     "Central de Distribuição Cível": 2,
+     "Central de Distribuição dos Juizados Especiais Cíveis": 3,
+     "Central de Mandados": 2,
+     "Contadoria": 3
+    }
+   },
+   "Fórum Desembargador Antônio José Miguel Feu Rosa": {
+    "ordem": [
+     "1ª Vara da Infância e da Juventude",
+     "1ª Secretaria Inteligente",
+     "2ª Secretaria Inteligente",
+     "3ª Secretaria Inteligente",
+     "4ª Secretaria Inteligente",
+     "5ª Secretaria Inteligente",
+     "6ª Secretaria Inteligente",
+     "Vara de Órfãos e Sucessões",
+     "2ª Vara da Infância e da Juventude",
+     "CEJUSC Central",
+     "Atendimento geral"
+    ],
+    "totais": {
+     "1ª Secretaria Inteligente": 8,
+     "1ª Vara da Infância e da Juventude": 9,
+     "2ª Secretaria Inteligente": 6,
+     "2ª Vara da Infância e da Juventude": 5,
+     "3ª Secretaria Inteligente": 8,
+     "4ª Secretaria Inteligente": 8,
+     "5ª Secretaria Inteligente": 4,
+     "6ª Secretaria Inteligente": 4,
+     "Atendimento geral": 3,
+     "CEJUSC Central": 2,
+     "Vara de Órfãos e Sucessões": 2
+    }
+   },
+   "Fórum Doutor Américo Ribeiro Coelho": {
+    "ordem": [
+     "Portaria",
+     "Central de Mandados",
+     "Protocolo • Distribuição",
+     "5ª Secretaria Inteligente",
+     "Central de Abertura de Processos do Juizado Especial Cível",
+     "CEAVTES – Centro Especializado de Atendimentos das Vítimas de Crimes e Atos Infracionais",
+     "7º CEJUSC – Centro Judiciário de Solução de Conflitos e Cidadania",
+     "Vara da Fazenda Pública Estadual, de Registros Públicos e do Meio Ambiente",
+     "1ª Secretaria Inteligente",
+     "2ª Secretaria Inteligente",
+     "3ª Secretaria Inteligente",
+     "4ª Secretaria Inteligente",
+     "1ª Vara da Infância e da Juventude",
+     "Núcleo de Audiência de Custódia",
+     "3ª Vara Criminal",
+     "5ª Vara Criminal (Especializada em Violência Doméstica e Familiar Contra a Mulher)",
+     "4ª Vara de Família",
+     "2ª Vara da Infância e da Juventude",
+     "Atendimento geral"
+    ],
+    "totais": {
+     "1ª Secretaria Inteligente": 13,
+     "1ª Vara da Infância e da Juventude": 12,
+     "2ª Secretaria Inteligente": 11,
+     "2ª Vara da Infância e da Juventude": 14,
+     "3ª Secretaria Inteligente": 7,
+     "3ª Vara Criminal": 2,
+     "4ª Secretaria Inteligente": 30,
+     "4ª Vara de Família": 5,
+     "5ª Secretaria Inteligente": 9,
+     "5ª Vara Criminal (Especializada em Violência Doméstica e Familiar Contra a Mulher)": 6,
+     "7º CEJUSC – Centro Judiciário de Solução de Conflitos e Cidadania": 3,
+     "Atendimento geral": 1,
+     "CEAVTES – Centro Especializado de Atendimentos das Vítimas de Crimes e Atos Infracionais": 2,
+     "Central de Abertura de Processos do Juizado Especial Cível": 7,
+     "Central de Mandados": 2,
+     "Núcleo de Audiência de Custódia": 7,
+     "Portaria": 2,
+     "Protocolo • Distribuição": 2,
+     "Vara da Fazenda Pública Estadual, de Registros Públicos e do Meio Ambiente": 2
+    }
+   },
+   "Fórum da Prainha": {
+    "ordem": [
+     "5ª Vara Criminal",
+     "9ª Vara Criminal",
+     "2ª Vara da Infância e Juventude",
+     "Atendimento geral"
+    ],
+    "totais": {
+     "2ª Vara da Infância e Juventude": 5,
+     "5ª Vara Criminal": 2,
+     "9ª Vara Criminal": 2,
+     "Atendimento geral": 1
+    }
+   }
+  }
+ }
+}
