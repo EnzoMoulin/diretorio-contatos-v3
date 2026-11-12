@@ -33,7 +33,7 @@ inteiro nesse caso, para separar erro de dado de erro do parser).
 | :--- | --: | --: | --: | :--- |
 | Comarcas | 69 | 69 | 0 | — |
 | Fóruns | 72 | 72 | 0 | 1 com nome ampliado |
-| Nós de comarca | 659 | 655 | 0 ausentes · 7 parciais | redação / atribuição |
+| Nós de comarca | 659 | 652 | 0 ausentes · 7 parciais | redação / atribuição |
 | E-mails de comarca | 297 | 296 | 1 | artefato de extração; base correta |
 | Nós da Sede | 179 | 177 | 0 ausentes · 2 parciais | redação |
 | Ofício 432/2024 | 23 e-mails | 23 | 0 | — |
