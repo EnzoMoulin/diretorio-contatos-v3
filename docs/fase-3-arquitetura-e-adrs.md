@@ -1,5 +1,14 @@
 # Diretório de Contatos — Fase 3: Arquitetura e Registro de Decisões (ADRs)
 
+> **Documento histórico — leia antes.** Isto descreve o plano de **dois serviços** (Laravel como
+> orquestrador + motor FastAPI). Decisão de 12/11/2026: a **v3 tem um serviço só** (Laravel + Postgres)
+> e o motor FastAPI passa a ser a **v4**; este documento fica preservado como especificação da v4.
+> Conceitos que continuam valendo nas duas fases: chave lógica, `locais`, árvore única, busca por
+> trigrama, LGPD, invariantes de `db/`. O que é de dois serviços (ADR-001 a ADR-007, `db_admin`
+> separado, chaves de API, `X-Acting-User`, `/api/v1`) e o "Fase 4" da seção 2.4 (motor de relatórios,
+> `ftfy`) valem para a v4. Ver `v3-arquitetura-preparacao.md` (plano vigente) e
+> `adr-008-v3-um-servico-e-fastapi-na-v4.md` (a decisão).
+
 _10/11/2026 · base medida: `diretorio-contatos-v2` @ commit `1ee24ca` ("Sede na API e no painel, e a auditoria com o autor de cada ação"; histórico do v2 reescrito em 12/11/2026, mesma árvore) · destino: `diretorio-contatos-v3`_
 
 **Revisão 2 (10/11/2026, após aval do Enzo).** Fechados: chave lógica = id do seed
