@@ -1,6 +1,7 @@
 -- =============================================================================
---  Diretório de Contatos — v3 · banco lógico `db_diretorio`
---  DDL da Fase 3 — PostgreSQL 16 (Neon) + FastAPI (motor)
+--  Diretório de Contatos — v3 · DDL do diretório
+--  PostgreSQL 16 (Neon). Na v3 é o baseline das migrations do Laravel; a v4 reusa
+--  este mesmo DDL quando o motor FastAPI existir (ADR-008 do repo do v3).
 --  Documento de origem: docs/fase-3-arquitetura-e-adrs.md (seções 4.4, 4.5, 5.2, 5.6, 6.3)
 --  Aplicar:  psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
 --  Testar:   db/testar-schema.sh   (cria banco temporário e roda as invariantes)
@@ -9,7 +10,8 @@
 --   - não importa o seed (é ingestão do motor, com normalização e `fonte`);
 --   - não cria papéis nem GRANTs (secção 11 traz o modelo comentado);
 --   - não contém identidade, permissão, pedidos ou auditoria administrativa —
---     isso é `db_admin`, do Laravel.
+--     na v3 elas são migrations do Laravel no MESMO banco (ADR-008); separá-las
+--     em `db_admin` é desenho da v4.
 --  O que o banco garante sozinho: integridade referencial, unicidade de chave
 --  lógica, `tipo FORUM ⇔ comarca`, unicidade de nome entre irmãos, formato de
 --  contato e as colunas derivadas de busca. O que fica na aplicação (porque

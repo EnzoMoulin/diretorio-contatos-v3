@@ -1,7 +1,7 @@
 # Diretório de Contatos — v3 (Laravel + TALL)
 
 > Terceira fase do mesmo produto das versões [v1](https://github.com/EnzoMoulin/diretorio-contatos)
-> (Apps Script) e [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2) (FastAPI): consulta
+> (Apps Script) e [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2) (Python stdlib): consulta
 > pública de contatos de fóruns e unidades, com backoffice. Projeto de portfólio;
 > **todos os dados são fictícios** — ver `LICENSE`.
 
@@ -19,6 +19,15 @@ ainda não começou — quando começar, entra por este README.
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `Dockerfile`, `docker/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
+| Plano vigente da v3 e da v4: o que migra, o que não migra, critério do FastAPI | `docs/v3-arquitetura-preparacao.md`, `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` |
+| Briefing da direção A com mapa real e layout de celular (a executar) | `docs/v3-interface.md` |
+
+> **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 838 nós,
+> 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
+> `diretorio-contatos-v2` @ `a93aeb1`, não copiadas de texto. A perna
+> `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 12/11/2026: `Ran 95`,
+> 1 pulado, OK. A perna 0 e o resto das contagens estão em
+> `diretorio-contatos-v2/scripts/contagens.json`, que o CI confere contra o README.
 
 ## Stack
 
@@ -27,7 +36,8 @@ ainda não começou — quando começar, entra por este README.
   Laravel no portfólio sem construir dois backends.
 - **Postgres no Neon free**, fora do Render: o Postgres free do Render expira em 30 dias e o
   demo quebraria sozinho.
-- **FastAPI como satélite** só na v3.1, quando houver medição que justifique.
+- **FastAPI na v4**, em serviço separado e com o Laravel da v3 mantido, quando houver medição
+  que justifique — importação com `ftfy`, deduplicação e busca fonética em português.
 
 ## Rodar o que existe
 
@@ -56,8 +66,11 @@ Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_J
 
 | Documento | Conteúdo |
 | :--- | :--- |
-| `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. |
-| `docs/fase-3-arquitetura-e-adrs.md` | O documento longo: vocabulário normativo, modelo físico, ciclo de vida do dado (LGPD), protocolo de integração e os ADRs. |
+| `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026: a fase do FastAPI é a **v4**. |
+| `docs/v3-arquitetura-preparacao.md` | **Plano vigente**: o que a v3 entrega, o que o v2 deixa como especificação, escopo mínimo publicável e os candidatos da v4. |
+| `docs/v3-interface.md` | Briefing da direção A para o mockup: mapa real do ES, layout de celular, sete estados, restrições de marca. Ainda não executado. |
+| `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR da decisão de 12/11/2026: v3 com um serviço só, FastAPI na v4, banco único na v3. |
+| `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4. Tem aviso no topo; não é o plano da v3. |
 | `docs/identidade-visual.md` | Direção A, mapa protagonista. Inclui o que **não** fazer: `direcoes-visuais.html` é instrumento de decisão, não markup. |
 | `db/README.md` | O banco lógico: tabelas, invariantes, medições e as regras que ficam na aplicação. |
 

@@ -5,12 +5,19 @@ Este documento registra a decisão tomada hoje. Ele **substitui** a formulação
 07/11/2026 no `PROJETOS-FUTUROS.md`. A fila de projetos e as regras de operação continuam
 lá; aqui fica só o desenho técnico e os números que o sustentam.
 
+**Revisão de 12/11/2026:** a fase do FastAPI passou a se chamar **v4** (antes "v3.1", nome que
+aparecia aqui, no README e no `PROJETOS-FUTUROS.md`), e o plano de dois serviços do
+`fase-3-arquitetura-e-adrs.md` fica preservado como especificação da v4. A v3 é um serviço só —
+o ETL e a hierarquia que a tabela abaixo mandava portar para FastAPI são reescritos em seeders e
+models do Laravel. Decisão: `adr-008-v3-um-servico-e-fastapi-na-v4.md`; plano vigente:
+`v3-arquitetura-preparacao.md`.
+
 ## Decisão
 
-**v3.0 — Laravel 13 (PHP 8.3+) + TALL (Tailwind, Alpine, Livewire) + Filament + Postgres (Neon),
+**v3 — Laravel 13 (PHP 8.3+) + TALL (Tailwind, Alpine, Livewire) + Filament + Postgres (Neon),
 em um único serviço Docker no Render free.** HTML e JSON saem do mesmo processo.
 
-**v3.1 — serviço satélite em FastAPI**, apontado para o mesmo Postgres do Neon, com trabalho
+**v4 — serviço FastAPI separado**, apontado para o mesmo Postgres do Neon, com trabalho
 que o Laravel faria mal e com degradação graciosa: se o serviço estiver dormindo ou fora, o
 Laravel responde a consulta básica.
 
@@ -31,8 +38,8 @@ demo suspenso (nunca deletado) quando o v3 entrar. O que se escreve do zero é o
 
 Dois backends no caminho crítico do primeiro deploy é risco sem retorno: no free tier não
 existe private service, então os dois serviços são HTTPS públicos e a fronteira entre eles é
-token, não rede. Além disso o cold start dobra. O satélite entra quando tiver uma medição
-que justifique a existência dele.
+token, não rede. Além disso o cold start dobra. O satélite — hoje **v4** — entra quando tiver uma
+medição que justifique a existência dele.
 
 ## O que a troca custa, medido no v2
 
@@ -42,18 +49,19 @@ que justifique a existência dele.
 | :--- | ---: | :--- |
 | `class Handler` (roteamento HTTP) | 992 | rotas + controllers + FormRequests |
 | `SCHEMA` | 122 | migrations |
-| `_carregar_seed_legado` + `_carregar_seed_json` | 230 | **porte para FastAPI** (ETL) |
-| `build_hierarquia` | 114 | **porte para FastAPI** |
-| `_unificar_emails` | 37 | **porte para FastAPI** (deduplicação) |
+| `_carregar_seed_legado` + `_carregar_seed_json` | 230 | **seeder do Laravel** (o ETL com `ftfy` é da v4) |
+| `build_hierarquia` | 114 | **seeders + models** do Laravel |
+| `_unificar_emails` | 37 | **seeder** do Laravel (o motor de deduplicação é da v4) |
 | `init_fts` (FTS5 do SQLite) | 26 | **reescrita** — FTS5 não existe no Postgres (`tsvector`/`pg_trgm`) |
 | OAuth Google | 78 | Socialite |
 | hash de senha (PBKDF2 + upgrade) | 32 | `Hash` (argon2id) |
 | `_send_email` | 27 | `Mail` + API de e-mail |
 | aprovar/recusar pedido | 96 | controllers + policies |
 
-**Porte real para o Python: 381 linhas (19% do app.py)**; com o FTS, 407 (20%) — e esse bloco
-de 26 linhas é reescrita, não porte. O resto não é "reduzido": é substituído por equivalente
-de framework.
+**Nenhuma dessas linhas vai para Python na v3.** O bloco de ETL e hierarquia (381 linhas, 19% do
+`app.py`, 407 com o FTS) é reescrito em seeders e models do Laravel, como o resto; o FTS do SQLite
+é reescrito com `pg_trgm`/`tsvector`. O que justifica o FastAPI — `ftfy`, similaridade,
+fonética em português, relatórios — é escopo da **v4** e será medido lá.
 
 O front é o custo maior: **4.780 linhas** (public.js 1.461, admin.js 2.073, mapa.js 110,
 HTML 594, CSS 542). Esse custo **não é criado pela troca de stack** — o v3 já tinha, desde
