@@ -166,6 +166,23 @@ que alguém nota. O v2 já tem acessibilidade no workflow — manter a régua.
 **Por que:** a v4 é serviço HTTP por definição; contrato publicado é o que a torna integrável e não
 só um script.
 
+### 14 — Reconciliação contra o catálogo oficial — FEITA (12/11/2026)
+
+**O que:** confrontar a base com os três documentos de origem (catálogo por comarcas de
+junho/2026, catálogo da Sede de agosto/2026 e Ofício 432/2024) e provar a aderência por
+contagem e por nome.
+
+**Estado:** feito e registrado em `docs/reconciliacao-2026-11-12.md`, com o script
+`scripts/reconciliar-catalogo.py`. Resultado: 69 comarcas e 72 fóruns sem falta nem sobra;
+659 nós de comarca e 179 da Sede conferidos; 295 de 297 e-mails confirmados por documento;
+uma única divergência de conteúdo (e-mail provisório no PID de São José do Calçado, onde o
+catálogo tem o endereço real).
+
+**Por que valeu:** a conferência de 12/11 mostrou que a base **não** está desatualizada na
+estrutura — o que estava em dúvida era o inverso. Também separou o que é diferença de redação
+(5 casos) do que é dado inventado (1 caso), que é a distinção que faltava para decidir se
+alguma coisa precisava ser corrigida antes do deploy.
+
 ## Não fazer (registrado com motivo)
 
 | Ideia descartada | Por quê |

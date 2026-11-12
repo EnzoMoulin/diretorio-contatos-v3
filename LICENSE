@@ -14,5 +14,9 @@ não violação. Em nenhum caso o autor será responsável por qualquer reclama�
 dano ou outra responsabilidade decorrente do uso ou da impossibilidade de uso
 deste código.
 
-Os dados exibidos na demonstração são fictícios e não representam pessoas,
-órgãos ou localidades reais.
+Os dados de contato exibidos na demonstração (telefones, ramais e e-mails) são
+mascarados: os dígitos finais dos telefones estão em XXXX e os e-mails usam o
+domínio @exemplo.jus.br, de modo que nenhum endereço da demonstração aciona um
+órgão real. Nomes de comarcas, fóruns e unidades são informação pública do Poder
+Judiciário e aparecem como tal; a demonstração não exibe nome de pessoa — os
+gabinetes e comissários entram como "Gabinete de Desembargador 01" e "Comissário 01".
