@@ -134,5 +134,10 @@ python3 scripts/comparar-contrato.py docs/paridade/esperado.json docs/paridade/e
 
 - Rotas de escrita, autenticação, auditoria e administração. A paridade ali é de
   comportamento e já está especificada no `fase-3-arquitetura-e-adrs.md`.
-- A divergência de 286 registros entre v1 e v2, que segue aberta e é outra conferência (v1
-  contra v2, não v2 contra v3).
+- A diferença de 286 registros entre v1 e v2: **caso fechado em 12/11/2026**, e não por
+  comparação com o v1. Os 286 são o bloco da estrutura central (Sede), que o v2 passou a
+  incluir em `/api/contatos` por decisão registrada (opção C, `939311e`); o catálogo de
+  ramais da Sede de 28/08/2026 tem exatamente **286 contatos em 179 nós**, e a
+  reconciliação de 12/11/2026 confirmou 177 deles por documento (1 ausente, 1 parcial, por
+  diferença de rótulo). Ou seja: 1.521 das comarcas + 286 da Sede = 1.807, conforme a fonte
+  oficial, não conforme o v1. Ver `docs/reconciliacao-2026-11-12.md`.
