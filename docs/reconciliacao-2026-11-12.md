@@ -35,7 +35,7 @@ inteiro nesse caso, para separar erro de dado de erro do parser).
 | Fóruns | 72 | 72 | 0 | 1 com nome ampliado |
 | Nós de comarca | 659 | 652 | 0 ausentes · 7 parciais | redação / atribuição |
 | E-mails de comarca | 297 | 296 | 1 | artefato de extração; base correta |
-| Nós da Sede | 179 | 177 | 0 ausentes · 2 parciais | redação |
+| Nós da Sede | 179 | 177 | 1 ausente · 1 parcial | redação |
 | ofício de março/2024 | 23 e-mails | 23 | 0 | — |
 
 Estrutura da base: **69 comarcas + Sede · 72 fóruns · 838 nós · 1.807 contatos**
@@ -90,6 +90,14 @@ Comparação direta CSV ↔ `seed_mascarado.json` (o que o app carrega):
 - **297 e-mails com domínio trocado** para `@exemplo.jus.br` e **1.019 telefones + 444
   ramais com dígitos finais em `XXXX`**: mascaramento aplicado já no export dos CSVs, então
   CSV e seed coincidem.
+  A **parte local do e-mail é preservada de propósito** (ex.: `1criminal-vitoria@exemplo.jus.br`):
+  ela é derivada de número de vara + unidade + comarca, informação pública do próprio
+  catálogo, e mantê-la é o que deixa a busca por e-mail e a identificação por comarca
+  funcionarem no demo. Conferi as **279 partes locais distintas**: nenhuma é nome de pessoa
+  (`nome.sobrenome`); todas carregam palavra de unidade (`vara`, `civel`, `criminal`, `jec`,
+  `contadoria`, `secretaria`, `gabinete`, `atendimento`, `pid`…). O que o mascaramento tira é
+  o último passo — trocar o domínio de volta entregaria um endereço que talvez exista —, e
+  isso é o mesmo critério dos telefones, que mantêm DDD e prefixo e escondem só o final.
 
 ## O que este laudo não prova
 
@@ -105,6 +113,23 @@ Comparação direta CSV ↔ `seed_mascarado.json` (o que o app carrega):
 - **Completude da fonte.** Se o catálogo de junho não listar uma unidade que existe, esta
   conferência não tem como saber — ela prova aderência à fonte, não verdade de campo.
 
+## O caso dos 286 — fechado por esta conferência
+
+A diferença de 286 registros entre o v1 e o v2 do diretório estava registrada como caso
+aberto: não se sabia se era porte fiel do v1 ou defeito introduzido no v2. Esta conferência
+fecha o caso **pela fonte oficial, sem comparar os dois bancos**:
+
+- o catálogo de ramais da Sede de **28/08/2026** tem **286 contatos em 179 nós** — e a base
+  tem exatamente 286 contatos nesse bloco (177 confirmados por documento, 1 ausente e 1
+  parcial por diferença de rótulo, ambos já explicados acima);
+- 1.521 (69 comarcas) + 286 (Sede) = **1.807**, que é o total declarado;
+- a inclusão da estrutura central em `/api/contatos` é decisão registrada (opção C,
+  `939311e`), travada por `TestContagens` (lista plana = árvore = banco).
+
+Conclusão: os 286 não são regressão do v2, são o bloco que o v1 não trazia na lista plana —
+e o número que a fonte datada confirma é o do v2. O caso deixa de estar aberto; não é
+necessário investigar o `src/frontend` do v1 para decidir nada.
+
 ## Conclusão
 
 A base está **aderente aos três catálogos**: nenhuma comarca, nenhum fórum e nenhum nó
@@ -113,6 +138,24 @@ Ofício batem com suas fontes. A única divergência de conteúdo que existia �
 provisório de São José do Calçado — foi corrigida. As cinco diferenças de redação ficam como
 estão, porque a base desambiguou o que o PDF repete. Não há segunda rodada a fazer enquanto a
 fonte não mudar.
+
+## O que fica congelado a partir daqui
+
+Esta é a base final de demonstração da v3 e da v4. Duas travas baratas garantem que ela
+não se perde nem se contamina:
+
+1. **Manifesto com hash** — `../dados/catalogo-2026/base-verificada.json`, gerado junto
+   com o laudo (`--manifesto`). Guarda a data, as contagens, o SHA-256 dos cinco CSVs e o
+   dos três PDFs. O `estado.sh` do workspace lê esse arquivo, recomputa os hashes em cada
+   execução e responde "base intacta" ou acusa qual arquivo mudou desde a conferência.
+2. **Varredura do seed** — `scripts/varrer_privacidade.py --seed
+   ../diretorio-contatos-v2/seed_mascarado.json`. O seed vive no repositório da v2 e não é
+   versionado neste repo, então a varredura daqui nunca o lia: aquele era o ponto cego.
+   O modo `--seed` falha se encontrar telefone/e-mail fora do padrão sintético ou **nome
+   de pessoa** em nó, rótulo de contato ou telefone útil. `--autoteste` roda 33 casos e
+   prova que o detector não é um carimbo: pega nome de pessoa e ignora "Manutenção
+   Predial", "Cíveis Reunidas", "Comissários da Infância e Juventude" e "Gabinete de
+   Desembargador 01".
 
 ## Como repetir
 
@@ -123,7 +166,8 @@ python3 scripts/reconciliar-catalogo.py \
   --comarcas ../dados/catalogo-2026/ramais-comarcas-junho-2026.pdf \
   --sede ../dados/catalogo-2026/ramais-sede-agosto-2026.pdf \
   --oficio ../dados/catalogo-2026/oficio-432-2024.pdf \
-  --saida ../dados/catalogo-2026/reconciliacao.json
+  --saida ../dados/catalogo-2026/reconciliacao.json \
+  --manifesto ../dados/catalogo-2026/base-verificada.json
 ```
 
 Requer `poppler-utils`. O JSON de saída é o laudo em forma de dado; ele contém nomes de
