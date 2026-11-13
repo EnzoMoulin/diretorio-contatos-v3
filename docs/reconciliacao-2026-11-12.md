@@ -114,6 +114,24 @@ provisório de São José do Calçado — foi corrigida. As cinco diferenças de
 estão, porque a base desambiguou o que o PDF repete. Não há segunda rodada a fazer enquanto a
 fonte não mudar.
 
+## O que fica congelado a partir daqui
+
+Esta é a base final de demonstração da v3 e da v4. Duas travas baratas garantem que ela
+não se perde nem se contamina:
+
+1. **Manifesto com hash** — `../dados/catalogo-2026/base-verificada.json`, gerado junto
+   com o laudo (`--manifesto`). Guarda a data, as contagens, o SHA-256 dos cinco CSVs e o
+   dos três PDFs. O `estado.sh` do workspace lê esse arquivo, recomputa os hashes em cada
+   execução e responde "base intacta" ou acusa qual arquivo mudou desde a conferência.
+2. **Varredura do seed** — `scripts/varrer_privacidade.py --seed
+   ../diretorio-contatos-v2/seed_mascarado.json`. O seed vive no repositório da v2 e não é
+   versionado neste repo, então a varredura daqui nunca o lia: aquele era o ponto cego.
+   O modo `--seed` falha se encontrar telefone/e-mail fora do padrão sintético ou **nome
+   de pessoa** em nó, rótulo de contato ou telefone útil. `--autoteste` roda 33 casos e
+   prova que o detector não é um carimbo: pega nome de pessoa e ignora "Manutenção
+   Predial", "Cíveis Reunidas", "Comissários da Infância e Juventude" e "Gabinete de
+   Desembargador 01".
+
 ## Como repetir
 
 ```bash
@@ -123,7 +141,8 @@ python3 scripts/reconciliar-catalogo.py \
   --comarcas ../dados/catalogo-2026/ramais-comarcas-junho-2026.pdf \
   --sede ../dados/catalogo-2026/ramais-sede-agosto-2026.pdf \
   --oficio ../dados/catalogo-2026/oficio-432-2024.pdf \
-  --saida ../dados/catalogo-2026/reconciliacao.json
+  --saida ../dados/catalogo-2026/reconciliacao.json \
+  --manifesto ../dados/catalogo-2026/base-verificada.json
 ```
 
 Requer `poppler-utils`. O JSON de saída é o laudo em forma de dado; ele contém nomes de

@@ -91,10 +91,29 @@ Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_J
 | `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR da decisão de 12/11/2026: v3 e v4 num repositório, dois deployáveis, `db/` compartilhado. |
 | `docs/backlog-ideias.md` | Ideias de produto com fase, gatilho e veredito — inclusive as descartadas, com motivo. |
 | `docs/paridade-contrato-v2.md` | Contrato de leitura congelado: o que a v3 tem de devolver igual ao v2, e onde a diferença é decisão. |
-| `docs/reconciliacao-2026-11-12.md` | Laudo de aderência da base aos três catálogos oficiais, com as divergências e o que o método não prova. |
+| `docs/reconciliacao-2026-11-12.md` | Laudo de aderência da base aos três catálogos oficiais, com as divergências e o que o método não prova. É a **base final de demonstração** da v3 e da v4. |
 | `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4. Tem aviso no topo; não é o plano da v3. |
 | `docs/identidade-visual.md` | Direção A, mapa protagonista. Inclui o que **não** fazer: `direcoes-visuais.html` é instrumento de decisão, não markup. |
 | `db/README.md` | O banco lógico: tabelas, invariantes, medições e as regras que ficam na aplicação. |
+
+## Base de demonstração (congelada)
+
+A base da v3 e da v4 é a que foi conferida em 12/11/2026 contra os três catálogos
+oficiais: **69 comarcas + Sede · 72 fóruns · 838 nós · 1.807 contatos · 11 telefones
+úteis**, com 296 dos 297 e-mails confirmados por documento. Não há segunda conferência
+a fazer enquanto a fonte não mudar.
+
+Duas garantias baratas acompanham isso:
+
+- `../dados/catalogo-2026/base-verificada.json` — manifesto com as contagens e o SHA-256
+  de cada CSV. Regerado por `scripts/reconciliar-catalogo.py --manifesto …`; o
+  `estado.sh` do workspace recomputa os hashes e avisa se a base mudou depois da
+  conferência.
+- `scripts/varrer_privacidade.py --seed ../diretorio-contatos-v2/seed_mascarado.json`
+  — fecha o ponto cego do seed (ele mora no repo da v2 e não é versionado aqui): falha se
+  aparecer telefone/e-mail não mascarado ou **nome de pessoa** nos nós, contatos e
+  telefones úteis. `--autoteste` prova o detector com 33 casos (nomes reais × rótulos de
+  unidade).
 
 ## Relação com as versões anteriores
 

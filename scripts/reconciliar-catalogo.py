@@ -267,6 +267,46 @@ def reconcilia(pasta, pdf_comarcas, pdf_sede, pdf_oficio):
     return rel
 
 
+def escreve_manifesto(rel, caminho, pasta_base, pdfs):
+    """Congela a base conferida: contagens, divergências e hash de cada arquivo.
+
+    É o que permite responder "a base continua a mesma que foi conferida?" sem
+    rodar a extração de PDF de novo — o `estado.sh` recomputa os hashes.
+    """
+    import datetime
+    import hashlib
+
+    def sha256(caminho_arquivo):
+        with open(caminho_arquivo, "rb") as fh:
+            return hashlib.sha256(fh.read()).hexdigest()
+
+    manifesto = {
+        "conferido_em": datetime.date.today().isoformat(),
+        "fontes": {chave: {"arquivo": Path(arquivo).name, "sha256": sha256(arquivo)}
+                   for chave, arquivo in pdfs.items()},
+        "base_arquivos": {f"{nome}.csv": sha256(Path(pasta_base) / f"{nome}.csv")
+                          for nome in ("COMARCAS", "FORUM", "UNIDADES_ORGANIZACIONAIS",
+                                       "CONTATOS", "TELEFONES_UTEIS")},
+        "totais": rel["base"],
+        "conferencia": {
+            "comarcas_no_catalogo": rel["comarcas"]["no_catalogo"],
+            "comarcas_faltando": len(rel["comarcas"]["faltam_na_base"]),
+            "comarcas_sobrando": len(rel["comarcas"]["sobram_na_base"]),
+            "foruns_ausentes": len(rel["foruns"]["ausentes"]),
+            "nos_ausentes": len(rel["nos"]["ausentes"]),
+            "emails_total": rel["emails"]["na_base"],
+            "emails_confirmados": rel["emails"]["localizados"],
+            "sede_nos": rel["sede"]["nos"],
+            "sede_contatos": rel["sede"]["contatos"],
+            "oficio_contatos": rel["oficio"]["contatos_com_obs"],
+        },
+        "papel": "base final de demonstração do diretório de contatos (v3 e v4 leem daqui)",
+    }
+    with open(caminho, "w", encoding="utf-8") as fh:
+        json.dump(manifesto, fh, ensure_ascii=False, indent=1)
+    print(f"manifesto: {caminho}")
+
+
 def resumo(rel):
     b = rel["base"]
     print(f"BASE: {b['comarcas']} comarcas · {b['foruns']} fóruns · {b['nos']} nós · "
@@ -307,11 +347,16 @@ def main():
     ap.add_argument("--sede", required=True, help="PDF do catálogo de ramais da Sede")
     ap.add_argument("--oficio", required=True, help="PDF do Ofício 432/2024")
     ap.add_argument("--saida", default="reconciliacao.json")
+    ap.add_argument("--manifesto", help="congela a base conferida (contagens + hashes)")
     args = ap.parse_args()
 
     rel = reconcilia(args.base, args.comarcas, args.sede, args.oficio)
     with open(args.saida, "w", encoding="utf-8") as fh:
         json.dump(rel, fh, ensure_ascii=False, indent=1)
+    if args.manifesto:
+        escreve_manifesto(rel, args.manifesto, args.base,
+                          {"comarcas": args.comarcas, "sede": args.sede,
+                           "oficio": args.oficio})
     resumo(rel)
     print(f"\nrelatório: {args.saida}")
     return 0
