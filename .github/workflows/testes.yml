@@ -9,11 +9,18 @@ name: Testes
 # 2. ddl — aplica `db/schema.sql` num Postgres 16 de verdade, aplica de novo
 #    (idempotência) e roda as invariantes estruturais de `db/verificar-schema.sql`.
 #
-# O seed fica de fora de propósito: `SEED_JSON` mora no repositório do v2, e
-# CI que depende de download de outro repositório falha por motivo que não é o
-# código deste. As invariantes de carga (20) e de plano (5) continuam rodando
-# à mão, com o seed ao lado:
+# O seed fica de fora do CI de push de propósito: `SEED_JSON` mora no
+# repositório do v2, e CI que depende de download de outro repositório falha
+# por motivo que não é o código deste. As invariantes de carga (20) e de plano
+# (5) continuam rodando à mão, com o seed ao lado:
 #     SEED_JSON=../diretorio-contatos-v2/seed_mascarado.json ./db/testar-schema.sh
+#
+# A varredura do seed (`--seed`) é a única exceção e roda **só a pedido**
+# (Actions → Run workflow), no job `seed`: ele clona o v2, que é público, e
+# falha se o seed tiver telefone/e-mail fora do padrão sintético ou nome de
+# pessoa. Não entra no push para não transformar indisponibilidade de outro
+# repositório em vermelho deste. O `--autoteste` roda sempre: prova que o
+# detector de nome não virou carimbo depois de alguém mexer na lista.
 
 on:
   push:
@@ -35,6 +42,23 @@ jobs:
           python-version: '3.12'
       - name: Varrer telefone e e-mail
         run: python3 scripts/varrer_privacidade.py
+      - name: Autoteste do detector de nome de pessoa
+        run: python3 scripts/varrer_privacidade.py --autoteste
+
+  seed:
+    name: Varredura do seed (a pedido)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Clonar o v2 (público) para ter o seed
+        run: git clone --depth 1 https://github.com/EnzoMoulin/diretorio-contatos-v2 _v2
+      - name: Varrer o seed (telefone, e-mail e nome de pessoa)
+        run: python3 scripts/varrer_privacidade.py --seed _v2/seed_mascarado.json
 
   ddl:
     name: DDL e invariantes (Postgres 16)

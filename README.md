@@ -106,9 +106,9 @@ a fazer enquanto a fonte não mudar.
 Duas garantias baratas acompanham isso:
 
 - `../dados/catalogo-2026/base-verificada.json` — manifesto com as contagens e o SHA-256
-  de cada CSV. Regerado por `scripts/reconciliar-catalogo.py --manifesto …`; o
-  `estado.sh` do workspace recomputa os hashes e avisa se a base mudou depois da
-  conferência.
+  de cada CSV **e do `seed_mascarado.json` da v2** (o arquivo que o app serve de fato).
+  Regerado por `scripts/reconciliar-catalogo.py --manifesto … --seed …`; o `estado.sh` do
+  workspace recomputa os hashes e avisa se a base ou o seed mudaram depois da conferência.
 - `scripts/varrer_privacidade.py --seed ../diretorio-contatos-v2/seed_mascarado.json`
   — fecha o ponto cego do seed (ele mora no repo da v2 e não é versionado aqui): falha se
   aparecer telefone/e-mail não mascarado ou **nome de pessoa** nos nós, contatos e
