@@ -15,9 +15,17 @@ que faz o CI ficar vermelho antes de o repositorio ser publicado.
 
 Padrao sintetico aceito: mascara com `X`; os blocos de exemplo `3333-00NN`,
 WhatsApp `99999-000N`, placeholder `0000-0000`; os dominios `exemplo.jus.br`
-e `empresa-exemplo.com.br`; e o que cada repo declarar em
-`.privacidade-sinteticos` na raiz (uma linha por valor literal, ou `re:<regex>`,
-`#` comenta) — use so para fixture de teste, nunca para calar dado real.
+e `empresa-exemplo.com.br`.
+
+`.privacidade-sinteticos` na raiz do repo e a allowlist de fixture: uma linha por
+valor literal, ou `re:<regex>`, `#` comenta. Ela existe porque fixture de teste
+precisa de telefone com formato variado — as quatro grafias que
+`db/verificar-schema.sql` usa para testar o normalizador terminam em `000N`, mas
+o formato varia de proposito — e o padrao sintetico so cobre os blocos fixos.
+Regra: so fixture de teste, nunca para calar dado real. E ela nao e silenciosa:
+o script imprime quantos valores declarados abafaram achado, quais, e qual
+declaracao nunca casou com nada (candidata a sair) — linha nova aparece no log
+do CI em vez de sumir dentro de um arquivo de configuracao.
 
 Marca institucional, referencia a documento interno e honorifico saem como
 aviso, nao como falha: sao decisao de identidade do dono, nao vazamento.
@@ -186,11 +194,22 @@ def listar_alvos(caminho):
 
 def varrer(caminho, raiz_repo):
     exatos, regexes = carregar_allowlist(raiz_repo)
+    # A allowlist de fixture nao pode calar dado real em silencio: o que ela
+    # abafa entra no relatorio. `usados` guarda o que casou nesta varredura e o
+    # que nunca casou sai como candidato a sair.
+    usados = set()
 
     def sintetico(valor):
-        if "X" in valor or SINTETICO_TEL.fullmatch(valor) or valor in exatos:
+        if "X" in valor or SINTETICO_TEL.fullmatch(valor):
             return True
-        return any(r.fullmatch(valor) for r in regexes)
+        if valor in exatos:
+            usados.add(valor)
+            return True
+        for r in regexes:
+            if r.fullmatch(valor):
+                usados.add("re:" + r.pattern)
+                return True
+        return False
 
     achados = {"telefone": [], "email": [], "marca": [], "doc": [], "nome": []}
     raiz = caminho if os.path.isdir(caminho) else os.path.dirname(caminho)
@@ -226,6 +245,22 @@ def varrer(caminho, raiz_repo):
             print("  " + item)
         if len(itens) > 60:
             print(f"  ... +{len(itens) - 60}")
+
+    # Relatorio da allowlist: o que ela abafou nesta varredura e o que nunca
+    # casou. Varredura de um arquivo so nao julga declaracao morta — sem o repo
+    # inteiro, "nunca usado" e falso positivo.
+    completo = (os.path.isdir(caminho)
+                and os.path.abspath(caminho) == os.path.abspath(raiz_repo))
+    declarados = sorted(exatos) + ["re:" + r.pattern for r in regexes]
+    if usados or (completo and declarados):
+        print(f"\n## allowlist ({ARQUIVO_ALLOWLIST}): {len(usados)} de "
+              f"{len(declarados)} valores declarados abafaram achado")
+        for valor in sorted(usados):
+            print("  usado: " + valor)
+        if completo:
+            for valor in declarados:
+                if valor not in usados:
+                    print("  NUNCA usado no repo (candidato a sair): " + valor)
     return achados
 
 

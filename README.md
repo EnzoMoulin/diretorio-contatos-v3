@@ -114,10 +114,19 @@ Duas garantias baratas acompanham isso:
   aparecer telefone/e-mail não mascarado ou **nome de pessoa** nos nós, contatos e
   telefones úteis. `--autoteste` prova o detector com 33 casos (nomes reais × rótulos de
   unidade).
+- `.privacidade-sinteticos` — allowlist de fixture da varredura: uma linha por valor
+  literal ou `re:<regex>`. Existe para as quatro grafias de telefone que
+  `db/verificar-schema.sql` usa ao testar o normalizador (todas terminam em `000N`, mas o
+  formato varia de propósito) e vale **só** para fixture de teste, nunca para calar dado
+  real. Por isso ela não age em silêncio: a varredura imprime quantos valores declarados
+  abafaram achado, quais, e qual declaração nunca casou com nada — linha nova aparece no
+  log do CI, e declaração morta aparece como candidata a sair.
 
 ## Relação com as versões anteriores
 
-O v2 não é tocado: continua público e congelado como evidência do arco v1→v2. O que se escreve
+O v2 não é tocado: continua público e congelado como evidência do arco v1→v2. O único
+acréscimo permitido é teste de privacidade, que não muda a aplicação (o detector de nome de
+pessoa mora lá também, ver `tests/test_sem_telefone_real.py`). O que se escreve
 do zero é esta versão — e um dos critérios é não herdar código: a similaridade com o v1 fica
 em ≤10%. A comparação lado a lado dos três está no README do v1 e do v2.
 
