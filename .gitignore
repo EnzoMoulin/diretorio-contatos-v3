@@ -26,3 +26,6 @@ composer.phar
 .vscode/
 .DS_Store
 *.swp
+
+# Material de referência privado: PDFs e imagens com marca institucional
+/IDEIAS PARA O V3/
