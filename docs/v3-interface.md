@@ -62,7 +62,7 @@ Arquivos soltos, fora do repositório do v2 (público; não colocar nada da v3 l
 ## Visual
 - Paleta da direção A: #0B1220, #111C2E, #2DD4BF, #5EEAD4, #EAFBFF.
 - O mockup original cita "Grotesk" sem carregar fonte nenhuma. Escolher uma grotesca de licença aberta (ex.: Space Grotesk, Schibsted Grotesk; conferir a licença) hospedada localmente (Fontsource), sem Google Fonts. `mono` para números.
-- Contraste: o rótulo "COMARCAS" do original (10 px, #5d7a8f) mede 3,78:1 sobre #111C2E e 4,14:1 sobre #0B1220 (cálculo WCAG feito em 12/11; o fundo exato do painel no mockup precisa ser medido). Abaixo de 4,5:1 nos dois, que é o mínimo para texto pequeno. Clarear. Medir todos os pares texto/fundo e reportar.
+- Contraste: o rótulo "COMARCAS" do original (10 px, #5d7a8f) mede 3,78:1 sobre #111C2E e 4,14:1 sobre #0B1220 (cálculo WCAG feito em 12/11; o fundo exato do painel no mockup precisa ser medido). Abaixo de 4,5:1 nos dois, que é o mínimo para texto pequeno. Clarear. Medir todos os pares texto/fundo e reportar. **Recalculado em 14/11/2026: `#8CA3B6` mede 7,16:1 sobre `#0B1220` e 6,53:1 sobre `#111C2E` e é o candidato para este token** (o mais discreto que ainda passa seria `#748692`, 4,96 / 4,53, sem margem). Accent `#2DD4BF` (10,06 / 9,18) e texto `#EAFBFF` (17,60 / 16,06) não mudam.
 
 ## Critérios de aceite
 1. As 69 comarcas têm polígono e a Sede tem entrada própria, ou a divergência está listada (com a contagem esperada de 78 polígonos e 9 sem comarca, ou a diferença explicada).
