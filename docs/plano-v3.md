@@ -105,7 +105,8 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
   **não existem no `seed_mascarado.json`** (o v2 as extrai da observação livre e grava no SQLite). O
   seed do v3 é exportado do banco do v2 (somente leitura) **trazendo os valores** — no wireframe deu
   329 contatos com documento: 43 do ofício 432/2024 e 286 do catálogo da Sede. O selo `fonte · desde`
-  aparece na tela do contato e alimenta a fila "Reconferir", do documento mais antigo para o mais novo.
+  aparece na tela do contato — a parte que interessa ao visitante. A fila "Reconferir" (do documento mais
+  antigo para o mais novo) é **tela de gestão interna**, não da consulta pública.
   Contato sem documento não ganha selo: a ausência de data nunca vira "atual".
 - **631 contatos não têm `uo`**: o modelo e a tela aceitam contato pendurado direto no local.
 - **`desc` não é rótulo de canal.** Medido: 843 vazios, "Geral" 93, "Institucional" 87, "Secretaria de
@@ -271,7 +272,8 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Seção de setor | cabeçalho clicável (nome, tipo e contagem) que recolhe e reabre as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
 | Voltar do contato | a tela de contato é a última: chip "voltar" no topo, com o destino no `title` e no `aria-label`. O destino segue **quem é o dono do contato**: unidade (`/local/{unidade}#{setor}`, quando é setor), fórum (`/local/{fórum}`) ou comarca (`/comarca/{chave}`; a Sede vira "estrutura central"). Link, não `history.back()`: precisa funcionar em link direto, favorito e histórico vazio. No celular, 44 px |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
-| Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos · Reconferir**; Ajustes no rodapé. Sede é `MUN0000`, não é comarca e por isso tem item próprio |
+| Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos**. Sede é `MUN0000`, não é comarca e por isso tem item próprio. **Reconferir e Ajustes não entram na consulta pública**: são gestão interna, atrás do botão `Gestão` (no v3, o painel Filament) |
+| Gestão | botão no topo direito abre a gestão interna. No protótipo só a fila **Reconferir** existe; `Ajustes` aparece desabilitado, com o destino escrito ("no painel do v3") |
 | Zoom do mapa | 16 px à direita da sidebar no desktop — o mapa é full-bleed por baixo dela e o controle do Leaflet nasce em `left:0`, atrás do rail. No celular fica no canto superior direito |
 | Telefones Úteis | cada número é `tel:`; o botão de copiar continua ao lado. A lista não entra no mapa nem no índice de favoritos |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
