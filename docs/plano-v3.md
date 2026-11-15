@@ -268,11 +268,15 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Linha de canal | ícone · tipo · valor em mono · botão copiar. No desktop em colunas alinhadas; no celular quebra em pílulas com `flex-wrap`. Nunca truncar valor. |
 | Migalha | chip removível (Comarca › Local); remover volta um nível sem recarregar a tela. Setor não é nível |
 | Selo de procedência | `fonte · desde mês/ano`, só quando declarado; ausência de data não vira "atual" |
-| Seção de setor | cabeçalho com nome, tipo e contagem + as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
+| Seção de setor | cabeçalho clicável (nome, tipo e contagem) que recolhe e reabre as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
 | Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
 | Estado vazio | diz o que falta e por quê, com o código IBGE à vista quando for o caso |
+
+**Ordem das listas.** Comarca aparece na ordem original do catálogo (a ordem em que foi levantado,
+Sede primeiro), não por contagem de contatos nem em ordem alfabética: a posição estável é o que deixa
+o corredor achar "Vitória" onde ele sempre esteve. Contagem ordena disco no mapa, não lista.
 
 ### 5.6 Mapa
 
@@ -333,13 +337,17 @@ tela com uma linha.
    setores na ordem `ordem`, cada um como **seção com âncora** (`#UNI0027`).
 2. Setor sem contato continua visível, com "sem canal cadastrado": ausência é informação e mostra onde
    falta levantar dado.
-3. Unidade com mais de 8 seções abre com o primeiro grupo aberto e **um** controle "expandir todas" —
+3. Unidade com mais de 8 seções abre com os **três primeiros** grupos e **um** controle "ver todos" —
    nunca um clique por setor. O caso extremo é "Desembargadores", com 30 gabinetes (23 unidades passam
    de 6 seções).
 4. Busca, favorito e link direto apontam para `/local/{unidade}#{setor}`; a seção chega destacada e a
    página rola até ela. O payload da busca leva o `pai` do nó (já no protótipo, para o subtítulo).
 5. A rota `/local/{setor}` não serve tela: responde **302** para `/local/{unidade}#{setor}`, então link antigo, favorito e resultado de busca antigo continuam caindo no lugar certo. Na migalha, o setor é texto, não nível.
-6. Endereço e "copiar" são do local: só 18 dos 838 nós têm endereço próprio.
+6. **Todo cabeçalho de setor recolhe e reabre o próprio conteúdo** (15/11). O padrão é aberto: quem só
+   quer ler não clica; o clique serve para compactar uma unidade grande, não como porta de entrada.
+   O cabeçalho é alvo de toque inteiro (44 px, medido no celular), com `aria-expanded` e seta que gira.
+   Recolher não esconde o setor nem a contagem — esconde só as linhas de contato.
+7. Endereço e "copiar" são do local: só 18 dos 838 nós têm endereço próprio.
 
 ---
 
