@@ -269,7 +269,7 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Migalha | chip removível (Comarca › Local); remover volta um nível sem recarregar a tela. Setor não é nível |
 | Selo de procedência | `fonte · desde mês/ano`, só quando declarado; ausência de data não vira "atual" |
 | Seção de setor | cabeçalho clicável (nome, tipo e contagem) que recolhe e reabre as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
-| Voltar do contato | a tela de contato é a última: chip "voltar para a unidade" no topo, apontando para `/local/{unidade}#{setor}`. Link, não `history.back()`: precisa funcionar em link direto, favorito e histórico vazio. No celular, 44 px |
+| Voltar do contato | a tela de contato é a última: chip "voltar" no topo, com o destino no `title` e no `aria-label`. O destino segue **quem é o dono do contato**: unidade (`/local/{unidade}#{setor}`, quando é setor), fórum (`/local/{fórum}`) ou comarca (`/comarca/{chave}`; a Sede vira "estrutura central"). Link, não `history.back()`: precisa funcionar em link direto, favorito e histórico vazio. No celular, 44 px |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
 | Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
