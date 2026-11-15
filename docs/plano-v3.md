@@ -271,6 +271,9 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Seção de setor | cabeçalho clicável (nome, tipo e contagem) que recolhe e reabre as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
 | Voltar do contato | a tela de contato é a última: chip "voltar" no topo, com o destino no `title` e no `aria-label`. O destino segue **quem é o dono do contato**: unidade (`/local/{unidade}#{setor}`, quando é setor), fórum (`/local/{fórum}`) ou comarca (`/comarca/{chave}`; a Sede vira "estrutura central"). Link, não `history.back()`: precisa funcionar em link direto, favorito e histórico vazio. No celular, 44 px |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
+| Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos · Reconferir**; Ajustes no rodapé. Sede é `MUN0000`, não é comarca e por isso tem item próprio |
+| Zoom do mapa | 16 px à direita da sidebar no desktop — o mapa é full-bleed por baixo dela e o controle do Leaflet nasce em `left:0`, atrás do rail. No celular fica no canto superior direito |
+| Telefones Úteis | cada número é `tel:`; o botão de copiar continua ao lado. A lista não entra no mapa nem no índice de favoritos |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
 | Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
 | Estado vazio | diz o que falta e por quê, com o código IBGE à vista quando for o caso |
