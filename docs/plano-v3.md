@@ -285,8 +285,9 @@ desktop.
 | Compartilhar | botão em toda ficha de contato: usa `navigator.share` onde existe e, sem ele, copia o link canônico do contato com aviso "Link do contato copiado". O que se compartilha é a **URL do contato**, não o texto da tela: quem recebe cai na ficha certa |
 | Endereço | o endereço do local (18 dos 838 nós) é link para o Google Maps: `https://www.google.com/maps/search/?api=1&query=` + endereço e CEP urlencoded, em nova aba, com sublinhado sólido discreto e ícone de saída. Vale na ficha do contato e no cartão da unidade |
 | Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos**. Sede é `MUN0000`, não é comarca e por isso tem item próprio. **Reconferir e Ajustes não entram na consulta pública**: são gestão interna, atrás do botão `Gestão` (no v3, o painel Filament) |
-| Gestão | botão no topo direito abre a gestão interna. No protótipo só a fila **Reconferir** existe; `Ajustes` aparece desabilitado, com o destino escrito ("no painel do v3") |
-| Zoom do mapa | 16 px à direita da sidebar no desktop — o mapa é full-bleed por baixo dela e o controle do Leaflet nasce em `left:0`, atrás do rail. No celular fica no canto superior direito |
+| Gestão | no **pé do rail**, separada por um fio e empurrada para baixo por `margin-top: auto`: é modo, não destino, e não disputa a ordem da navegação. Abre para a direita, com `Reconferir` e `Ajustes` desabilitado ("no painel do v3"). No celular, o mesmo lugar no pé da gaveta. Saiu do topo: a mesma ação em dois cantos da tela divide a atenção e a topbar fica para busca e tema |
+| Impressão | toda unidade tem **ficha imprimível** (`window.print()` no cabeçalho): em `@media print` a interface sai de cena (topbar, rail, mapa, cartões, botões) e o painel vira a folha, branca, em A4. Setores recolhidos saem **todos** (`display: block !important` vence o `x-show`), o chevron e o botão de copiar somem, o selo vira contorno e o topo ganha "Ramal · diretório de contatos" com data. É o modo balcão: o papel não rola nem clica |
+| Zoom do mapa | à direita, alinhado com a borda esquerda do painel (`right: calc(1.25rem + 26.5rem + 1rem)`), porque a coluna esquerda é do recorte. `left: auto !important` vence o `left: 0` do Leaflet. No celular fica no canto superior direito |
 | Telefones Úteis | cada número é `tel:`; o botão de copiar continua ao lado. A lista não entra no mapa nem no índice de favoritos |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
 | Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
@@ -374,6 +375,10 @@ mesmas medições — não é "inverter as cores". Regras:
 4. Favorito é sempre de **nó** (local, unidade ou setor), nunca de contato: contato muda, nó permanece.
 
 ### 5.9 A unidade é o último nível (15/11, já no protótipo)
+
+A unidade também é a **unidade de impressão**: a ficha sai inteira, com todos os setores abertos, mesmo
+os que estavam recolhidos na tela. Setor recolhido é economia de rolagem; no papel, esconder dado é
+defeito — quem imprime quer a lista completa para pendurar no balcão.
 
 O setor **não tem tela**. A navegação termina na unidade, que mostra todos os seus setores e os
 contatos de cada um na mesma página. Motivo medido no seed: 202 unidades têm filhos, com **mediana de
