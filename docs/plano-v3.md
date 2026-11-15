@@ -252,7 +252,7 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
   Telefones úteis, Configurações. "Favoritos" só se entrar no `v3.0` — e uma vez.
 - **Painel** com largura fixa (clamp 460–540, padrão 496), opacidade ≥ 94%, borda de 1 px em
   `rgba(94,234,212,.14)`, cantos 12 px. Sem desfoque forte.
-- **Inset "Grande Vitória"** (144 × 208 px, alto e estreito porque a região é alongada no sentido norte-sul) com os **sete** municípios da região metropolitana — Vitória, Vila Velha, Cariacica, Serra, Viana, Guarapari e Fundão —, no canto inferior esquerdo, 224 px, só quando o zoom é baixo e a viewport é
+- **Inset "Grande Vitória"** (144 × 208 px, alto e estreito porque a região é alongada no sentido norte-sul) com os **sete** municípios da região metropolitana; o enquadramento reserva a faixa do título (`paddingTopLeft`) e usa zoom fracionário, senão o ajuste cai um nível inteiro — Vitória, Vila Velha, Cariacica, Serra, Viana, Guarapari e Fundão —, no canto inferior esquerdo, 224 px, só quando o zoom é baixo e a viewport é
   ≥ 1280. Clicar nele **reencuadra o mapa principal** — não é um segundo estado de seleção.
 
 ### 5.4 Celular (390×844)
