@@ -101,12 +101,12 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
 - **Escopo por nó com herança** (`_escopo`, `_cadeia`, `_pais`, `_cobre` no `app.py`): vira Policy
   (`DirectoryPolicy`) + enum de papel (`ADMIN`, `GESTOR_COMARCA`, `EDITOR`). Papel decide *se entra no
   painel*; o escopo decide *quais linhas vê*. Duas perguntas diferentes, duas ferramentas diferentes.
-- **Procedência fica fora do `v3.0` na interface, mas não se perde no dado.** `fonte` e `vigente_desde`
-  já existem na tabela `contatos` do v2 e **não existem no `seed_mascarado.json`** (o v2 as extrai da
-  observação livre e grava no SQLite). Decidido em 14/11: as colunas já estão no `db/schema.sql`, e o
-  seed do v3 é exportado do banco do v2 (somente leitura) **trazendo os valores**; o selo na tela e a
-  fila de reconferência entram depois do `v3.0`. Exportar sem os campos seria abrir mão de um diferencial
-  do v2 por zero de economia.
+- **Procedência entra no `v3.0`.** `fonte` e `vigente_desde` já existem na tabela `contatos` do v2 e
+  **não existem no `seed_mascarado.json`** (o v2 as extrai da observação livre e grava no SQLite). O
+  seed do v3 é exportado do banco do v2 (somente leitura) **trazendo os valores** — no wireframe deu
+  329 contatos com documento: 43 do ofício 432/2024 e 286 do catálogo da Sede. O selo `fonte · desde`
+  aparece na tela do contato e alimenta a fila "Reconferir", do documento mais antigo para o mais novo.
+  Contato sem documento não ganha selo: a ausência de data nunca vira "atual".
 - **631 contatos não têm `uo`**: o modelo e a tela aceitam contato pendurado direto no local.
 - **`desc` não é rótulo de canal.** Medido: 843 vazios, "Geral" 93, "Institucional" 87, "Secretaria de
   Gestão do Foro" 47, "Contadoria" 34, "Oficiais de Justiça" 31, "Cartório" 30. São setores/descrições,
@@ -411,8 +411,8 @@ implementa.
 | 6 | Admin Filament: CRUD, pedidos, aprovação, histórico | editar contato muda o histórico |
 | 7 | Deploy Render + Neon, README com quadro de estado, ADR-010 | URL viva e `/healthz` sem banco |
 
-Depois do `v3.0`: exportação CSV (fila `sync`), procedência na tela e fila de reconferência, favoritos
-com conta (sincronização do `localStorage`), notificações.
+Depois do `v3.0`: exportação CSV (fila `sync`), favoritos com conta (sincronização do `localStorage`),
+notificações.
 
 ### Ordem de trabalho nas primeiras sessões
 
@@ -437,22 +437,20 @@ com conta (sincronização do `localStorage`), notificações.
 
 ---
 
-## 11. Decisões confirmadas em 14/11
+## 11. Decisões confirmadas em 14 e 15/11
 
 | # | Pergunta | Decisão | Efeito no plano |
 |---|---|---|---|
 | 1 | Nome | **Ramal**, com a ressalva de colisão em softphones e as alternativas registradas | topbar e wordmark seguem "Ramal"; checagem de INPI antes do item 5 |
-| 2 | Procedência no `v3.0` | **fora da interface**; colunas e export do seed mantidos | item 2 exporta `fonte`/`vigente_desde`; selo e fila depois do marco |
+| 2 | Procedência no `v3.0` | **entra** (confirmado em 15/11): selo no contato e fila "Reconferir" | item 2 exporta `fonte`/`vigente_desde`; item 5 desenha o selo e a fila |
 | 3 | Favoritos | **híbrido**: `localStorage` no demo, tabela `favoritos` já migrada, sincronização depois | seção 5.8 |
 | 4 | Tema | **escuro é o padrão**, claro com alternador de verdade | item 5 mede os dois temas |
 
 Ainda em aberto (nada disso bloqueia o começo):
 
 1. **INPI e domínio do nome** — checar antes do item 5. Só DNS e presença de categoria foram verificados.
-2. **Procedência de volta antes do fim do `v3.0`?** É o diferencial mais forte herdado do v2 e o custo é
-   baixo (o dado já vai no seed). Recomendação: sim, se o item 5 terminar com folga.
-3. **Nome do repositório** — `diretorio-contatos-v3` continua sendo o nome técnico; o produto se chama
-   Ramal. Decidir se o repositório público nasce com o nome do produto.
+2. **Nome do repositório público** — `diretorio-contatos-v3` (série) ou `ramal` (produto). Recomendação
+   na resposta de 15/11: manter a série no repositório e usar "Ramal" como nome do produto.
 
 ---
 
