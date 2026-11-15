@@ -286,7 +286,7 @@ desktop.
 | Endereço | o endereço do local (18 dos 838 nós) é link para o Google Maps: `https://www.google.com/maps/search/?api=1&query=` + endereço e CEP urlencoded, em nova aba, com sublinhado sólido discreto e ícone de saída. Vale na ficha do contato e no cartão da unidade |
 | Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos**. Sede é `MUN0000`, não é comarca e por isso tem item próprio. **Reconferir e Ajustes não entram na consulta pública**: são gestão interna, atrás do botão `Gestão` (no v3, o painel Filament) |
 | Gestão | no **pé do rail**, separada por um fio e empurrada para baixo por `margin-top: auto`: é modo, não destino, e não disputa a ordem da navegação. Abre para a direita, com `Reconferir` e `Ajustes` desabilitado ("no painel do v3"). No celular, o mesmo lugar no pé da gaveta. Saiu do topo: a mesma ação em dois cantos da tela divide a atenção e a topbar fica para busca e tema |
-| Impressão | toda unidade tem **ficha imprimível** (`window.print()` no cabeçalho): em `@media print` a interface sai de cena (topbar, rail, mapa, cartões, botões) e o painel vira a folha, branca, em A4. Setores recolhidos saem **todos** (`display: block !important` vence o `x-show`), o chevron e o botão de copiar somem, o selo vira contorno e o topo ganha "Ramal · diretório de contatos" com data. É o modo balcão: o papel não rola nem clica |
+| Impressão | toda unidade tem **ficha imprimível** (`window.print()` no cabeçalho) e a folha é uma **peça própria**, não o painel: `.ficha-impressao` fica oculta na tela e, no print, `.painel-corpo > *:not(.ficha-impressao)` sai de cena. A4 retrato, duas colunas de setores, número em mono à esquerda e tipo à direita; quando o setor é homogêneo o tipo sobe para o título (`CARTÓRIO · TELEFONE · 7`) e não se repete em cada linha. E-mail e endereço ganham a linha inteira, a unidade pequena imprime em uma coluna com corpo maior, e a nota de dados fictícios fica `fixed` no pé de toda página. Setor recolhido na tela sai impresso: a ficha lê o dado, não o `x-show`. É o modo balcão: o papel não rola nem clica |
 | Zoom do mapa | à direita, alinhado com a borda esquerda do painel (`right: calc(1.25rem + 26.5rem + 1rem)`), porque a coluna esquerda é do recorte. `left: auto !important` vence o `left: 0` do Leaflet. No celular fica no canto superior direito |
 | Telefones Úteis | cada número é `tel:`; o botão de copiar continua ao lado. A lista não entra no mapa nem no índice de favoritos |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
@@ -547,6 +547,18 @@ deploy do v2.
 | D-3 | **Contrato do seed**: script versionado que exporta do `contatos.db` do v2 e confere números | depende do v2 estar congelado depois do deploy | 1.807 contatos · 69 comarcas + estrutura central · 444 ramais · 329 com procedência (43 + 286) · 78 municípios · 9 sem comarca |
 | D-4 | **Neon free**: conexão *pooled* e suspensão por inatividade | só morde no item 7 | usar a pooled no `DB_URL`; o estado "carregando" cobre o cold start duplo |
 | D-5 | **Seed × edição**: no Neon o banco persiste, ao contrário do Render free do v2 | só morde depois do primeiro deploy | seed roda só com base vazia; o que for editado no admin sobrevive ao deploy |
+
+## 13. Fila de retomada do v3 (anotada em 15/11)
+
+Ideias aprovadas para depois do deploy do v2 e do gate do v2. Nenhuma entra agora; a ordem abaixo é a
+de execução sugerida, não a de valor.
+
+| # | Ideia | Por que | Custo |
+|---|---|---|---|
+| F-1 | **Índice reverso de ramais** (`/ramais`) | o produto é organizado por lugar, mas a pergunta do balcão é "quem é o ramal 1234?". Lista dos 444 ramais em ordem numérica, com comarca · unidade · setor ao lado, imprimível. **Tela nova**: entra na §5.5 e no escopo do v3, não é acabamento | baixo: uma rota, uma view, item no índice |
+| F-2 | **Selo de procedência no contato** | "ofício 432/2024 · desde 03/2024" ao lado do canal: o diferencial do v2 que o wireframe perdeu, porque o `seed_mascarado.json` não tem `fonte`/`vigente_desde`. Depende do **export do seed** (D-3) | baixo depois do seed |
+| F-3 | **`Ctrl K` como paleta de verdade** | hoje o atalho só foca o campo. Paleta com resultados agrupados (comarcas, unidades, setores, contatos), ↑↓ e Enter, destino já com âncora | médio (~150 linhas de JS) |
+| F-4 | **Página "v1 → v2 → v3"** | uma captura por versão, os números de cada uma e a decisão que a definiu. Serve à candidatura: mostra arco, não três repositórios soltos | baixo, e vive nos docs |
 
 ---
 
