@@ -306,15 +306,25 @@ o corredor achar "Vitória" onde ele sempre esteve. Contagem ordena disco no map
 - **Hachura** para município sem comarca (padrão SVG injetado no `defs` do próprio SVG do Leaflet — sem
   plugin novo), mais rótulo em texto. Cor sozinha não comunica. A hachura é estado permanente: sobrevive
   ao hover, ao foco e à troca de tema — só o contorno muda.
+- **Tema claro revisado (15/11)**: o claro anterior era o escuro com as cores trocadas — mapa lavado,
+  malha e discos da cor do fundo, hachura quase invisível, rail e painel sem camada. O claro agora tem
+  branco puro nas superfícies flutuantes, base mais fria, malha municipal mais escura que o oceano,
+  disco com halo branco, hachura mais fechada e texto secundário escurecido. O mapa continua sob os
+  painéis; o que muda é a separação entre figura e fundo.
 - **Amostra da legenda é a mesma linguagem do mapa**: "sem comarca" aparece como quadradinho listrado,
   nunca como disco teal; os discos 5/60/166 continuam sendo a escala de densidade. Legenda e mapa
   dizendo coisas diferentes é pior do que legenda nenhuma.
-- **Legenda e recorte são um cartão só**, no canto inferior esquerdo: "Grande Vitória" em cima, a escala
-  embaixo, separados por um fio. O recorte manda (é navegação); a escala é consulta e vem depois. Com o
-  zoom alto o recorte se esconde e o cartão fica só com a legenda — nada de caixa vazia.
+- **Recorte e legenda ocupam lados opostos da base do mapa**: o recorte à esquerda, a escala à direita,
+  alinhados pelo mesmo pé. Separados, cada um guarda o seu tamanho — o recorte é alto e estreito, a
+  legenda é baixa e larga; juntos num cartão só, um dos dois sobrava. O crédito da malha desce para
+  debaixo do recorte e os controles de zoom vão para o alto da direita, deixando a coluna esquerda só
+  com o recorte.
 - **O recorte fala a mesma língua do mapa grande**: tooltip com nome e quantidade de contatos, e o
   destaque é um só — passar o mouse num município do recorte acende o polígono no mapa principal, o disco,
   a linha do painel e vice-versa, nos quatro sentidos.
+- **O tooltip do recorte mora fora da caixa**: a caixa de 144 px é menor que o balão e cortava o texto.
+  O balão é um elemento do mapa (não do recorte), posicionado ao lado da caixa na altura do município,
+  com limites na área do mapa — nunca é cortado e nunca cobre o desenho do recorte.
 - Etiquetas: desktop nas 6 comarcas mais densas, com lado definido à mão para não colidir; celular nas 3.
 - Hover na lista acende o polígono; clique e lista levam ao mesmo estado. No município sem comarca o
   hover realça só o contorno: a hachura nunca sai.
