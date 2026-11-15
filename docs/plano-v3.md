@@ -19,7 +19,7 @@
 | Laravel sozinho ou Laravel + FastAPI? | **Laravel sozinho.** Confirmado com evidência (seção 3.1 e Anexo A). |
 | A direção visual A continua? | **Sim.** Paleta e geometria fechadas; falta só acertar tokens de apoio e contraste. |
 | Qual material visual é melhor? | **O wireframe navegável** é o melhor *sistema*; **as imagens do Claude** são o melhor *acabamento*. O v3 usa os dois, corrigidos (seção 6). |
-| O nome "Ramal" serve? | **Serve como nome de trabalho**, com uma pendência pequena e real: colisão de marca/domínio não verificada. |
+| O nome "Ramal" serve? | **Confirmado em 14/11.** Com uma ressalva registrada: a palavra nomeia apps de softphone (SINCorp Ramal, Conectel Ramal), categoria vizinha mas não a mesma. Alternativas que sobreviveram à checagem: Prumo, Fio. |
 | Os PDFs servem de base? | **Não literalmente.** A tese (Laravel/TALL, um serviço) está certa; a lista de pacotes e versões está defasada e propõe três coisas que o projeto não deve ter (seção 4). |
 | O que começa o v3? | O marco `v3.0` da seção 9, na ordem ali, começando por esqueleto + migrações. |
 
@@ -101,10 +101,12 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
 - **Escopo por nó com herança** (`_escopo`, `_cadeia`, `_pais`, `_cobre` no `app.py`): vira Policy
   (`DirectoryPolicy`) + enum de papel (`ADMIN`, `GESTOR_COMARCA`, `EDITOR`). Papel decide *se entra no
   painel*; o escopo decide *quais linhas vê*. Duas perguntas diferentes, duas ferramentas diferentes.
-- **Procedência é coluna**, não nota: `fonte` e `vigente_desde` já existem na tabela `contatos` do v2 —
-  e **não existem no `seed_mascarado.json`**. O seed do v3 precisa ser exportado do banco do v2
-  (somente leitura), não do JSON, ou portar a regra que extrai procedência da observação livre.
-  Sem isso, o selo de procedência nasce vazio e a funcionalidade não existe no demo.
+- **Procedência fica fora do `v3.0` na interface, mas não se perde no dado.** `fonte` e `vigente_desde`
+  já existem na tabela `contatos` do v2 e **não existem no `seed_mascarado.json`** (o v2 as extrai da
+  observação livre e grava no SQLite). Decidido em 14/11: as colunas já estão no `db/schema.sql`, e o
+  seed do v3 é exportado do banco do v2 (somente leitura) **trazendo os valores**; o selo na tela e a
+  fila de reconferência entram depois do `v3.0`. Exportar sem os campos seria abrir mão de um diferencial
+  do v2 por zero de economia.
 - **631 contatos não têm `uo`**: o modelo e a tela aceitam contato pendurado direto no local.
 - **`desc` não é rótulo de canal.** Medido: 843 vazios, "Geral" 93, "Institucional" 87, "Secretaria de
   Gestão do Foro" 47, "Contadoria" 34, "Oficiais de Justiça" 31, "Cartório" 30. São setores/descrições,
@@ -243,7 +245,8 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 
 - **Topbar** sempre visível: marca "Ramal" (wordmark + símbolo de um traço que se bifurca), busca
   centralizada (atalho `Ctrl+K`, nunca o único caminho), alternador de tema, botão "Gestão" só para
-  autenticado, selo de demonstração à direita.
+  autenticado, selo de demonstração à direita. Regra: **controle sem efeito não entra** — o alternador
+  de tema só aparece quando o tema claro existir e estiver medido (ver 5.8).
 - **Rail único**, 64 px recolhido / 240 px expandido *por cima* do mapa (não empurra): Comarcas, Sede,
   Telefones úteis, Configurações. "Favoritos" só se entrar no `v3.0` — e uma vez.
 - **Painel** com largura fixa (clamp 460–540, padrão 496), opacidade ≥ 94%, borda de 1 px em
@@ -267,6 +270,8 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Selo de procedência | `fonte · desde mês/ano`, só quando declarado; ausência de data não vira "atual" |
 | Cartão de setor | título, "N canais", linhas de canal; a partir de 4, "+N canais" |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
+| Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
+| Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
 | Estado vazio | diz o que falta e por quê, com o código IBGE à vista quando for o caso |
 
 ### 5.6 Mapa
@@ -293,6 +298,26 @@ Adota a tela de gestão das referências, com quatro correções:
 
 Grupos de navegação: Estrutura (comarcas, locais, nós), Contatos (canais, úteis), Controle (histórico,
 usuários, papéis), e "Voltar para a consulta".
+
+### 5.8 Tema e favoritos
+
+**Tema.** Escuro é o padrão e não muda (decisão de 11/11). O claro é derivado dos mesmos tokens com as
+mesmas medições — não é "inverter as cores". Regras:
+
+1. O par `prefers-color-scheme` **não** decide sozinho: o padrão do produto é escuro mesmo em sistema claro.
+2. A escolha do usuário ganha do padrão e persiste em `localStorage` (`ramal:tema`).
+3. O controle só existe se o tema claro existir. Botão que não faz nada é pior que botão ausente.
+4. O claro entra no `v3.0` (item 5) porque a topbar já nasce com o controle; medir os pares claros é
+   parte do trabalho do componente, não um projeto à parte.
+
+**Favoritos.** Híbrido, nesta ordem:
+
+1. Visitante e demo: `localStorage` (`ramal:favoritos`), sem conta, sem escrita no banco. É o que faz o
+   recurso existir no demo somente leitura.
+2. Pessoal autenticado: sincroniza com a tabela `favoritos` (`usuario_id`, `codigo` do nó, criado_em).
+   A tabela nasce nas migrações do `v3.0`; a sincronização entra depois.
+3. Ao entrar, o que estava no `localStorage` é oferecido para importar — nunca mesclado em silêncio.
+4. Favorito é sempre de **nó** (local, unidade ou setor), nunca de contato: contato muda, nó permanece.
 
 ---
 
@@ -382,12 +407,12 @@ implementa.
 | 2 | Migrações do `db/schema.sql` (FKs e CHECK reais) + carga do seed do v2 (com `fonte`/`vigente_desde`) | seed idempotente, contagens conferidas |
 | 3 | Policies de escopo por nó + testes portados da tabela do v2 | casos do `test_regras` cobertos |
 | 4 | API `/api/v1` só leitura + testes de contrato | rotas do contrato respondendo |
-| 5 | Consulta pública (Livewire): topbar, rail, mapa, painel, 7 estados, celular | estados 1–7 navegáveis com dado real |
+| 5 | Consulta pública (Livewire): topbar, rail, mapa, painel, 7 estados, celular, tema escuro e claro | estados 1–7 navegáveis com dado real; os dois temas medidos |
 | 6 | Admin Filament: CRUD, pedidos, aprovação, histórico | editar contato muda o histórico |
 | 7 | Deploy Render + Neon, README com quadro de estado, ADR-010 | URL viva e `/healthz` sem banco |
 
-Depois do `v3.0`: exportação CSV (fila `sync`), conferência ("✓ Conferi"), favoritos com conta, tema
-claro, notificações.
+Depois do `v3.0`: exportação CSV (fila `sync`), procedência na tela e fila de reconferência, favoritos
+com conta (sincronização do `localStorage`), notificações.
 
 ### Ordem de trabalho nas primeiras sessões
 
@@ -406,20 +431,28 @@ claro, notificações.
 | Seed sem `fonte`/`vigente_desde` | procedência some do demo | exportar do banco do v2, não do JSON |
 | Mapa sem tiles não é mapa de rua | expectativa errada do visitante | texto curto na interface e no README |
 | Partida a frio (Render + Neon) | 30–60 s no primeiro acesso | estado "carregando" desenhado; nada de keep-alive |
-| Nome "Ramal" com colisão | retrabalho de marca | verificar INPI, domínio e npm antes do item 5 |
+| Nome "Ramal" é palavra usada por softphones | confusão de categoria | nome e wordmark são nossos; INPI antes do item 5; alternativas registradas (Prumo, Fio) |
 | Material de referência com marca institucional | problema de identidade e de imagem | varredura no seed, nas capturas e no código antes do deploy |
 | Escopo crescente (favoritos, exportação, notificações) | `v3.0` não fecha | eles estão fora do marco, de propósito |
 
 ---
 
-## 11. Perguntas que dependem de você
+## 11. Decisões confirmadas em 14/11
 
-1. **Nome**: confirma "Ramal" (descritor "Ramal · diretório de contatos")? Alternativas medidas em
-   pacotes: nenhuma colisão relevante em Packagist; domínio e INPI não verificados.
-2. **Procedência no mínimo**: o selo `fonte · desde` entra no `v3.0` (exige exportar do banco) ou fica
-   para depois?
-3. **Favoritos**: entra no `v3.0` em `localStorage` ou fica fora?
-4. **Tema claro**: depois do `v3.0`, como já estava previsto?
+| # | Pergunta | Decisão | Efeito no plano |
+|---|---|---|---|
+| 1 | Nome | **Ramal**, com a ressalva de colisão em softphones e as alternativas registradas | topbar e wordmark seguem "Ramal"; checagem de INPI antes do item 5 |
+| 2 | Procedência no `v3.0` | **fora da interface**; colunas e export do seed mantidos | item 2 exporta `fonte`/`vigente_desde`; selo e fila depois do marco |
+| 3 | Favoritos | **híbrido**: `localStorage` no demo, tabela `favoritos` já migrada, sincronização depois | seção 5.8 |
+| 4 | Tema | **escuro é o padrão**, claro com alternador de verdade | item 5 mede os dois temas |
+
+Ainda em aberto (nada disso bloqueia o começo):
+
+1. **INPI e domínio do nome** — checar antes do item 5. Só DNS e presença de categoria foram verificados.
+2. **Procedência de volta antes do fim do `v3.0`?** É o diferencial mais forte herdado do v2 e o custo é
+   baixo (o dado já vai no seed). Recomendação: sim, se o item 5 terminar com folga.
+3. **Nome do repositório** — `diretorio-contatos-v3` continua sendo o nome técnico; o produto se chama
+   Ramal. Decidir se o repositório público nasce com o nome do produto.
 
 ---
 
