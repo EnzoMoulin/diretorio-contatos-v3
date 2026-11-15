@@ -538,4 +538,10 @@ Divino de São Lourenço, Governador Lindenberg, Irupi, Ponto Belo, São Roque d
 Vila Pavão, Vila Valério); e o município focado mantém a **hachura** mesmo quando selecionado, com
 contorno tracejado em accent — cor sólida de seleção apagava justamente o estado que a tela explica.
 
+Hierarquia de conteúdo: na tela de **contato** o título é a **unidade** (com link), o rótulo é
+`tipo · setor` e só então o valor em destaque — o valor é o que se copia, não quem é; e-mail usa
+1,0625 rem (cabe em uma linha nos 390 px) enquanto telefone fica em 1,25 rem. Na **busca**, o
+subtítulo do resultado é `unidade de origem · comarca` — repetir "Cartório" em 84 linhas não
+distingue nada, e o contexto é o que a pessoa usa para escolher.
+
 Capturas: `IDEIAS PARA O V3/wireframe-hermes-inicio.png` (versão anterior) e as atuais em `/tmp/v3n-*.png`.
