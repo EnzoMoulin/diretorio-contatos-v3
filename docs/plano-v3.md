@@ -172,7 +172,7 @@ Onde ela erra ou exagera:
 | "Contraste do texto secundário `#8BA3B5` = 6,51/7,14" | ✅ | reconferi: 6,51 / 7,14. Meu token atual `#8CA3B6` dá 6,53 / 7,16 — equivalentes; **fica um só** (`#8CA3B6`, já documentado) |
 | "Borda `#55708A` 3,31 · contorno `#5E7794` 3,13" | ✅ | reconferi os dois |
 | "Favoritos só localStorage no demo" | ⚠ | aceitável, mas é escopo; se entrar, precisa de estado vazio e de remoção — decidir no `v3.0` |
-| "Recorte ampliado Grande Vitória é opcional" | ✅ | entra, mas como **controle de navegação** (clique reenquadra o mapa), não como segundo mapa |
+| "Recorte ampliado Grande Vitória é opcional" | ✅ | entra, mas como **atalho de seleção** (clique abre a comarca), não como segundo mapa |
 | "Chip de contagem 69 comarcas e estrutura central" | ✅ | evita a soma enganosa de 70 comarcas |
 | "Mockup estático HTML" como entrega | ⚠ | já existe wireframe **navegável** em Laravel; o mockup estático seria regressão. O que falta é refinar o wireframe, não refazê-lo |
 | "Certificar 7 estados" | ✅ | o wireframe já tem os 7; falta o estado "carregando" e a hachura de "sem comarca" |
@@ -328,8 +328,14 @@ o corredor achar "Vitória" onde ele sempre esteve. Contagem ordena disco no map
 - Etiquetas: desktop nas 6 comarcas mais densas, com lado definido à mão para não colidir; celular nas 3.
 - Hover na lista acende o polígono; clique e lista levam ao mesmo estado. No município sem comarca o
   hover realça só o contorno: a hachura nunca sai.
-- **Inset é controle, não enfeite:** tem `tabindex`, rótulo acessível e dica no hover/foco ("clique em um
-  município para reenquadrar o mapa").
+- **Inset é atalho, não lupa:** clicar num município faz o mesmo que clicar no mapa ou na linha do
+  painel — abre a comarca. O recorte existe porque, no mapa grande, a região metropolitana é um
+  aglomerado de polígonos pequenos demais para acertar; se o clique só aproximasse, o usuário ainda
+  teria de clicar de novo no polígono, e o recorte resolveria metade do problema. O gesto é único em
+  todo o produto: achar e clicar é abrir. O zoom acontece como consequência, na página da comarca.
+- **Cada município do recorte é botão:** recebe foco por teclado, `role="button"`, rótulo com nome e
+  contagem ("Viana, 37 contatos — abrir a comarca") e responde a Enter e Espaço. O contêiner é
+  `role="group"`; a dica de hover saiu, porque o ponteiro e o próprio tooltip já dizem o que o alvo é.
 
 ### 5.7 Admin (Filament)
 
