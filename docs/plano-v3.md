@@ -309,6 +309,12 @@ o corredor achar "Vitória" onde ele sempre esteve. Contagem ordena disco no map
 - **Amostra da legenda é a mesma linguagem do mapa**: "sem comarca" aparece como quadradinho listrado,
   nunca como disco teal; os discos 5/60/166 continuam sendo a escala de densidade. Legenda e mapa
   dizendo coisas diferentes é pior do que legenda nenhuma.
+- **Legenda e recorte são um cartão só**, no canto inferior esquerdo: "Grande Vitória" em cima, a escala
+  embaixo, separados por um fio. O recorte manda (é navegação); a escala é consulta e vem depois. Com o
+  zoom alto o recorte se esconde e o cartão fica só com a legenda — nada de caixa vazia.
+- **O recorte fala a mesma língua do mapa grande**: tooltip com nome e quantidade de contatos, e o
+  destaque é um só — passar o mouse num município do recorte acende o polígono no mapa principal, o disco,
+  a linha do painel e vice-versa, nos quatro sentidos.
 - Etiquetas: desktop nas 6 comarcas mais densas, com lado definido à mão para não colidir; celular nas 3.
 - Hover na lista acende o polígono; clique e lista levam ao mesmo estado. No município sem comarca o
   hover realça só o contorno: a hachura nunca sai.
