@@ -304,9 +304,16 @@ o corredor achar "Vitória" onde ele sempre esteve. Contagem ordena disco no map
   Vitória, Vila Velha, Cariacica e Serra, que são polígonos minúsculos. A lista continua sendo o caminho
   por teclado e a alternativa sem mouse.
 - **Hachura** para município sem comarca (padrão SVG injetado no `defs` do próprio SVG do Leaflet — sem
-  plugin novo), mais rótulo em texto. Cor sozinha não comunica.
+  plugin novo), mais rótulo em texto. Cor sozinha não comunica. A hachura é estado permanente: sobrevive
+  ao hover, ao foco e à troca de tema — só o contorno muda.
+- **Amostra da legenda é a mesma linguagem do mapa**: "sem comarca" aparece como quadradinho listrado,
+  nunca como disco teal; os discos 5/60/166 continuam sendo a escala de densidade. Legenda e mapa
+  dizendo coisas diferentes é pior do que legenda nenhuma.
 - Etiquetas: desktop nas 6 comarcas mais densas, com lado definido à mão para não colidir; celular nas 3.
-- Hover na lista acende o polígono; clique e lista levam ao mesmo estado.
+- Hover na lista acende o polígono; clique e lista levam ao mesmo estado. No município sem comarca o
+  hover realça só o contorno: a hachura nunca sai.
+- **Inset é controle, não enfeite:** tem `tabindex`, rótulo acessível e dica no hover/foco ("clique em um
+  município para reenquadrar o mapa").
 
 ### 5.7 Admin (Filament)
 
