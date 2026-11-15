@@ -319,7 +319,7 @@ mesmas medições — não é "inverter as cores". Regras:
 3. Ao entrar, o que estava no `localStorage` é oferecido para importar — nunca mesclado em silêncio.
 4. Favorito é sempre de **nó** (local, unidade ou setor), nunca de contato: contato muda, nó permanece.
 
-### 5.9 A unidade é o último nível (15/11)
+### 5.9 A unidade é o último nível (15/11, já no protótipo)
 
 O setor **não tem tela**. A navegação termina na unidade, que mostra todos os seus setores e os
 contatos de cada um na mesma página. Motivo medido no seed: 202 unidades têm filhos, com **mediana de
@@ -335,7 +335,7 @@ tela com uma linha.
    de 6 seções).
 4. Busca, favorito e link direto apontam para `/local/{unidade}#{setor}`; a seção chega destacada e a
    página rola até ela. O payload da busca leva o `pai` do nó (já no protótipo, para o subtítulo).
-5. A rota `/local/{setor}` deixa de existir. Na migalha, o setor é texto, não nível.
+5. A rota `/local/{setor}` não serve tela: responde **302** para `/local/{unidade}#{setor}`, então link antigo, favorito e resultado de busca antigo continuam caindo no lugar certo. Na migalha, o setor é texto, não nível.
 6. Endereço e "copiar" são do local: só 18 dos 838 nós têm endereço próprio.
 
 ---
