@@ -504,11 +504,30 @@ extração possível.
 | `docs/backlog-ideias.md` | mover para "adiado" o que a seção 9 deixa fora do `v3.0` |
 | `IDEIAS PARA O V3/` | ficar **fora** do repositório público: contém PDFs e imagens com marca institucional |
 
-## Anexo C — o wireframe como especificação viva
+## Anexo C — o wireframe como especificação viva (revisão 15/11)
 
-O protótipo em `IDEIAS PARA O V3/wireframe/` deixa de ser entrega e passa a ser **referência de
-comportamento**: os 7 estados, as alturas da folha no celular, o reenquadramento do mapa e o texto do
-estado sem comarca estão implementados e podem ser lidos como especificação executável. O que **não**
-se aproveita: o CSS/JS (descartável) e a ausência de topbar, corrigida na 5.3.
+O protótipo em `IDEIAS PARA O V3/wireframe/` **não é descartável**. Ele já está na stack do v3
+(Laravel + Blade + Alpine + Vite + Leaflet), então o que foi validado ali vira código, não só
+referência. A partilha é:
 
-Captura da tela inicial: `IDEIAS PARA O V3/wireframe-hermes-inicio.png`.
+| Peça | Destino | Regra |
+|---|---|---|
+| `resources/css/app.css` | **aproveitado** | tokens `--color-*` e `--mapa-*`, `.topbar`, `.rail`, `.painel`, `.folha`, `.selo`, estados de foco. Copiar como base do tema do v3 e só então componentizar |
+| Fontsource (`Space Grotesk`, `JetBrains Mono`, OFL 1.1) | **aproveitado** | mesma configuração do Vite; nenhuma fonte de CDN |
+| `resources/js/mapa.js` | **aproveitado** | Leaflet sem tiles, cores por CSS var, hachura de sem-comarca, discos de densidade, inset da Grande Vitória e `enquadrar()`. Depende só do payload `cfg` (`geo_url`, `comarcas`, `selecionada`, `foco_ibge`, `modo`) — a v3 emite o mesmo formato |
+| `layouts/app.blade.php` | **aproveitado com adaptação** | a moldura (topbar, rail, inset, `data-theme`) vira o layout autenticado; `<title>`, `aria-*` e o trilha ficam |
+| `x-icone`, `x-selo`, `x-busca` | **aproveitado com adaptação** | viram componentes do v3; `x-selo` passa a receber `fonte`/`vigente_desde` do banco |
+| telas `painel/*.blade.php` | **referência de estrutura** | a marcação orienta a implementação; não é copiada porque os dados vêm de Eloquent com paginação |
+| `app/Support/Diretorio.php` | **descartado** | lê `seed.json` em memória; vira repositório Eloquent sobre `comarcas`/`locais`/`nos`/`contatos` |
+| `app/Http/Controllers/PainelController.php` | **descartado** | arrays estáticos; vira controller com queries e paginação |
+| `data/seed.json` | **descartado como fonte** | o seed do v3 é exportado do SQLite do v2 com `fonte` + `vigente_desde` |
+| botão "Gestão", atalho `Ctrl K`, avisos de "fora do protótipo" | **descartado** | placeholders de demonstração |
+
+Régua de enquadramento medida (para o v3 não regredir): o mapa enquadra no **retângulo livre** — rail
+(64 px) + 28 px à esquerda, painel + 28 px à direita, 28 px em cima e embaixo —, nunca no container
+inteiro; zoom é o maior múltiplo de 0,25 que cabe, aplicado **sem animação** no primeiro quadro
+(animar o `setView` inicial fazia o mapa ficar no zoom 7 e saltar depois). Resultado medido: home
+**8,25**, comarca **12,5**, celular **6,75**; município com extensão < 0,6° ganha `pad(0.14)` para não
+perder o contexto dos vizinhos.
+
+Capturas: `IDEIAS PARA O V3/wireframe-hermes-inicio.png` (versão anterior) e as atuais em `/tmp/v3n-*.png`.
