@@ -266,9 +266,9 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Componente | Regra |
 |---|---|
 | Linha de canal | ícone · tipo · valor em mono · botão copiar. No desktop em colunas alinhadas; no celular quebra em pílulas com `flex-wrap`. Nunca truncar valor. |
-| Migalha | chip removível (Comarca › Local › Nó); remover volta um nível sem recarregar a tela |
+| Migalha | chip removível (Comarca › Local); remover volta um nível sem recarregar a tela. Setor não é nível |
 | Selo de procedência | `fonte · desde mês/ano`, só quando declarado; ausência de data não vira "atual" |
-| Cartão de setor | título, "N canais", linhas de canal; a partir de 4, "+N canais" |
+| Seção de setor | cabeçalho com nome, tipo e contagem + as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
 | Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
@@ -318,6 +318,25 @@ mesmas medições — não é "inverter as cores". Regras:
    A tabela nasce nas migrações do `v3.0`; a sincronização entra depois.
 3. Ao entrar, o que estava no `localStorage` é oferecido para importar — nunca mesclado em silêncio.
 4. Favorito é sempre de **nó** (local, unidade ou setor), nunca de contato: contato muda, nó permanece.
+
+### 5.9 A unidade é o último nível (15/11)
+
+O setor **não tem tela**. A navegação termina na unidade, que mostra todos os seus setores e os
+contatos de cada um na mesma página. Motivo medido no seed: 202 unidades têm filhos, com **mediana de
+1,5 setor** por unidade e **mediana de 1 contato** por nó — clicar num setor quase sempre abre uma
+tela com uma linha.
+
+1. A página do local lista, nesta ordem: contatos pendurados direto no local (631 no seed) e depois os
+   setores na ordem `ordem`, cada um como **seção com âncora** (`#UNI0027`).
+2. Setor sem contato continua visível, com "sem canal cadastrado": ausência é informação e mostra onde
+   falta levantar dado.
+3. Unidade com mais de 8 seções abre com o primeiro grupo aberto e **um** controle "expandir todas" —
+   nunca um clique por setor. O caso extremo é "Desembargadores", com 30 gabinetes (23 unidades passam
+   de 6 seções).
+4. Busca, favorito e link direto apontam para `/local/{unidade}#{setor}`; a seção chega destacada e a
+   página rola até ela. O payload da busca leva o `pai` do nó (já no protótipo, para o subtítulo).
+5. A rota `/local/{setor}` deixa de existir. Na migalha, o setor é texto, não nível.
+6. Endereço e "copiar" são do local: só 18 dos 838 nós têm endereço próprio.
 
 ---
 
@@ -451,6 +470,20 @@ Ainda em aberto (nada disso bloqueia o começo):
 1. **INPI e domínio do nome** — checar antes do item 5. Só DNS e presença de categoria foram verificados.
 2. **Nome do repositório público** — `diretorio-contatos-v3` (série) ou `ramal` (produto). Recomendação
    na resposta de 15/11: manter a série no repositório e usar "Ramal" como nome do produto.
+
+## 12. Decisões adiadas para o início do v3 (15/11)
+
+O plano fecha o que basta para começar — itens 1, 2 e 5 têm decisão e critério de pronto. O que segue
+fica **deliberadamente aberto** e só se decide quando o v3 começar de fato: a prioridade agora é o
+deploy do v2.
+
+| # | Pendência | Por que não agora | Encaminhamento já pensado |
+|---|---|---|---|
+| D-1 | **Login do admin (Filament)**: e-mail/senha, OAuth ou usuário semeado; e o que o visitante vê ao clicar em "Gestão" | trava o item 6, não os itens 1–2 | e-mail/senha do Filament com dois papéis: `demo` (vê tudo, não escreve; credenciais no README) e `admin` (senha só no painel do Render) |
+| D-2 | **Gate de marca institucional**: teste que falhe ao achar domínio, sigla do tribunal ou nome de pessoa | é execução, não decisão de arquitetura | Pest (ou `ramal:auditar`) varrendo seed, `resources/views`, `README` e `docs/` |
+| D-3 | **Contrato do seed**: script versionado que exporta do `contatos.db` do v2 e confere números | depende do v2 estar congelado depois do deploy | 1.807 contatos · 69 comarcas + estrutura central · 444 ramais · 329 com procedência (43 + 286) · 78 municípios · 9 sem comarca |
+| D-4 | **Neon free**: conexão *pooled* e suspensão por inatividade | só morde no item 7 | usar a pooled no `DB_URL`; o estado "carregando" cobre o cold start duplo |
+| D-5 | **Seed × edição**: no Neon o banco persiste, ao contrário do Render free do v2 | só morde depois do primeiro deploy | seed roda só com base vazia; o que for editado no admin sobrevive ao deploy |
 
 ---
 
