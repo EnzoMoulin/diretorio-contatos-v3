@@ -257,6 +257,14 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 
 ### 5.4 Celular (390×844)
 
+**Plataforma.** O produto é pensado e desenvolvido **primeiro para computador** — a consulta no balcão
+e na secretaria é feita em tela grande, com mapa e lista lado a lado. O celular é **adaptação
+responsiva**, para ampliar os modos de acesso: no telefone o ganho é o toque — ligar com um clique no
+canal de telefone e abrir o WhatsApp do número — e não um layout próprio. Consequência prática: o
+celular não define decisões de produto (densidade do mapa, quantidade de rótulos, prioridade das
+colunas); ele herda a mesma informação em uma coluna. Quando as duas exigências brigarem, vence o
+desktop.
+
 - Mapa no topo, folha inferior de três alturas (recolhida / meia / cheia), alças de 44 px.
 - Recolhida mostra busca + chip de contagem; meia mostra lista/painel; cheia mostra canais completos.
 - Sem rolagem horizontal em nenhum estado; zoom do Leaflet fora da folha.
@@ -272,6 +280,8 @@ Foco: contorno de 2 px em `--accent` com 2 px de afastamento. Alvo de toque: ≥
 | Seção de setor | cabeçalho clicável (nome, tipo e contagem) que recolhe e reabre as linhas de canal na própria página da unidade; âncora `#UNI0027`. Sem tela própria (5.9) |
 | Voltar do contato | a tela de contato é a última: chip "voltar" no topo, com o destino no `title` e no `aria-label`. O destino segue **quem é o dono do contato**: unidade (`/local/{unidade}#{setor}`, quando é setor), fórum (`/local/{fórum}`) ou comarca (`/comarca/{chave}`; a Sede vira "estrutura central"). Link, não `history.back()`: precisa funcionar em link direto, favorito e histórico vazio. No celular, 44 px |
 | Toast | "Copiado" após cópia, 2 s, `aria-live="polite"` |
+| Navegação no celular | o rail (64 px de ícones) não cabe em 390 px e desaparece; no lugar entra um botão de menu de 44 px no topo que abre uma gaveta com os mesmos quatro destinos, **com rótulo escrito** e 44 px por item. Fixa no desktop, sob demanda no celular |
+| Ação de canal | telefone e ramal: `tel:`; WhatsApp: `wa.me` **só com número completo** (no demo o número vem mascarado, então o botão não aparece); e-mail: `mailto:`. Copiar sempre |
 | Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos**. Sede é `MUN0000`, não é comarca e por isso tem item próprio. **Reconferir e Ajustes não entram na consulta pública**: são gestão interna, atrás do botão `Gestão` (no v3, o painel Filament) |
 | Gestão | botão no topo direito abre a gestão interna. No protótipo só a fila **Reconferir** existe; `Ajustes` aparece desabilitado, com o destino escrito ("no painel do v3") |
 | Zoom do mapa | 16 px à direita da sidebar no desktop — o mapa é full-bleed por baixo dela e o controle do Leaflet nasce em `left:0`, atrás do rail. No celular fica no canto superior direito |
