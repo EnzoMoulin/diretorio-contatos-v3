@@ -526,8 +526,16 @@ referência. A partilha é:
 Régua de enquadramento medida (para o v3 não regredir): o mapa enquadra no **retângulo livre** — rail
 (64 px) + 28 px à esquerda, painel + 28 px à direita, 28 px em cima e embaixo —, nunca no container
 inteiro; zoom é o maior múltiplo de 0,25 que cabe, aplicado **sem animação** no primeiro quadro
-(animar o `setView` inicial fazia o mapa ficar no zoom 7 e saltar depois). Resultado medido: home
-**8,25**, comarca **12,5**, celular **6,75**; município com extensão < 0,6° ganha `pad(0.14)` para não
-perder o contexto dos vizinhos.
+(animar o `setView` inicial fazia o mapa ficar no zoom 7 e saltar depois); legenda e inset, que ocupam
+o canto inferior esquerdo, entram como **obstáculo**: o recorte desliza para a direita até 12 px de
+folga e nunca cobre o sudoeste do estado. Resultado medido: home **8,25** (estado com 479 × 783 px,
+margens 198/152 px), comarca **12,5**, celular **6,75**; município com extensão < 0,6° ganha
+`pad(0.14)` para não perder o contexto dos vizinhos.
+
+Duas regras de tela que o protótipo fixou: `/municipio/{ibge}` **redireciona** para a comarca quando
+ela existe — "sem comarca" é só para os 9 municípios que realmente não têm registro (Brejetuba,
+Divino de São Lourenço, Governador Lindenberg, Irupi, Ponto Belo, São Roque do Canaã, Sooretama,
+Vila Pavão, Vila Valério); e o município focado mantém a **hachura** mesmo quando selecionado, com
+contorno tracejado em accent — cor sólida de seleção apagava justamente o estado que a tela explica.
 
 Capturas: `IDEIAS PARA O V3/wireframe-hermes-inicio.png` (versão anterior) e as atuais em `/tmp/v3n-*.png`.
