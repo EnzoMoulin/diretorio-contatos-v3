@@ -313,7 +313,10 @@ mesmas medições — não é "inverter as cores". Regras:
 **Favoritos.** Híbrido, nesta ordem:
 
 1. Visitante e demo: `localStorage` (`ramal:favoritos`), sem conta, sem escrita no banco. É o que faz o
-   recurso existir no demo somente leitura.
+   recurso existir no demo somente leitura. A lista guarda só o **código**; o nome, o tipo, a contagem e
+   o destino vêm de um **índice do servidor** que cobre comarca, fórum e nó (979 entradas hoje, 155 KB
+   crus / 21 KB gzip). O índice manda no nome: nome guardado no navegador fica velho depois de uma
+   edição. No v3 isso vira um endpoint por código, não o índice inteiro.
 2. Pessoal autenticado: sincroniza com a tabela `favoritos` (`usuario_id`, `codigo` do nó, criado_em).
    A tabela nasce nas migrações do `v3.0`; a sincronização entra depois.
 3. Ao entrar, o que estava no `localStorage` é oferecido para importar — nunca mesclado em silêncio.
