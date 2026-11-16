@@ -548,6 +548,9 @@ deploy do v2.
 | D-4 | **Neon free**: conexão *pooled* e suspensão por inatividade | só morde no item 7 | usar a pooled no `DB_URL`; o estado "carregando" cobre o cold start duplo |
 | D-5 | **Seed × edição**: no Neon o banco persiste, ao contrário do Render free do v2 | só morde depois do primeiro deploy | seed roda só com base vazia; o que for editado no admin sobrevive ao deploy |
 
+Decisões de **interface** herdadas da revisão externa do wireframe (16/11) não entram nesta tabela: elas
+dependem de ter a tela na frente, então estão na §13 como **F-5 a F-12**. Nenhuma delas muda arquitetura.
+
 ## 13. Fila de retomada do v3 (anotada em 15/11)
 
 Ideias aprovadas para depois do deploy do v2 e do gate do v2. Nenhuma entra agora; a ordem abaixo é a
@@ -559,6 +562,14 @@ de execução sugerida, não a de valor.
 | F-2 | **Selo de procedência no contato** | "ofício 432/2024 · desde 03/2024" ao lado do canal: o diferencial do v2 que o wireframe perdeu, porque o `seed_mascarado.json` não tem `fonte`/`vigente_desde`. Depende do **export do seed** (D-3) | baixo depois do seed |
 | F-3 | **`Ctrl K` como paleta de verdade** | hoje o atalho só foca o campo. Paleta com resultados agrupados (comarcas, unidades, setores, contatos), ↑↓ e Enter, destino já com âncora | médio (~150 linhas de JS) |
 | F-4 | **Página "v1 → v2 → v3"** | uma captura por versão, os números de cada uma e a decisão que a definiu. Serve à candidatura: mostra arco, não três repositórios soltos | baixo, e vive nos docs |
+| F-5 | **Largura do painel com a lista aberta** (424 × 520 px) | a revisão externa de 16/11 propôs 520 px a partir da comarca. A medição diz que o mapa é limitado pela altura, então 520 **não** encolhe o mapa — mas estica as linhas de leitura. Com o valor de contato quebrando em duas linhas (feito no bloco A), o corte que motivava a proposta sumiu. Decidir com as telas na mão, em 10 min: 424 é o padrão, 520 é conforto | baixo |
+| F-6 | **Busca multitermo** | hoje `Diretorio::busca()` compara o termo inteiro (`str_contains`): “1 vara civel vitoria” e “cartorio vitoria” não acham nada, porque a frase não existe. Tokens com AND, um `ILIKE` por palavra sobre `busca_texto`. É a única pendência que muda **comportamento**, não aparência — entra junto com a busca da v3, não como polimento | baixo no protótipo, médio no SQL/índice |
+| F-7 | **Cabeçalhos “Grande Vitória” e “Interior”** | a ordem da lista não é acidente: são as 7 da RMGV e depois o interior alfabético, herdadas do catálogo. O problema é não estar declarado. Dois cabeçalhos fixos + cabeçalho de colunas fixo; a ordem não muda (decisão de 15/11) | baixo |
+| F-8 | **Formato único de telefone na exibição** | o seed tem três grafias (`(27) 3145 XXXX`, `(27) 3232. XXXX`, `(27) 3145-XXXX`). Normalizar separador **não** completa dígito (o mascaramento fica), mas toca a regra “mostra o valor como está” — decidir junto da normalização do seed | baixo |
+| F-9 | **Anatomia da linha de contato: rótulo antes do valor** | a pessoa procura “Recepção”, não “(27) 3145-XXXX”, e hoje o rótulo está embaixo, em 11 px. Inverte a linha de `valor / tipo · desc` para `rótulo / valor`, e tira o tile de ícone (o tipo já está no formato). Mesma anatomia da lista de Úteis | baixo |
+| F-10 | **Reconferência por local, com progresso** | agrupar por local, contador “12 de 329 conferidos”, aba “sem documento · 1.478” e “✓ Conferi” por local. No v3 isso é **Filament**, não Blade — não investir no protótipo | médio (2–3 dias com escrita) |
+| F-11 | **“Úteis” → “Telefones” no rail** | “Úteis” é adjetivo sem substantivo; “Telefones” nomeia. Um minuto de mudança, mas mexe em nome de destino decidido em 15/11 — por isso é decisão, não acabamento | mínimo |
+| F-12 | **Conferir no seed um e-mail em dois níveis** | a revisão de 16/11 apontou o mesmo endereço como contato direto da comarca (pág. 3) e dentro do 3º Juizado (pág. 5): “uma das duas mente”. Se for o mesmo registro contado em dois níveis, é erro de dado — e a consulta pública herda | baixo, e é conferência de dado |
 
 ---
 

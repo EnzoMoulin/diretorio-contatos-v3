@@ -7,6 +7,11 @@ arquivo e linha citados. Onde não conferi, está dito.
 O que ele fez de diferente e que valeu o envio: mediu contraste e alvo no raster do PDF e leu o
 texto vetorial. Duas medidas dele corrigem números que eu tinha passado no briefing — ver §F.
 
+**Status (16/11/2026):** o **bloco A** está aplicado e medido (fim deste documento). Do **bloco B em
+diante nada se decide agora** — a v3 está na etapa de direção visual e a arquitetura (Laravel) já está
+fechada; essas escolhas entram no começo da v3, quando houver tela para comparar. O destino de cada
+bloco está no mapa do fim do documento.
+
 ---
 
 ## A. Aceitos como ajuste de wireframe (baratos, verificados no código)
@@ -144,3 +149,21 @@ Duas notas de execução:
 
 **Pendente:** os itens **B** (painel 424×520, busca multitermo, cabeçalhos Grande Vitória/Interior,
 formato único de telefone, anatomia da linha, tile de ícone, reconferência em Filament).
+
+---
+
+## Onde cada bloco foi anotado para depois
+
+| Bloco | O que é | Onde ficou |
+|---|---|---|
+| **A** | 19 ajustes de wireframe | **aplicados em 15/11/2026**, medidos na seção acima |
+| **B** | 7 decisões de interface | `docs/plano-v3.md` §13, itens **F-5 a F-11** |
+| **C** | 5 ideias novas | `docs/backlog-ideias.md`, itens **15 a 18** (a quinta já era o item 08) |
+| **D** | 5 sugestões recusadas | só aqui, na tabela da §D — recusa com motivo não vira fila |
+| **E** | leituras erradas do revisor | só aqui, na §E |
+| **F** | correção do briefing (painel `#0B1321`, 7,11:1) | skill `diretorio-contatos-v3`, seção “Pegadinhas já pagas” |
+| **G** | e-mail possivelmente em dois níveis | `docs/plano-v3.md` §13, item **F-12** (conferência de dado) |
+
+Regra que vale para os dois arquivos: **gatilho não aconteceu, não se implementa**. O bloco B só entra
+quando a v3 tiver a tela correspondente na frente — decidir largura de painel sem a lista real é garantir
+refazer a medição depois.
