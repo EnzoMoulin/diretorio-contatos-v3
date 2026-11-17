@@ -1,6 +1,7 @@
 # Backlog de ideias — diretório de contatos
 
-Registro de 12/11/2026. Cada ideia tem **fase**, **gatilho** (quando ela pode começar) e **veredito**
+Registro de 12/11/2026; itens 15–18 acrescentados em 16/11/2026, vindos da revisão externa do
+wireframe. Cada ideia tem **fase**, **gatilho** (quando ela pode começar) e **veredito**
 (fazer / condicional / não fazer). Nada aqui é compromisso: só vira trabalho por decisão do Enzo.
 
 Regra de leitura: uma ideia só entra na fila quando o gatilho aconteceu. Ideia com gatilho futuro não
@@ -23,6 +24,10 @@ autoriza código agora.
 | 11 | Observabilidade barata (`/healthz`, eventos, log) | v3, deploy | primeiro deploy no ar | **fazer** |
 | 12 | Acessibilidade como gate de CI | v3, CI | CI da v3 existir | **fazer** |
 | 13 | Contrato de API documentado (OpenAPI + coleção) | v4 | v4 com rotas | condicional |
+| 15 | Idade do dado na unidade (“mais recente: ofício de março/2024 · há 2 anos”) | v3, painel | export do seed (D-3) e selo no contato (F-2) | **fazer** |
+| 16 | Copiar a unidade como texto (nome, endereço, canais) | v3, painel | tela de unidade fechada | **fazer** |
+| 17 | “Consultados hoje” em Favoritos | v3, polimento | favoritos híbridos com conta | condicional |
+| 18 | Imprimir fórum e comarca, além da unidade | v3, impressão | ficha da unidade fechada | **fazer** |
 
 ## Detalhe das ideias novas (12/11/2026)
 
@@ -182,6 +187,39 @@ catálogo tem o endereço real).
 estrutura — o que estava em dúvida era o inverso. Também separou o que é diferença de redação
 (5 casos) do que é dado inventado (1 caso), que é a distinção que faltava para decidir se
 alguma coisa precisava ser corrigida antes do deploy.
+
+### 15 — Idade do dado na unidade (nova, 16/11/2026)
+
+**O que:** abaixo de “10 contatos · 2 setores”, uma linha de 11 px: “Mais recente: ofício de março/2024 ·
+01/03/2024 · há 2 anos e 8 meses”; para os 1.478 sem documento, “Sem documento de origem registrado”.
+A mesma linha entra na ficha impressa.
+
+**Por que:** é a pergunta que a pessoa tem ao discar (“este número está atual?”) e hoje ela exige abrir a
+ficha de cada contato. Usa `fonte` e `vigente_desde`, que o seed já tem em 329 contatos — é o selo do v2
+trabalhando na escala da unidade.
+
+**Gatilho:** export do seed com procedência (D-3) e o selo por contato (F-2).
+
+### 16 — Copiar a unidade como texto (nova, 16/11/2026)
+
+**O que:** botão “Copiar tudo” ao lado de Imprimir: nome, endereço e todos os canais, no texto da ficha.
+
+**Por que:** servidor passa número por mensagem, e o valor solto perde o dono. Sem dependência de dado.
+
+### 17 — “Consultados hoje” em Favoritos (nova, 16/11/2026)
+
+**O que:** bloco com os últimos cinco locais visitados (via trilha), com estrela para fixar.
+
+**Por que:** o atendimento volta aos mesmos dez cartórios, e `/favoritos` vazio desperdiça dois terços do
+painel. Custou 3 h no protótipo; no v3 depende de favoritos com conta.
+
+### 18 — Imprimir fórum e comarca (nova, 16/11/2026)
+
+**O que:** além de “Imprimir unidade”, “Imprimir fórum” e “Imprimir comarca”, com as unidades e os
+contatos agregados.
+
+**Por que:** a ficha de uma unidade pequena sai 70% vazia; o escopo natural de quem afixa papel na parede é
+o fórum inteiro.
 
 ## Não fazer (registrado com motivo)
 
