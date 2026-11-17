@@ -1,0 +1,38 @@
+name: Ideia ou melhoria
+description: Funcionalidade, refatoração ou dívida técnica que ainda não virou código
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideia registrada aqui não é compromisso: vira trabalho quando o gatilho acontecer.
+        O veredito e o gatilho das ideias de produto ficam em `docs/backlog-ideias.md`.
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema
+      description: O que hoje não existe, trava ou incomoda. Descreva o uso, não a solução.
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: O que fazer, em linhas gerais. Se houver mais de um caminho, liste os dois.
+    validations:
+      required: true
+  - type: textarea
+    id: tradeoffs
+    attributes:
+      label: Trade-offs e custo
+      description: O que fica pior, o que depende de outra entrega, o que sai do escopo.
+  - type: input
+    id: gatilho
+    attributes:
+      label: Gatilho
+      description: O que precisa estar de pé para isto começar (ex. "rotas de leitura respondendo").
+  - type: textarea
+    id: pronto
+    attributes:
+      label: Definição de pronto
+      description: Como saber que terminou — teste que passa, rota que responde, número medido.

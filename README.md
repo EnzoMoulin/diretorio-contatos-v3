@@ -19,6 +19,8 @@ ainda não começou — quando começar, entra por este README.
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `Dockerfile`, `docker/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
+| **Fluxo de PR com rastreabilidade**: formulário de PR (`Closes #N`), formulários de issue e checks obrigatórios para entrar na `main` | `.github/`, seção *Fluxo de contribuição* abaixo |
+| **Régua Laravel escrita e adormecida**: Pint, Larastan, Pest e cache de rotas/views prontos, disparando quando `apps/web/` existir | `.github/workflows/laravel.yml`, `docs/convencoes-laravel.md` |
 | Plano vigente da v3 e da v4: o que migra, o que não migra, critério do FastAPI | `docs/v3-arquitetura-preparacao.md`, `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` |
 | **Decisão de 12/11/2026: a v4 mora neste repositório** — dois deployáveis (`apps/web`, `services/busca`), um `db/` | `docs/adr-009-um-repo-para-v3-e-v4.md` |
 | Briefing da direção A com mapa real e layout de celular (a executar) | `docs/v3-interface.md` |
@@ -73,6 +75,48 @@ docker build -t diretorio-contatos-v3 .
 O script só age em banco terminado em `_teste`, então produção nunca é atingida por acidente.
 Detalhe de cada arquivo de `db/`, pegadinhas já pagas e a medição que fixou o limiar de
 similaridade em 0,45: `db/README.md`.
+
+## Fluxo de contribuição
+
+Nada entra na `main` por push direto. O caminho é sempre o mesmo:
+
+```
+issue (problema) → branch → commits semânticos → PR ("Closes #N") → CI verde → squash merge
+```
+
+- **Issue primeiro.** O formulário de bug e o de ideia/melhoria pedem o problema, o gatilho e
+  a definição de pronto. Ideia registrada não é compromisso: vira trabalho quando o gatilho
+  acontecer (`docs/backlog-ideias.md` é a fila de produto).
+- **PR com `Closes #N`.** O merge fecha a issue sozinho, e o histórico da `main` mostra o
+  problema e o código que o resolveu no mesmo fio. `Refs #N` quando a mudança só encosta na
+  issue.
+- **Descrição do PR com trade-offs**, não só a lista de arquivos: o que foi descartado, o que
+  fica pior, o que ficou fora de escopo.
+- **Checks obrigatórios.** O ruleset `protege-default` exige os jobs de `.github/workflows/testes.yml`
+  verdes e recusa force-push e exclusão da `main`. PR vermelho não tem botão de merge.
+
+| Workflow | Dispara em | Prova |
+| :--- | :--- | :--- |
+| `testes.yml` → `Varredura de privacidade` | todo push e PR | nenhum telefone/e-mail real e nenhum nome de pessoa fora do padrão sintético |
+| `testes.yml` → `DDL e invariantes (Postgres 16)` | todo push e PR | `db/schema.sql` aplica duas vezes (idempotência) e as 41 invariantes estruturais passam |
+| `testes.yml` → `Varredura do seed (a pedido)` | `workflow_dispatch` | o seed da v2, clonado na hora, também está limpo |
+| `laravel.yml` → Pint, Larastan, Pest, Blade/rotas | PR que toca `apps/web/**` | estilo PSR-12, tipos, fluxos de feature e compilação de view — **adormecido até o esqueleto existir** |
+
+Commits seguem Conventional Commits (`feat:`, `fix:`, `docs:`, `ci:`, `chore:`…), um assunto por
+commit; o squash preserva um commit por funcionalidade na `main`.
+
+## Roadmap
+
+O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
+não em promessa de README. Duas listas se complementam:
+
+- **issues abertas** — trabalho reconhecido: esqueleto Laravel, busca, mapa, paridade de
+  contrato, acessibilidade no CI, plano de testes;
+- `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
+  motivo. Issue sem gatilho não entra em execução.
+
+Prioridade vigente: fechar o **esqueleto Laravel** (é o que destrava Pint/Larastan/Pest no CI e
+as rotas de leitura) e, em cima dele, a busca pública.
 
 ## Deploy
 
