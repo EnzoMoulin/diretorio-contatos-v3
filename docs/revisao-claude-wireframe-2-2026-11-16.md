@@ -173,6 +173,22 @@ Guarapari. A regra de zoom + sumir na unidade resolve a função sem mover o chi
   folha em 371,4 — sem sobrepor a lista.
 - **PDF:** regerado com a mesma ordem e as mesmas 16 páginas.
 
+## Lote B — busca acesa (17/11/2026)
+
+- **De onde vem o destaque:** `PainelController::busca()` monta `destaque` com as chaves das comarcas
+  que casaram pelo nome, das unidades/setores (`comarca_chave`, novo em `Diretorio::busca()`) e dos
+  contatos (`_comarca`, resolvido por `resolveComarca()` — `uo` → nó → fórum → comarca). A Sede entra
+  como `destaque_sede`, sem polígono.
+- **Mapa:** comarcas fora do conjunto ficam a 35% (polígono e disco); as acesas mantêm o disco cheio e
+  ganham **anel de 2 px** (`radius + 2`, sem preenchimento). Rótulos das apagadas recebem
+  `.rotulo-apagado`. Nada de pino, nada de zoom: o `getZoom()` fica em 8,25.
+- **Sede:** o rail ganha um ponto ao lado de "Sede"; o mapa não inventa polígono para ela.
+- **Medido:** `cejusc` → 10 discos acesos/10 anéis, 59 apagados, ponto na Sede; `3jecivel` → 1/68;
+  `sede` → 0 apagados e só o ponto; home → 0 apagados, sem anel. O cabeçalho continua
+  `9 unidades e setores`; o destaque tem 10 comarcas porque os 11 contatos também contam como
+  ocorrência — o anel segue resultado, não a contagem da lista.
+- **PDF:** regerado; a p. 6 mostra os anéis, o resto apagado e o ponto da Sede, no mesmo enquadramento.
+
 ## Não conferi
 
 - A geometria em pixel do chip nas págs. 12 e 15 e a distância de 22 px entre os dois pinos: são
@@ -182,8 +198,7 @@ Guarapari. A regra de zoom + sumir na unidade resolve a função sem mover o chi
 
 ## Próximo passo
 
-O **lote A** (defeitos puros, sem decisão) pode entrar sem resposta: legenda lida do `raioDe`,
-cabeçalho da busca sem contagem duplicada, cabeçalho do celular em uma linha, `desde` em dd/mm/aaaa,
-texto de produção da p. 7, regra de zoom do chip + sumir na unidade, e o crédito do IBGE fora da
-lista no celular. Meço no render e regenero o PDF. O **lote B** (perto de mim por comarca, busca
-acesa, dois toques no pino) só depois da sua resposta às duas decisões.
+O **lote A** está aplicado e medido. O **lote B** está pela metade: a **busca acesa** entrou (destaque
+por comarca, anel de 2 px, 35% no resto, ponto na Sede, sem pino e sem zoom). Faltam o **"perto de
+mim" por comarca** (bloco "VOCÊ ESTÁ EM", estados de sem comarca/fora do ES/permissão negada) e os
+**dois toques no pino** só no zoom de comarca. Nada disso reabre as sete decisões.
