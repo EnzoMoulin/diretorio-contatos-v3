@@ -196,9 +196,35 @@ Guarapari. A regra de zoom + sumir na unidade resolve a função sem mover o chi
 - Os estados de hover e o toque no pino: o PDF não os tem.
 - O telefone `(27) 3232. XXXX`: não abri a linha na p. 8.
 
+## Lote B — perto de mim por comarca (17/11/2026)
+
+- **Onde estou:** `municipioDe()` faz ponto-em-polígono na `camadaGeo` que já está no mapa e cruza o
+  `codarea` com `porIbge`; nada de serviço externo. O cartão passa a abrir com `VOCÊ ESTÁ EM` e
+  `Vitória · comarca com 2 fóruns`.
+- **Ordem:** os fóruns da comarca (até 2) vêm primeiro; depois a seção
+  `OUTROS FÓRUNS PRÓXIMOS · EM LINHA RETA` completa as cinco linhas. A distância ganha `~` quando o
+  fórum é `aprox` (a linha já dizia "posição aproximada").
+- **Estados medidos:**
+  - Vitória (-20,3155, -40,3128): 2 fóruns de Vitória, 3 outros, 5 linhas; zoom 12,25 no desktop e
+    11 no celular.
+  - Município sem comarca (centroide de 3201159): rótulo `SEM COMARCA`, a mensagem "Seu município
+    não tem comarca própria…" e 5 fóruns mais próximos; Ibatiba com `~24,1 km`.
+  - Fora do ES (-23,5505, -46,6333): `Sua posição está fora do Espírito Santo.`, sem lista e sem
+    enquadrar — o zoom fica em 8,25.
+  - Permissão negada: `Sem acesso à localização. Digite seu município na busca.` e o foco vai para o
+    campo `q`.
+- **Dois toques:** no desktop o clique continua abrindo a unidade. No celular, o primeiro toque
+  seleciona o pino (`.pino-ativo`, losango maior), abre a dica com nome/comarca e o aviso
+  `Toque de novo para abrir`; o segundo abre `/local/FOR0001`. Com o cartão de "perto de mim" aberto,
+  o toque abre direto (a lista já desambiguou).
+- **PDF:** regerado; a p. 13 (celular) mostra o cartão com a comarca, os dois fóruns e a seção dos
+  outros, e a legenda passou a falar em comarca/fóruns.
+
 ## Próximo passo
 
-O **lote A** está aplicado e medido. O **lote B** está pela metade: a **busca acesa** entrou (destaque
-por comarca, anel de 2 px, 35% no resto, ponto na Sede, sem pino e sem zoom). Faltam o **"perto de
-mim" por comarca** (bloco "VOCÊ ESTÁ EM", estados de sem comarca/fora do ES/permissão negada) e os
-**dois toques no pino** só no zoom de comarca. Nada disso reabre as sete decisões.
+O **lote A** e o **lote B** estão aplicados e medidos: a busca acende as comarcas com resultado, o
+"perto de mim" abre em "VOCÊ ESTÁ EM" com os fóruns da comarca, os estados de sem comarca/fora do
+ES/permissão negada estão cobertos e o primeiro toque no pino seleciona antes do segundo abrir. O PDF
+foi regerado (16 páginas; p. 6 e p. 13 são as que mudaram). O próximo passo é a sua leitura dessas duas
+páginas: se elas convencerem, o ciclo da revisão 2 fecha. A precisão dos 18 pinos aproximados não foi
+alterada — o protótipo só a declara; corrigir a coordenada é decisão de dados, não de tela.
