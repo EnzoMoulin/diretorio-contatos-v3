@@ -47,7 +47,7 @@ BEGIN
   PERFORM _confere('nós órfãos de local',                (SELECT count(*) FROM nos WHERE local_id IS NULL), 0);
 
   -- 4. procedência: as três origens documentadas, sem sobra nem falta
-  PERFORM _confere('contatos do ofício de março/2024',        (SELECT count(*) FROM contatos WHERE fonte LIKE 'oficio-2024-03%'), 43);
+  PERFORM _confere('contatos do ofício de março/2024',   (SELECT count(*) FROM contatos WHERE fonte LIKE 'oficio-2024-03%'), 43);
   PERFORM _confere('contatos do volume da Sede',         (SELECT count(*) FROM contatos WHERE fonte LIKE 'catalogo-sede-%'), 286);
   PERFORM _confere('contatos da base sem documento declarado',
                    (SELECT count(*) FROM contatos WHERE fonte LIKE 'seed%'), 1478);

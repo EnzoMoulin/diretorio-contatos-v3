@@ -566,7 +566,8 @@ colunas — a conferência acima é de **estrutura e nomes**, não de contagem d
 sendo o número medido no seed.
 
 **O terceiro documento da fonte: o ofício de março/2024.** Fora do catálogo, a fonte inclui
-`oficio-2024-03.pdf` — *ofício de março/2024 – Diretoria do Foro*, processo administrativo interno, **março de 2024**, uma página com e-mail e telefone de **21 unidades** da
+`oficio-2024-03.pdf` — *ofício de março/2024 – Diretoria do Foro*, processo administrativo interno,
+**março de 2024**, uma página com e-mail e telefone de **21 unidades** da
 Capital. Ele **não** é catálogo de ramais e não descreve árvore: agrupa por diretoria administrativa, não
 por prédio. É a fonte dos **43 contatos** do seed marcados `Contato provisório — validar vigência.` —
 **23 e-mails e 20 telefones**, conferidos um a um nas 21 unidades: 10 varas criminais, Auditoria Militar,
