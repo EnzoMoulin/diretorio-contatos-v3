@@ -220,11 +220,28 @@ Guarapari. A regra de zoom + sumir na unidade resolve a função sem mover o chi
 - **PDF:** regerado; a p. 13 (celular) mostra o cartão com a comarca, os dois fóruns e a seção dos
   outros, e a legenda passou a falar em comarca/fóruns.
 
+## Lote B — rótulos sem colisão (17/11/2026)
+
+- **Causa:** os rótulos permanentes eram fixos por lado (`ETIQUETAS`); em 1440 px, `Vila Velha`
+  (direção `bottom`) e `Guarapari` (direção `right`) caíam na mesma faixa e a caixa de Guarapari
+  ficava 58 × 14 px sob a de Vila Velha.
+- **Correção:** `ajustarRotulos()` mede as caixas no DOM e tenta o lado preferido, depois
+  `bottom → right → left → top`; se nenhum lado couber, o rótulo sai de cena. A ordem de prioridade
+  é Vitória, Vila Velha, Guarapari, Cariacica, Serra e Cachoeiro; a função roda no carregamento, no
+  `zoomend` e no `resize` do mapa. `Guarapari` passou a preferir `bottom`; no zoom 7 ele gira para
+  `left` sozinho, e no zoom 6 Cachoeiro é o único que sai (é o menos prioritário).
+- **Medições:** sem interseção de rótulos em 1024, 1280, 1366, 1440, 1600, 1920 e 2560 px e nos zooms
+  6, 6,5, 7, 7,5, 8, 8,25, 9, 10 e 11. No enquadramento inicial de 1440, Guarapari fica em
+  `(543, 724)` e Vila Velha em `(587, 685)`: 19 px de folga vertical.
+- **PDF e imagens:** regenerados; a p. 2 e as capturas de busca/perto já mostram os dois rótulos
+  separados.
+
 ## Próximo passo
 
 O **lote A** e o **lote B** estão aplicados e medidos: a busca acende as comarcas com resultado, o
 "perto de mim" abre em "VOCÊ ESTÁ EM" com os fóruns da comarca, os estados de sem comarca/fora do
-ES/permissão negada estão cobertos e o primeiro toque no pino seleciona antes do segundo abrir. O PDF
-foi regerado (16 páginas; p. 6 e p. 13 são as que mudaram). O próximo passo é a sua leitura dessas duas
-páginas: se elas convencerem, o ciclo da revisão 2 fecha. A precisão dos 18 pinos aproximados não foi
-alterada — o protótipo só a declara; corrigir a coordenada é decisão de dados, não de tela.
+ES/permissão negada estão cobertos, o primeiro toque no pino seleciona antes do segundo abrir e os
+rótulos fixos não se sobrepõem mais (Vila Velha/Guarapari inclusive). O PDF foi regerado (16 páginas;
+p. 2, 6 e 13 são as que mudaram). O próximo passo é a sua leitura dessas páginas: se elas convencerem, o
+ciclo da revisão 2 fecha. A precisão dos 18 pinos aproximados não foi alterada — o protótipo só a
+declara; corrigir a coordenada é decisão de dados, não de tela.
