@@ -1,0 +1,178 @@
+name: Laravel (Pint, Larastan, Pest)
+
+# Escrito antes do esqueleto existir, de propósito: a régua de estilo, de tipo e de teste
+# é a primeira coisa que o scaffold tem de obedecer, não a última.
+#
+# **Hoje este workflow não roda.** O filtro de `paths` exige `apps/web/**`; enquanto o
+# Laravel não estiver em `apps/web/` (ADR-009), nenhum PR casa com o filtro — e não existe
+# job verde que não testou nada. Editar este arquivo também não o dispara (path filter de
+# propósito): enquanto não há app, o `composer install` falharia por ausência de árvore.
+# No PR do esqueleto:
+#   1. conferir se o caminho é `apps/web/` — se o scaffold pousar na raiz, corrigir aqui;
+#   2. rodar este workflow uma vez vermelho e uma verde, de propósito;
+#   3. só então incluir os quatro nomes de job abaixo como required status check no ruleset
+#      `protege-default` (issue de rastreio: esqueleto Laravel).
+#
+# Regras de código que acompanham esta régua: `docs/convencoes-laravel.md`.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/**'
+  pull_request:
+    paths:
+      - 'apps/web/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Push novo no mesmo ramo cancela o anterior: PR de documentação não paga
+  # dois minutos de Composer por causa de um commit de README.
+  group: laravel-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/web
+
+env:
+  PHP_VERSION: '8.4'
+
+jobs:
+  estilo:
+    name: Pint (PSR-12)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+      - name: Cache do Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Instalar dependências
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Conferir estilo (não reescreve nada)
+        # `--test` só reporta e sai 1. Reescrever no CI esconderia o erro do autor e
+        # deixaria a árvore diferente do commit que foi revisado.
+        run: vendor/bin/pint --test
+
+  analise:
+    name: Larastan (análise estática)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+      - name: Cache do Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Instalar dependências
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Analisar tipos (nível fixado no phpstan.neon)
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+
+  testes:
+    name: Pest (Feature)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      # Postgres 16 e não SQLite: a busca usa `pg_trgm`/`unaccent` e o DDL de `db/`
+      # é Postgres. Teste que passa em SQLite não prova a consulta que roda em produção.
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: enzo
+          POSTGRES_PASSWORD: enzo
+          POSTGRES_DB: diretorio_teste
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: '5432'
+      DB_DATABASE: diretorio_teste
+      DB_USERNAME: enzo
+      DB_PASSWORD: enzo
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, intl, pdo_pgsql, pgsql, bcmath, zip
+          coverage: none
+          tools: composer:v2
+      - name: Cache do Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Instalar dependências
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Preparar ambiente
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          php artisan key:generate --force
+      - name: Migrar e semear (mesmo caminho do README)
+        # Semear no CI é o que prova que `php artisan migrate --seed` funciona em banco
+        # limpo — a promessa do README quebra sozinha quando só a suíte roda.
+        run: php artisan migrate --seed --force
+      - name: Rodar a suíte
+        run: php artisan test --compact
+      - name: Logs do Laravel (só em falha)
+        if: failure()
+        run: cat storage/logs/laravel.log 2>/dev/null || true
+
+  formularios:
+    name: Blade e rotas (sem servidor)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          coverage: none
+          tools: composer:v2
+      - name: Instalar dependências
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Cachear rotas, views e config
+        # View com erro de compilação e rota com nome repetido não aparecem em teste de
+        # unidade; aparecem aqui, em segundos, antes do deploy.
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          php artisan key:generate --force
+          php artisan route:cache
+          php artisan view:cache
+          php artisan config:cache
+          php artisan route:clear
+          php artisan view:clear
+          php artisan config:clear
