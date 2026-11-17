@@ -571,6 +571,23 @@ de execução sugerida, não a de valor.
 | F-11 | **“Úteis” → “Telefones” no rail** | “Úteis” é adjetivo sem substantivo; “Telefones” nomeia. Um minuto de mudança, mas mexe em nome de destino decidido em 15/11 — por isso é decisão, não acabamento | mínimo |
 | F-12 | **Conferir no seed um e-mail em dois níveis** | a revisão de 16/11 apontou o mesmo endereço como contato direto da comarca (pág. 3) e dentro do 3º Juizado (pág. 5): “uma das duas mente”. Se for o mesmo registro contado em dois níveis, é erro de dado — e a consulta pública herda | baixo, e é conferência de dado |
 
+### Testes a escrever quando a primeira rota Laravel existir (anotado em 17/11)
+
+Nada disso se escreve antes da primeira rota: o v3 tem hoje 41 invariantes de schema, 20 de carga, 5 de
+plano e 33 casos de autoteste do scanner, e nenhuma linha de aplicação. A ordem abaixo é de custo, não
+de valor.
+
+| # | Teste | Por que | Custo |
+|---|---|---|---|
+| F-13 | **Payload por rota** (`/`, `/comarca/{chave}`, `/local/{chave}`, busca) | afirmar o shape contra `docs/paridade/esperado.json` — o fixture é o contrato congelado e é o que impede mudar a leitura que o usuário conhece. Assertar JSON, nunca HTML | baixo: um por rota |
+| F-14 | **Escrita contra Postgres no CI** | constraint e `norm_texto` só valem se o app passar por elas: Eloquent grava `fonte` livre e o teste de DDL não vê. Feature test de escrita no *service container* `postgres:16` do job `ddl`, **nunca SQLite** | baixo–médio: mexer no job |
+| F-15 | **Portar os 9 testes de procedência do v2** | `fonte`/`vigente_desde`, edição manual e herança — o v2 já pagou o custo de descobrir os casos | baixo: porta direta |
+| F-16 | **Smoke de console (Playwright)** | `pageerror === 0` nas rotas principais em 1440×900 e 390×844: é a sonda que expôs o `@js` em atributo e o único teste de UI que paga antes de a UI estabilizar | baixo |
+| F-17 | **RBAC e escopo** | Reconfirmar por papel, export autorizado, escopo por local — quando o Filament entrar | médio |
+
+Não valem: unitário de helper sem regra, snapshot de HTML (quebra a cada classe) e qualquer teste do
+protótipo em `IDEIAS PARA O V3/` (não versionado, camada de dados descartada).
+
 ---
 
 ## Anexo A — ADR-010 (pronto para `docs/adr/adr-010-backend-unico-em-laravel.md`)
