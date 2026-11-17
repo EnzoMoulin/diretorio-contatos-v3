@@ -18,7 +18,7 @@ bloco está no mapa do fim do documento.
 
 | # | Defeito | Onde está | Correção |
 |---|---|---|---|
-| A1 | **O valor é cortado com reticências** — “editais-civel-vitoria@exemplo.ju…” | `components/contato-linha.blade.php:19` usa `truncate` | Quebra em vez de reticências: `break-words` + `<wbr>@`, como já faz `painel/contato.blade.php:44`. Reticências só na linha de contexto. Mesmo defeito em `painel/reconfirmar.blade.php:29` |
+| A1 | **O valor é cortado com reticências** — “editais-civel-vitoria@exemplo.jus.br…” | `components/contato-linha.blade.php:19` usa `truncate` | Quebra em vez de reticências: `break-words` + `<wbr>@`, como já faz `painel/contato.blade.php:44`. Reticências só na linha de contexto. Mesmo defeito em `painel/reconfirmar.blade.php:29` |
 | A2 | Tamanho do valor varia por tela (13/15/14 px) | idem, `text-[0.8125rem]` vs `[0.9375rem]` | Um tamanho por contexto (linha e ficha), não três |
 | A3 | Subtítulo da linha (unidade de origem) truncado — “Central de Distribuição … · V…” | `contato-linha.blade.php:20` | Duas linhas quando precisar; nunca reticências no meio de “Vitória/Vila Velha/Viana” |
 | A4 | Trilha corta cada migalha: “Vit… › Fórum … › 10ª Secretaria In…” | `layouts/app.blade.php:238-243` (`truncate` em cada passo) | Duas linhas na trilha em vez de encurtar cada rótulo |
@@ -58,7 +58,7 @@ bloco está no mapa do fim do documento.
 
 ## C. Backlog (ideias dele que valem registro)
 
-1. **Idade do dado na unidade** — “Mais recente: ofício 432/2024 · 01/03/2024 · há 2 anos e 8 meses”, com “Sem documento de origem registrado” para os 1.478. O dado existe (`fonte`/`vigente_desde` em 329 contatos); é a melhoria mais forte da lista porque responde “posso confiar neste número?” sem abrir a ficha.
+1. **Idade do dado na unidade** — “Mais recente: ofício de março/2024 · 01/03/2024 · há 2 anos e 8 meses”, com “Sem documento de origem registrado” para os 1.478. O dado existe (`fonte`/`vigente_desde` em 329 contatos); é a melhoria mais forte da lista porque responde “posso confiar neste número?” sem abrir a ficha.
 2. **Copiar a unidade como texto** — nome, endereço e canais, no formato da ficha.
 3. **Consultados hoje** — últimos cinco locais em `/favoritos`, que hoje é a tela mais vazia.
 4. **Imprimir fórum e comarca**, não só a unidade.

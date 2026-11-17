@@ -22,9 +22,9 @@ aberto), o aviso de "posição aproximada" **já está** na linha da lista, e o 
 | # | Afirmação | Evidência | Veredito |
 |---|---|---|---|
 | 1 | "Perto de mim" ordena por distância e chama fóruns de "unidades" | `mapa.js:792` escreve "unidades mais próximas"; `Diretorio::locaisNoMapa()` (`Diretorio.php:169-194`) devolve só os 72 fóruns; a p. 13 lista fóruns; o `sort` (`mapa.js:749-760`) é haversine puro | **Procede.** Decisão de produto. A resposta certa é a comarca, não o vizinho geográfico |
-| 2 | Pinos sem identidade e desenhados para mouse | `.pino-alvo span` 13 px girado (`app.css:2080-2090`), alvo de 44 px; `click` navega direto (`mapa.js:656-658`); dica só no hover | **Procede em parte.** O two-tap é decisão; o anel do disco não deve sair |
+| 2 | Pinos sem identidade e desenhados para mouse | `.pino-alvo span` 13 px girado (`app.css, linhas 2080 a 2090`), alvo de 44 px; `click` navega direto (`mapa.js:656-658`); dica só no hover | **Procede em parte.** O two-tap é decisão; o anel do disco não deve sair |
 | 3 | A busca não acende o mapa | `PainelController::pagina()` (`:150-170`) monta o mesmo `mapa`/`locais` para toda rota; a view da busca não passa as comarcas que casaram; a p. 6 é o mapa da p. 2 | **Procede.** É o problema mais caro de reputação: a tela principal do produto não usa o mapa |
-| 4 | O chip tampa o que deveria mostrar | `.mapa-chip` centrado (`app.css:2157-2163`), `bottom` vem da folha (`mapa.js:719-723`); cobre o litoral e discos na p. 12 e um pino na p. 15 | **Procede na geometria.** A "falta de regra" não: esconder com o cartão aberto é decisão (`mapa.js:798`) |
+| 4 | O chip tampa o que deveria mostrar | `.mapa-chip` centrado (`app.css, linhas 2157 a 2163`), `bottom` vem da folha (`mapa.js:719-723`); cobre o litoral e discos na p. 12 e um pino na p. 15 | **Procede na geometria.** A "falta de regra" não: esconder com o cartão aberto é decisão (`mapa.js:798`) |
 | 5 | Números e chave que não conferem | Cabeçalho = 11 contatos que casaram (`busca.blade.php:5,27-31`); linhas = 25 contatos dos nós (`:115`); legenda 8/13/18 px (`app.blade.php:214-216`) contra 11,4/19,9/27,8 do `raioDe` (`mapa.js:192,291`); 454/1.807 = 25,12% | **Procede**, com uma correção: a legenda certa é 11,4/19,9/27,8; a dele (12/20/28) fica a menos de 1 px |
 
 ### 1. "Perto de mim" — aceitar a tese, com a versão barata
@@ -53,7 +53,7 @@ estado de seleção. Mas:
   (`mapa.js:653-655`). O PDF não mostra hover; "nada liga" vale para o papel, não para a tela.
 - **Não tirar o anel branco do disco em zoom ≥ 10,25.** Ele é o realce da seleção nas quatro
   superfícies (polígono, disco, linha do painel, recorte). O "aproximado" é um losango tracejado
-  (`app.css:2105-2109`), não um anel; tirar o anel remove o único retorno de seleção no mapa para
+  (`app.css, linhas 2105 a 2109`), não um anel; tirar o anel remove o único retorno de seleção no mapa para
   resolver uma colisão fraca.
 - Two-tap: aceitaria **só no zoom de comarca**, onde os alvos se sobrepõem; em "perto de mim" a lista
   já desambigua e o número no pino resolve. O cartão com `Abrir ›` de 44 px é a parte boa.
