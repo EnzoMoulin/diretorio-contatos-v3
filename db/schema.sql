@@ -97,7 +97,7 @@ COMMENT ON COLUMN comarcas.chave IS
 -- 3. locais — nível de ancoragem da árvore: fórum (tem comarca) ou Sede (não tem)
 -- -----------------------------------------------------------------------------
 -- Vocabulário: **fórum não é órgão**. O fórum é o prédio onde as varas estão
--- instaladas; o órgão é a Sede (e, na linguagem do Ofício 432/2024, as unidades
+-- instaladas; o órgão é a Sede (e, na linguagem do ofício de março/2024, as unidades
 -- administrativas — diretoria, contadoria). Os dois ocupam o mesmo nível da
 -- hierarquia, então a tabela se chama `locais`, com `tipo` dizendo qual é qual.
 -- Reservar "órgão" só para a Sede evita o erro de ler `locais` como "lista de
@@ -231,7 +231,7 @@ COMMENT ON COLUMN contatos.descricao IS
 COMMENT ON COLUMN contatos.fonte IS
   'Documento de origem (nome do arquivo). O v2 guardava "Contato provisório — validar vigência." em observação livre: texto não filtra, não expira e não se audita.';
 COMMENT ON COLUMN contatos.vigente_desde IS
-  'Data do documento que trouxe o valor. Ofício 432/2024 = março de 2024; catálogo = junho e agosto de 2026. A tela marca "confirmar vigência" a partir daqui.';
+  'Data do documento que trouxe o valor. Ofício da fonte = março de 2024; catálogo = junho e agosto de 2026. A tela marca "confirmar vigência" a partir daqui.';
 COMMENT ON COLUMN contatos.busca_digitos IS
   'Só dígitos. Tolera as quatro grafias do catálogo: (27) 9XXXX-XXXX, (27) 9XXXXXXXX, (27) 3XXXXXXX, (27) 9XXXX.XXXX.';
 

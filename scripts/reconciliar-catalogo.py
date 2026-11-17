@@ -7,7 +7,7 @@ originaram a base:
   1. catálogo de ramais por comarcas (versão JUNHO/2026) — comarcas, fóruns,
      unidades/setores e e-mails;
   2. catálogo de ramais da Sede (agosto/2026) — unidades e setores da Sede;
-  3. Ofício 432/2024 (SEI 7001802-03.2024.8.08.0024) — varas de Vitória.
+  3. ofício de março/2024 (processo administrativo interno) — varas de Vitória.
 
 A comparação é por **cobertura de palavras**, não por substring: no PDF o rótulo
 e o telefone ficam em subcolunas, então uma etiqueta longa aparece cortada por
@@ -258,7 +258,7 @@ def reconcilia(pasta, pdf_comarcas, pdf_sede, pdf_oficio):
                    "contatos": sum(1 for c in contatos
                                    if (c["COMARCA_ID"] or com_de_forum.get(c["FORUM_ID"])) in orgaos)}
 
-    # F. Ofício 432/2024
+    # F. ofício de março/2024
     citados = sorted({e.split("@")[0].lower()
                       for e in re.findall(r"[\w.\-]+@[\w.\-]+", texto_oficio)})
     rel["oficio"] = {"emails_citados": len(citados),
@@ -367,7 +367,7 @@ def main():
     ap.add_argument("--base", required=True, help="pasta dos CSVs (mascarados-oficial)")
     ap.add_argument("--comarcas", required=True, help="PDF do catálogo por comarcas")
     ap.add_argument("--sede", required=True, help="PDF do catálogo de ramais da Sede")
-    ap.add_argument("--oficio", required=True, help="PDF do Ofício 432/2024")
+    ap.add_argument("--oficio", required=True, help="PDF do ofício de março/2024")
     ap.add_argument("--saida", default="reconciliacao.json")
     ap.add_argument("--manifesto", help="congela a base conferida (contagens + hashes)")
     ap.add_argument("--seed", help="seed do app (JSON da v2) para hash e conferência de contagem")

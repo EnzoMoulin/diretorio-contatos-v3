@@ -4,7 +4,7 @@
 --  Uso: db/testar-schema.sh (com SEED_JSON=... ) ou
 --       psql "$URL" -v ON_ERROR_STOP=1 -f db/verificar-carga.sql
 --  Os números abaixo são os medidos no seed do v2 (HEAD d9a011a) e conferidos
---  contra os dois volumes do catálogo e o Ofício 432/2024.
+--  contra os dois volumes do catálogo e o ofício de março/2024.
 -- =============================================================================
 BEGIN;
 
@@ -47,13 +47,13 @@ BEGIN
   PERFORM _confere('nós órfãos de local',                (SELECT count(*) FROM nos WHERE local_id IS NULL), 0);
 
   -- 4. procedência: as três origens documentadas, sem sobra nem falta
-  PERFORM _confere('contatos do Ofício 432/2024',        (SELECT count(*) FROM contatos WHERE fonte LIKE 'SEI\_%'), 43);
-  PERFORM _confere('contatos do volume da Sede',         (SELECT count(*) FROM contatos WHERE fonte LIKE 'Ramais\_TJES\_%'), 286);
+  PERFORM _confere('contatos do ofício de março/2024',   (SELECT count(*) FROM contatos WHERE fonte LIKE 'oficio-2024-03%'), 43);
+  PERFORM _confere('contatos do volume da Sede',         (SELECT count(*) FROM contatos WHERE fonte LIKE 'catalogo-sede-%'), 286);
   PERFORM _confere('contatos da base sem documento declarado',
                    (SELECT count(*) FROM contatos WHERE fonte LIKE 'seed%'), 1478);
   PERFORM _confere('contatos sem procedência',           (SELECT count(*) FROM contatos WHERE fonte = ''), 0);
-  PERFORM _confere('Ofício 432/2024 com data de março/2024',
-                   (SELECT count(*) FROM contatos WHERE fonte LIKE 'SEI\_%' AND vigente_desde = DATE '2024-03-01'), 43);
+  PERFORM _confere('ofício da fonte com data de março/2024',
+                   (SELECT count(*) FROM contatos WHERE fonte LIKE 'oficio-2024-03%' AND vigente_desde = DATE '2024-03-01'), 43);
 
   -- 5. busca sobre a base mascarada (é o que o demo público vai servir)
   PERFORM _confere('busca sem acento acha "Cartório"',

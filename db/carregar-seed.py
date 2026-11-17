@@ -18,11 +18,11 @@ from typing import Any
 
 # Procedência documentada: só se preenche o que o seed diz de onde veio.
 #   - "Catálogo de ramais — agosto/2026"  -> volume da Sede, 28/08/2026
-#   - "Contato provisório — validar vigência." -> Ofício 432/2024 (março de 2024)
+#   - "Contato provisório — validar vigência." -> ofício da fonte (março de 2024)
 #   - sem observação -> veio da base mascarada, sem documento declarado
-FONTE_SEDE = "Ramais_TJES_28_08_26.pdf"
+FONTE_SEDE = "catalogo-sede-2026-08-28.pdf"
 DATA_SEDE = "2026-08-28"
-FONTE_OFICIO = "SEI__7001802_03.2024.8.08.0024.pdf"
+FONTE_OFICIO = "oficio-2024-03.pdf"
 DATA_OFICIO = "2024-03-01"
 FONTE_BASE = "seed (base mascarada do v2)"
 DATA_BASE = "NULL"

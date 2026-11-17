@@ -80,30 +80,30 @@ INSERT INTO nos (chave, local_id, pai_id, tipo, nome)
 VALUES ('UNI0064', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0001'), 'VARA', '1ª Vara Criminal');
 
--- contatos: as quatro grafias de telefone do Ofício 432/2024
+-- contatos: as quatro grafias de telefone do ofício de março/2024
 INSERT INTO contatos (chave, local_id, no_id, tipo, descricao, valor, fonte, vigente_desde)
 VALUES ('C000001', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 99111-0001',
-        'SEI__7001802_03.2024.8.08.0024.pdf', '2024-03-01'),
+        'oficio-2024-03.pdf', '2024-03-01'),
        ('C000002', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 991110002',
-        'SEI__7001802_03.2024.8.08.0024.pdf', '2024-03-01'),
+        'oficio-2024-03.pdf', '2024-03-01'),
        ('C000003', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 33110003',
-        'SEI__7001802_03.2024.8.08.0024.pdf', '2024-03-01'),
+        'oficio-2024-03.pdf', '2024-03-01'),
        ('C000004', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'Telefone', 'Institucional', '(27) 99110.0004',
-        'SEI__7001802_03.2024.8.08.0024.pdf', '2024-03-01'),
+        'oficio-2024-03.pdf', '2024-03-01'),
        -- dois e-mails no mesmo nó, separados por descricao (2º JECrim)
        ('C000005', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'E-mail', 'Gabinete', 'gabinete3jecrimdevitoria@exemplo.jus.br',
-        'SEI__7001802_03.2024.8.08.0024.pdf', '2024-03-01'),
+        'oficio-2024-03.pdf', '2024-03-01'),
        ('C000006', (SELECT id FROM locais WHERE chave = 'FOR0002'),
         (SELECT id FROM nos WHERE chave = 'UNI0064'), 'E-mail', 'Cartório', '3jecriminal-vitoria@exemplo.jus.br',
-        'SEI__7001802_03.2024.8.08.0024.pdf', '2024-03-01'),
+        'oficio-2024-03.pdf', '2024-03-01'),
        -- contato DO ÓRGÃO: no_id NULL é válido e não é dado incompleto
        ('C000007', (SELECT id FROM locais WHERE chave = 'FOR0002'), NULL, 'Telefone', 'Geral', '(27) 3134-0007',
-        'Ramais__COMARCAS_26_06_26-2.pdf', '2026-06-25');
+        'catalogo-comarcas-2026-06-26.pdf', '2026-06-25');
 
 -- ---------------------------------------------------------------------------
 -- 2. colunas derivadas
@@ -275,7 +275,7 @@ BEGIN
 
   PERFORM _espera_ok('procedência consultável por fonte',
     $q$INSERT INTO telefones_uteis (chave, nome, valor, fonte, vigente_desde)
-       VALUES ('UTL0001','Central de ajuda','(27) 3232-0000','Ramais__COMARCAS_26_06_26-2.pdf','2026-06-25')$q$);
+       VALUES ('UTL0001','Central de ajuda','(27) 3232-0000','catalogo-comarcas-2026-06-26.pdf','2026-06-25')$q$);
 
   PERFORM _espera_ok('idempotência grava chave e resposta',
     $q$INSERT INTO idempotencia (chave, requisicao_hash, status, resposta, expira_em)
