@@ -23,7 +23,7 @@ fórum. Isso muda o nível de ancoragem da árvore — `orgaos` (fóruns **e** S
 número que eu havia citado errado: a estrutura central são **286 contatos**, não 1.139 (ver 4.4).
 
 **Revisão 4 (11/11/2026, catálogo oficial em mãos).** Os dois volumes do catálogo — Comarcas
-(`Ramais__COMARCAS_26_06_26-2.pdf`, 41 páginas) e Sede (`Ramais_TJES_28_08_26.pdf`, 1 página) — confirmam
+(`catalogo-comarcas-2026-06-26.pdf`, 41 páginas) e Sede (`catalogo-sede-2026-08-28.pdf`, 1 página) — confirmam
 que cada órgão abre com um bloco de contatos que não pertence a unidade nem setor (*Geral · Sala ADM ·
 Recepção · Segurança*; na Sede, `Geral 3334-XXXX · Telefonista XXXX•XXXX•X · Recepção XXXX`). Isso fecha
 a pergunta dos contatos sem nó: entra a **5.6** (contato pertence a nó **ou** a órgão, com `orgao_id`
@@ -35,8 +35,8 @@ de recarga do Neon, com a regra da Sede) e o critério 13 na seção 9. E uma re
 separa a Sede da lista de comarcas na tela (menu próprio, `renderOrgao`); o que retorna 70 entradas é só
 `/api/comarcas`.
 
-**Revisão 5 (11/11/2026, terceiro documento da fonte).** Entra o *Ofício nº 432/2024 – Vitória-Diretoria
-do Foro* (`SEI__7001802_03.2024.8.08.0024.pdf`, março de 2024): 21 unidades da Capital, 23 e-mails e 20
+**Revisão 5 (11/11/2026, terceiro documento da fonte).** Entra o *ofício de março/2024 – Diretoria
+do Foro* (`oficio-2024-03.pdf`, março de 2024): 21 unidades da Capital, 23 e-mails e 20
 telefones — é a origem exata dos **43 contatos** que o seed marca `Contato provisório — validar
 vigência.`. A conferência fecha um a um (inclusive a 1ª Contadoria sem telefone e os dois e-mails do 2º e
 do 3º JECrim) e acrescenta três exigências ao DDL de `contatos`: `descricao` obrigatória para e-mail,
@@ -59,7 +59,7 @@ contra o volume de comarcas também fechou: 69/69 comarcas e 72/72 fóruns do se
 com o nome idêntico.
 
 **Revisão 7 (11/11/2026, correção de vocabulário do Enzo).** **Fórum não é órgão.** O fórum é o prédio
-onde as unidades estão instaladas; órgão é a Sede (e, na linguagem do Ofício 432/2024, as unidades
+onde as unidades estão instaladas; órgão é a Sede (e, na linguagem do ofício de março/2024, as unidades
 administrativas). Os dois ocupam o mesmo nível da árvore, então a tabela âncora deixa de se chamar
 `orgaos` e passa a **`locais`**, com `tipo` em `FORUM`/`SEDE`; `nos.orgao_id` e `contatos.orgao_id`
 passam a `local_id`; as rotas viram `/api/v1/locais?comarca=` e `/locais?sede=1`. "Órgão" fica
@@ -69,7 +69,7 @@ testado roda com `locais`). As revisões 3 a 6 mantêm o nome antigo de propósi
 que se decidiu então.
 
 **Revisão 8 (11/11/2026, preparação para publicar).** Passada de anonimização: o documento e o `db/`
-exemplificavam as quatro grafias de telefone com os **números reais** do Ofício 432/2024 — justamente o
+exemplificavam as quatro grafias de telefone com os **números reais** do ofício de março/2024 — justamente o
 que o seed do v2 mascara (`(27) 9XXXX-XXXX`). Agora os exemplos são de forma (`(27) 9XXXX-XXXX`,
 `(27) 9XXXXXXXX`, `(27) 3XXXXXXX`, `(27) 9XXXX.XXXX`) e os `INSERT` de `db/verificar-schema.sql` usam
 dígitos fictícios, com as invariantes de normalização ajustadas e verdes. Os nomes de unidade
@@ -281,7 +281,7 @@ não como indicação de que a Sede seja comarca.
 
 A árvore tem quatro níveis, e o terceiro é o **local** — o lugar onde as unidades estão instaladas: um
 **fórum** (que pertence a uma comarca) ou a **Sede** (que não pertence a nenhuma). **Fórum não é
-órgão**: órgão é a Sede, e, na linguagem do Ofício 432/2024, também as unidades administrativas
+órgão**: órgão é a Sede, e, na linguagem do ofício de março/2024, também as unidades administrativas
 (Diretoria do Foro, Contadorias). O fórum é prédio; chamá-lo de órgão confunde o imóvel com a
 instituição e faz a vara parecer "órgão do fórum". Por isso a tabela âncora se chama **`locais`**, com
 `tipo` em `FORUM`/`SEDE` — o nível é o mesmo, o que muda é o que a linha é.
@@ -521,8 +521,8 @@ morta.
 
 ### 5.6 Vínculo do contato: nó ou local `[decidido]`
 
-O catálogo oficial vem em **dois volumes**: `Ramais__COMARCAS_26_06_26-2.pdf` (41 páginas, comarcas,
-25/06/2026) e `Ramais_TJES_28_08_26.pdf` (1 página, Sede, 28/08/2026). A fonte tem ainda um **terceiro
+O catálogo oficial vem em **dois volumes**: `catalogo-comarcas-2026-06-26.pdf` (41 páginas, comarcas,
+25/06/2026) e `catalogo-sede-2026-08-28.pdf` (1 página, Sede, 28/08/2026). A fonte tem ainda um **terceiro
 documento**, que não é catálogo e é tratado ao fim desta seção. Os dois volumes abrem cada local com um
 bloco que **não pertence a nenhuma unidade ou setor** — nos fóruns *Geral · Sala ADM · Recepção ·
 Segurança*; na Sede, literalmente `Geral 3334-XXXX · Telefonista XXXX•XXXX•X · Recepção XXXX`, antes
@@ -565,9 +565,9 @@ local. Observação honesta: o PDF da Sede é uma página em quatro colunas e a 
 colunas — a conferência acima é de **estrutura e nomes**, não de contagem de contato; os 286 continuam
 sendo o número medido no seed.
 
-**O terceiro documento da fonte: o Ofício 432/2024.** Fora do catálogo, a fonte inclui
-`SEI__7001802_03.2024.8.08.0024.pdf` — *Ofício nº 432/2024 – Vitória-Diretoria do Foro*, SEI
-7001802-03.2024.8.08.0024, **março de 2024**, uma página com e-mail e telefone de **21 unidades** da
+**O terceiro documento da fonte: o ofício de março/2024.** Fora do catálogo, a fonte inclui
+`oficio-2024-03.pdf` — *ofício de março/2024 – Diretoria do Foro*, processo administrativo interno,
+**março de 2024**, uma página com e-mail e telefone de **21 unidades** da
 Capital. Ele **não** é catálogo de ramais e não descreve árvore: agrupa por diretoria administrativa, não
 por prédio. É a fonte dos **43 contatos** do seed marcados `Contato provisório — validar vigência.` —
 **23 e-mails e 20 telefones**, conferidos um a um nas 21 unidades: 10 varas criminais, Auditoria Militar,
@@ -585,7 +585,7 @@ Três consequências para o modelo:
 2. **A data do documento é dado, não rodapé.** Este ofício é de 03/2024; o catálogo é de 06 e 08/2026. O
    seed guarda a diferença em texto livre (`obs`), que não se filtra, não expira e não se audita: no
    DDL, `contatos` recebe `fonte` (nome do arquivo) e `vigente_desde`, e o que veio do ofício fica com
-   `vigente_desde = '2024-03'` e `fonte = 'SEI__7001802_03.2024.8.08.0024.pdf'` — a tela marca "confirmar
+   `vigente_desde = '2024-03'` e `fonte = 'oficio-2024-03.pdf'` — a tela marca "confirmar
    vigência" a partir da coluna, não de string.
 3. **Quatro grafias de telefone no mesmo documento** — móvel com hífen `(27) 9XXXX-XXXX`, móvel sem
    hífen `(27) 9XXXXXXXX`, fixo sem hífen `(27) 3XXXXXXX` e ponto no lugar do hífen `(27) 9XXXX.XXXX`.
@@ -1262,18 +1262,18 @@ imutável, então não se renomeia para `ORG…`; o `tipo = 'SEDE'` é o que a d
 | contatos da Sede | 286 |
 | contatos com local divergente do local do nó | 0 |
 | nós com profundidade > 2 | 0 |
-| procedência: Ofício 432/2024 · volume da Sede · base sem documento | 43 · 286 · 1.478 |
+| procedência: ofício de março/2024 · volume da Sede · base sem documento | 43 · 286 · 1.478 |
 
 A procedência não é chute: sai da observação de cada contato no seed. `Catálogo de ramais —
-agosto/2026` → `Ramais_TJES_28_08_26.pdf`, 28/08/2026; `Contato provisório — validar vigência.` →
-`SEI__7001802_03.2024.8.08.0024.pdf`, 01/03/2024; sem observação → `seed (base mascarada do v2)`, com
+agosto/2026` → `catalogo-sede-2026-08-28.pdf`, 28/08/2026; `Contato provisório — validar vigência.` →
+`oficio-2024-03.pdf`, 01/03/2024; sem observação → `seed (base mascarada do v2)`, com
 `vigente_desde` nulo em vez de data inventada. Quando o motor importar o catálogo de verdade, esse
 campo passa a ser preenchido por documento e os 1.478 "sem documento" desaparecem.
 
 ### D.6 Reconciliação de nomes com o catálogo (a checagem que faltava)
 
 Comparação por nome normalizado (sem acento, minúsculas, pontuação removida) contra o texto extraído
-de `Ramais__COMARCAS_26_06_26-2.pdf`:
+de `catalogo-comarcas-2026-06-26.pdf`:
 
 | Conjunto do seed | Total | Nome idêntico no catálogo |
 | :--- | ---: | ---: |

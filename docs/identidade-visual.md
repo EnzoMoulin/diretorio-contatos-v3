@@ -131,9 +131,9 @@ geral, e é o disco da proposta 1 que segura o alvo de toque.
 ### Proposta 3 — selo de vigência (condicional)
 
 A identidade de A hoje é "mapa escuro + turquesa", que é um gênero visual de dashboard. O dado que
-este projeto tem e os outros não é `fonte` + `vigente_desde`: 43 contatos do Ofício 432/2024 ·
+este projeto tem e os outros não é `fonte` + `vigente_desde`: 43 contatos do ofício de março/2024 ·
 286 do volume da Sede (08/2026) · 1.478 da base, sem data declarada. Um selo em mono
-(`provisório · Ofício 432/2024 · desde 01/03/2024`; `base · sem data declarada`) tornaria memorável o
+(`provisório · ofício de março/2024 · desde 01/03/2024`; `base · sem data declarada`) tornaria memorável o
 que já está modelado e transformaria "não inventar data" em estrutura de tela, não em nota de rodapé.
 
 **Depende de decisão:** o ADR-008 deixa em aberto se procedência entra no mínimo da v3 (backlog,

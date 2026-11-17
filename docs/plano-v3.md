@@ -104,7 +104,7 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
 - **Procedência entra no `v3.0`.** `fonte` e `vigente_desde` já existem na tabela `contatos` do v2 e
   **não existem no `seed_mascarado.json`** (o v2 as extrai da observação livre e grava no SQLite). O
   seed do v3 é exportado do banco do v2 (somente leitura) **trazendo os valores** — no wireframe deu
-  329 contatos com documento: 43 do ofício 432/2024 e 286 do catálogo da Sede. O selo `fonte · desde`
+  329 contatos com documento: 43 do ofício de março/2024 e 286 do catálogo da Sede. O selo `fonte · desde`
   aparece na tela do contato — a parte que interessa ao visitante. A fila "Reconferir" (do documento mais
   antigo para o mais novo) é **tela de gestão interna**, não da consulta pública.
   Contato sem documento não ganha selo: a ausência de data nunca vira "atual".
@@ -156,7 +156,7 @@ Leitura pública; escrita só autenticada.
 | "Filament Shield" | ❌ | permissão por recurso ≠ escopo por linha |
 | "TallStackUI" | ❌ | não é usado pela UI pública nem pelo admin |
 | "Spatie permission + Shield para Admin/Gestor/Editor" | ⚠ | os papéis existem, mas a regra que importa é o escopo por nó; pacote só entra se sobrar necessidade |
-| "Diretório Institucional (PJES)", "Poder Judiciário do ES", `@tjes.jus.br` | ❌ **bloqueante** | viola a regra de nenhuma marca institucional; precisa ser caçado em mockups, seed, capturas e código |
+| "Diretório Institucional", sigla do tribunal e domínio institucional | ❌ **bloqueante** | viola a regra de nenhuma marca institucional; precisa ser caçado em mockups, seed, capturas e código |
 | "Backup automático no Render free" | ❌ | disco efêmero; backup não sobrevive ao restart |
 | "Lista densa de contatos em linhas" | ✅ | é o que o wireframe já faz; adotado |
 | "Painel expande a 60–70%" | ❌ | painel largo cobre o mapa e piora a leitura; largura fixa ~496 px |
@@ -559,7 +559,7 @@ de execução sugerida, não a de valor.
 | # | Ideia | Por que | Custo |
 |---|---|---|---|
 | F-1 | **Índice reverso de ramais** (`/ramais`) | o produto é organizado por lugar, mas a pergunta do balcão é "quem é o ramal 1234?". Lista dos 444 ramais em ordem numérica, com comarca · unidade · setor ao lado, imprimível. **Tela nova**: entra na §5.5 e no escopo do v3, não é acabamento | baixo: uma rota, uma view, item no índice |
-| F-2 | **Selo de procedência no contato** | "ofício 432/2024 · desde 03/2024" ao lado do canal: o diferencial do v2 que o wireframe perdeu, porque o `seed_mascarado.json` não tem `fonte`/`vigente_desde`. Depende do **export do seed** (D-3) | baixo depois do seed |
+| F-2 | **Selo de procedência no contato** | "ofício de março/2024 · desde 03/2024" ao lado do canal: o diferencial do v2 que o wireframe perdeu, porque o `seed_mascarado.json` não tem `fonte`/`vigente_desde`. Depende do **export do seed** (D-3) | baixo depois do seed |
 | F-3 | **`Ctrl K` como paleta de verdade** | hoje o atalho só foca o campo. Paleta com resultados agrupados (comarcas, unidades, setores, contatos), ↑↓ e Enter, destino já com âncora | médio (~150 linhas de JS) |
 | F-4 | **Página "v1 → v2 → v3"** | uma captura por versão, os números de cada uma e a decisão que a definiu. Serve à candidatura: mostra arco, não três repositórios soltos | baixo, e vive nos docs |
 | F-5 | **Largura do painel com a lista aberta** (424 × 520 px) | a revisão externa de 16/11 propôs 520 px a partir da comarca. A medição diz que o mapa é limitado pela altura, então 520 **não** encolhe o mapa — mas estica as linhas de leitura. Com o valor de contato quebrando em duas linhas (feito no bloco A), o corte que motivava a proposta sumiu. Decidir com as telas na mão, em 10 min: 424 é o padrão, 520 é conforto | baixo |

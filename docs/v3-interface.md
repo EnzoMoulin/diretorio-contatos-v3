@@ -15,7 +15,7 @@ Arquivos soltos, fora do repositório do v2 (público; não colocar nada da v3 l
 - capturas em 1280×800 e 390×844.
 
 ## Restrições do projeto (valem sobre tudo)
-- Nenhuma marca ou nome institucional na interface, no seed, nas capturas nem no `NOTAS.md` (nada de TJES, PJES ou Laboratório de Inovação e IA). Dados fictícios: e-mails `@exemplo.jus.br`, nomes inventados.
+- Nenhuma marca ou nome institucional na interface, no seed, nas capturas nem no `NOTAS.md` (nenhuma sigla do tribunal, da fundação de previdência ou do laboratório de inovação). Dados fictícios: e-mails `@exemplo.jus.br`, nomes inventados.
 - Não copiar código de `public.js`, `admin.js` nem `mapa.js` do v1 ou do v2. O `mapa.js` do v2 se declara espelho do mapa original. Escrever o componente do mapa a partir da documentação do Leaflet.
 - Não usar: classes `fc-*`, azul institucional (#2563eb, #1d4ed8), sidebar navy com marca fixa, cascata obrigatória de selects Comarca → Fórum → Unidade → Setor.
 - Sem tiles (nem OpenStreetMap nem outro). Sem requisição a terceiros em tempo de execução, exceto o Leaflet com versão fixa (1.9.4) no mockup; na v3 ele entra por npm. Nada de GeoJSON baixado de repositório alheio na branch `master`.

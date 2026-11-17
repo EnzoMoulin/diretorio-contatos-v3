@@ -24,7 +24,7 @@ autoriza código agora.
 | 11 | Observabilidade barata (`/healthz`, eventos, log) | v3, deploy | primeiro deploy no ar | **fazer** |
 | 12 | Acessibilidade como gate de CI | v3, CI | CI da v3 existir | **fazer** |
 | 13 | Contrato de API documentado (OpenAPI + coleção) | v4 | v4 com rotas | condicional |
-| 15 | Idade do dado na unidade (“mais recente: ofício 432/2024 · há 2 anos”) | v3, painel | export do seed (D-3) e selo no contato (F-2) | **fazer** |
+| 15 | Idade do dado na unidade (“mais recente: ofício de março/2024 · há 2 anos”) | v3, painel | export do seed (D-3) e selo no contato (F-2) | **fazer** |
 | 16 | Copiar a unidade como texto (nome, endereço, canais) | v3, painel | tela de unidade fechada | **fazer** |
 | 17 | “Consultados hoje” em Favoritos | v3, polimento | favoritos híbridos com conta | condicional |
 | 18 | Imprimir fórum e comarca, além da unidade | v3, impressão | ficha da unidade fechada | **fazer** |
@@ -174,7 +174,7 @@ só um script.
 ### 14 — Reconciliação contra o catálogo oficial — FEITA (12/11/2026)
 
 **O que:** confrontar a base com os três documentos de origem (catálogo por comarcas de
-junho/2026, catálogo da Sede de agosto/2026 e Ofício 432/2024) e provar a aderência por
+junho/2026, catálogo da Sede de agosto/2026 e ofício de março/2024) e provar a aderência por
 contagem e por nome.
 
 **Estado:** feito e registrado em `docs/reconciliacao-2026-11-12.md`, com o script
@@ -190,7 +190,7 @@ alguma coisa precisava ser corrigida antes do deploy.
 
 ### 15 — Idade do dado na unidade (nova, 16/11/2026)
 
-**O que:** abaixo de “10 contatos · 2 setores”, uma linha de 11 px: “Mais recente: ofício 432/2024 ·
+**O que:** abaixo de “10 contatos · 2 setores”, uma linha de 11 px: “Mais recente: ofício de março/2024 ·
 01/03/2024 · há 2 anos e 8 meses”; para os 1.478 sem documento, “Sem documento de origem registrado”.
 A mesma linha entra na ficha impressa.
 

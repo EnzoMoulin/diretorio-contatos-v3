@@ -10,7 +10,7 @@ envelhecer bem, mas precisam estar certos agora.
 | :--- | :--- | :--- |
 | Catálogo de ramais por comarcas | JUNHO/2026 | 69 comarcas, 72 fóruns, 659 nós e 1.478 contatos do interior e da Grande Vitória |
 | Catálogo de ramais da Sede | 28/08/2026 | 179 nós e 286 contatos da Sede (observação "catálogo agosto/2026") |
-| Ofício 432/2024 — Vitória/Diretoria do Foro (SEI 7001802-03.2024.8.08.0024) | 03/2024 | 43 contatos de Vitória (observação "ofício 432/2024") |
+| ofício de março/2024 — Diretoria do Foro (processo administrativo interno) | 03/2024 | 43 contatos de Vitória (observação "ofício de março/2024") |
 
 Os três PDFs ficam em `../dados/catalogo-2026/` (fora do git, junto com os CSVs).
 Cópias de trabalho extraídas por `pdftotext`.
@@ -36,7 +36,7 @@ inteiro nesse caso, para separar erro de dado de erro do parser).
 | Nós de comarca | 659 | 652 | 0 ausentes · 7 parciais | redação / atribuição |
 | E-mails de comarca | 297 | 296 | 1 | artefato de extração; base correta |
 | Nós da Sede | 179 | 177 | 1 ausente · 1 parcial | redação |
-| Ofício 432/2024 | 23 e-mails | 23 | 0 | — |
+| ofício de março/2024 | 23 e-mails | 23 | 0 | — |
 
 Estrutura da base: **69 comarcas + Sede · 72 fóruns · 838 nós · 1.807 contatos**
 (1.019 telefone, 444 ramal, 297 e-mail, 47 WhatsApp) **· 11 telefones úteis**.
@@ -64,7 +64,7 @@ nada a corrigir.
 - `Fórum de Viana (Areinha)` — o catálogo escreve só "Fórum de Viana"; "Areinha" é o bairro,
   acrescentado na base para desambiguar.
 - `Central de Mandados`, `1ª Contadoria`, `2ª Contadoria` (Vitória) — não estão no catálogo
-  por comarcas; estão no Ofício 432/2024, que é a fonte desses contatos. Confirmados lá.
+  por comarcas; estão no ofício de março/2024, que é a fonte desses contatos. Confirmados lá.
 - `Atendimento Vara Cível` / `Gabinete Vara Cível` (Viana) — o catálogo lista "Vara Cível /
   Cartório / Gabinete" em linhas separadas; a base agrupou em dois nós.
 - `Subsecretaria Geral` × "Sub Secretaria Geral" (Sede) — grafo e separação.
