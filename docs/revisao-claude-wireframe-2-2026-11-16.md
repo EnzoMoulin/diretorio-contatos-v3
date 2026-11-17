@@ -25,7 +25,7 @@ aberto), o aviso de "posição aproximada" **já está** na linha da lista, e o 
 | 2 | Pinos sem identidade e desenhados para mouse | `.pino-alvo span` 13 px girado (`app.css:2080-2090`), alvo de 44 px; `click` navega direto (`mapa.js:656-658`); dica só no hover | **Procede em parte.** O two-tap é decisão; o anel do disco não deve sair |
 | 3 | A busca não acende o mapa | `PainelController::pagina()` (`:150-170`) monta o mesmo `mapa`/`locais` para toda rota; a view da busca não passa as comarcas que casaram; a p. 6 é o mapa da p. 2 | **Procede.** É o problema mais caro de reputação: a tela principal do produto não usa o mapa |
 | 4 | O chip tampa o que deveria mostrar | `.mapa-chip` centrado (`app.css:2157-2163`), `bottom` vem da folha (`mapa.js:719-723`); cobre o litoral e discos na p. 12 e um pino na p. 15 | **Procede na geometria.** A "falta de regra" não: esconder com o cartão aberto é decisão (`mapa.js:798`) |
-| 5 | Números e chave que não conferem | Cabeçalho = 11 contatos que casaram (`busca.blade.php:5,27-31`); linhas = 25 contatos dos nós (`:115`); legenda 8/13/18 px (`app.blade.php:214-216`) contra 11,4/20,7/27,8 do `raioDe` (`mapa.js:192,291`); 454/1.807 = 25,12% | **Procede**, com uma correção: a legenda certa é 11/21/28, não 12/20/28 |
+| 5 | Números e chave que não conferem | Cabeçalho = 11 contatos que casaram (`busca.blade.php:5,27-31`); linhas = 25 contatos dos nós (`:115`); legenda 8/13/18 px (`app.blade.php:214-216`) contra 11,4/19,9/27,8 do `raioDe` (`mapa.js:192,291`); 454/1.807 = 25,12% | **Procede**, com uma correção: a legenda certa é 11,4/19,9/27,8; a dele (12/20/28) fica a menos de 1 px |
 
 ### 1. "Perto de mim" — aceitar a tese, com a versão barata
 
@@ -93,8 +93,8 @@ Guarapari. A regra de zoom + sumir na unidade resolve a função sem mover o chi
   a soma dos contatos dos nós listados. Os dois são verdade e a palavra é a mesma. Deixar o cabeçalho
   só com `9 unidades e setores`; a seção "contatos" já mostra 11 (`busca.blade.php:112-115`).
 - **Legenda:** os tamanhos são escritos à mão (`app.blade.php:214-216`) e o mapa os calcula
-  (`raioDe = 4 + 13·√(n/286)`, com o máximo na Sede, 286). Com o mesmo cálculo: 5 → 11 px, 60 → 21,
-  166 → 28. A legenda do Claude (12/20/28) está a 1 px do certo; o certo é ler do cálculo.
+  (`raioDe = 4 + 13·√(n/286)`, com o máximo na Sede, 286). Com o mesmo cálculo: 5 → 11,4 px, 60 → 19,9,
+  166 → 27,8. A legenda do Claude (12/20/28) fica a menos de 1 px; o certo é ler do cálculo.
 - **25,1%, não ~30%:** 454/1.807 = 25,12%; 454/1.521 = 29,85%. A decisão 1 do prompt misturou as
   duas bases. O `docs/identidade-visual.md:118` já está certo ("454 dos 1.807 contatos, 25%"). O
   próximo prompt leva "25% (454 de 1.807)".
@@ -157,6 +157,21 @@ Guarapari. A regra de zoom + sumir na unidade resolve a função sem mover o chi
    malha já está no projeto.
 2. **A busca acende o mapa?** Recomendo sim: comarcas com resultado a 100% + anel, as demais a 35%,
    a Sede no rail. Sem pinos e sem zoom. É a tela principal; hoje o mapa é decoração nela.
+
+## Lote A aplicado (17/11/2026)
+
+- **Legenda:** as amostras saem do mesmo `raioDe()`; medido no DOM: **11,44 / 19,91 / 27,80 px**
+  (antes 8/13/18 escritos à mão).
+- **Busca:** o cabeçalho só conta unidades quando há linhas; `cejusc` → `9 unidades e setores`, e a
+  seção "contatos" continua com os 11 que casaram.
+- **Celular:** `69 comarcas · 1.807 contatos` em uma linha, 390 px, sem estouro horizontal.
+- **Reconfirmar:** `desde` em dd/mm/aaaa (`01/03/2024`), sem ISO na lista.
+- **Favoritos:** saiu "na versão em produção ela acompanha a conta".
+- **Chip:** só existe com zoom < 10,25 (em 6,75 visível; em 10,5 `display:none`) e não é renderizado
+  na tela de unidade.
+- **IBGE:** o crédito sobe para `altura da folha + 4 px` no celular; medido: topo 349, base 367,
+  folha em 371,4 — sem sobrepor a lista.
+- **PDF:** regerado com a mesma ordem e as mesmas 16 páginas.
 
 ## Não conferi
 
