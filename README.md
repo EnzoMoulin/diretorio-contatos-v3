@@ -29,7 +29,7 @@ ainda não começou — quando começar, entra por este README.
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 838 nós,
 > 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
-> `diretorio-contatos-v2` @ `a93aeb1`, não copiadas de texto. A perna
+> `diretorio-contatos-v2` @ `400d8e6`, não copiadas de texto. A perna
 > `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 12/11/2026: `Ran 95`,
 > 1 pulado, OK. A perna 0 e o resto das contagens estão em
 > `diretorio-contatos-v2/scripts/contagens.json`, que o CI confere contra o README.
