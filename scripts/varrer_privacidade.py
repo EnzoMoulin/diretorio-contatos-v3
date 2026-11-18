@@ -192,6 +192,10 @@ def listar_alvos(caminho):
     return sorted(alvos)
 
 
+# SONDA DO GATE (branch test/sonda-do-gate, fechada sem merge): falha plantada de
+# proposito para provar que o required status check bloqueia o merge.
+raise SystemExit('sonda do gate: falha plantada')
+
 def varrer(caminho, raiz_repo):
     exatos, regexes = carregar_allowlist(raiz_repo)
     # A allowlist de fixture nao pode calar dado real em silencio: o que ela
