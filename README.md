@@ -1,5 +1,7 @@
 # Diretório de Contatos — v3 (Laravel + TALL)
 
+[![Testes](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/testes.yml/badge.svg)](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/testes.yml)
+
 > Terceira fase do mesmo produto das versões [v1](https://github.com/EnzoMoulin/diretorio-contatos)
 > (Apps Script) e [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2) (Python stdlib): consulta
 > pública de contatos de fóruns e unidades, com backoffice. Projeto de portfólio;
