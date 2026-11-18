@@ -9,7 +9,7 @@
 > `ftfy`) valem para a v4. Ver `v3-arquitetura-preparacao.md` (plano vigente) e
 > `adr-008-v3-um-servico-e-fastapi-na-v4.md` (a decisão).
 
-_10/11/2026 · base medida: `diretorio-contatos-v2` @ commit `1ee24ca` ("Sede na API e no painel, e a auditoria com o autor de cada ação"; histórico do v2 reescrito em 12/11/2026, mesma árvore) · destino: `diretorio-contatos-v3`_
+_10/11/2026 · base medida: `diretorio-contatos-v2` @ commit `b93af48` ("Sede na API e no painel, e a auditoria com o autor de cada ação"; histórico do v2 reescrito em 12/11/2026 e em 17/11/2026, mesma árvore nas duas vezes) · destino: `diretorio-contatos-v3`_
 
 **Revisão 2 (10/11/2026, após aval do Enzo).** Fechados: chave lógica = id do seed
 (`MUN0001` / `FOR0001` / `UNI0001` / `C000001` / `UTL0001`); banco = **Neon free**; modelo de nós e
@@ -129,7 +129,7 @@ A Fase 2 não existe para virar produto: existe para **isolar o core do negócio
 contrato** antes de qualquer framework entrar. Cada rota que o Laravel vai consumir na Fase 3 foi
 exercitada aqui, com dados fictícios, sem ORM no meio.
 
-Medido no commit `1ee24ca` do v2 — **fotografia, não inventário vivo:** o v2 ganhou
+Medido no commit `b93af48` do v2 — **fotografia, não inventário vivo:** o v2 ganhou
 rotas depois (a conferência de contato, `POST /api/contatos/<id>/conferir`, é a mais
 recente) e o README de hoje documenta **33 pares método+rota, 31 deles em `/api`**.
 Os dois números não são comparáveis: a conta abaixo inclui página e asset.
@@ -190,7 +190,7 @@ idempotência das mutações deixariam de valer.
 
 ## 3. Mapa de distribuição de módulos
 
-Linhas medidas no v2 (commit `1ee24ca`); "banco afetado" é onde a **escrita** mora.
+Linhas medidas no v2 (commit `b93af48`); "banco afetado" é onde a **escrita** mora.
 
 | Módulo | Origem no v2 (linhas) | Responsável na Fase 3 | Banco afetado |
 | :--- | :--- | :--- | :--- |
@@ -294,7 +294,7 @@ Administrativa", `tipo = ORGAO`) da lista de comarcas.
 O seed **já sabe** que a Sede não é comarca (marca `tipo = ORGAO`), mas guarda a informação na tabela
 errada — e o v2 convive com isso por caso especial: `COALESCE(f.comarca_id, u.comarca_id)` em
 `_cadeia`, em `_pai` e nas contagens, `LEFT JOIN` defensivo em cada listagem e setor virtual "Contatos
-Gerais" para contato órfão. Funciona — medido no commit `1ee24ca`, `/api/comarcas` devolve **286
+Gerais" para contato órfão. Funciona — medido no commit `b93af48`, `/api/comarcas` devolve **286
 contatos** para a Sede (0 fóruns, 22 unidades, 166 setores) —, mas funciona porque **toda** consulta
 carrega o `COALESCE`. Os dois defeitos que essa modelagem já produziu (`AD-6861`, contagem da Sede
 zerada; `AD-A45A`, `INNER JOIN` de `_cadeia` barrando escopo não-admin) foram corrigidos no v2: o que
@@ -531,7 +531,7 @@ da primeira seção (Presidência). Esses contatos são do local.
 Medido no seed: **626 contatos têm `forum` e não têm `uo`** — é exatamente esse bloco, por local. E
 **5 contatos da Sede não têm `forum` nem `uo`**, só `comarca = MUN0000`: são o telefone geral
 `(27) 3334-XXXX`, três ramais de telefonista e a recepção (todos com `obs` "Catálogo de ramais —
-agosto/2026"). O v2 **já** os apresenta no local, não em nó: verificado no commit `1ee24ca`, os 72
+agosto/2026"). O v2 **já** os apresenta no local, não em nó: verificado no commit `b93af48`, os 72
 fóruns do payload trazem `contatos` própria do local (os 626) e a Sede traz `contatos` = 5, sem
 nenhum nó `virtual` na resposta. O que o v2 não tem é o vínculo explícito no banco — ele é reconstruído
 na leitura a partir das colunas `forum`/`uo`.
@@ -1046,9 +1046,9 @@ A-1 a A-4 estão fechados nesta revisão: Neon free (B-1), árvore única de nó
 
 ---
 
-## Apêndice A — superfície do v2 (29 rotas em `1ee24ca`) e destino na Fase 3
+## Apêndice A — superfície do v2 (29 rotas em `b93af48`) e destino na Fase 3
 
-> **Nota de época:** este mapa foi levantado no commit `1ee24ca` e não inclui as rotas
+> **Nota de época:** este mapa foi levantado no commit `b93af48` e não inclui as rotas
 > criadas depois — a conferência de contato (`POST /api/contatos/<id>/conferir`) é a
 > ausência conhecida. Para o inventário atual, a referência é a tabela de endpoints do
 > README do v2 (33 pares método+rota, 31 em `/api`): este apêndice continua valendo como
@@ -1108,7 +1108,7 @@ administrativa morreriam junto com um banco que é reconstruível do seed. Conse
 
 **B-2 — Números de medição.** `docs/arquitetura-v3.md` registra `app.py` com 2.003 linhas,
 `class Handler` com 992, `SCHEMA` com 122 e o carregador de seed com 230. Medido agora no HEAD
-`1ee24ca`: **2.055**, **1.027**, **78** e **139**. A diferença é de recorte e de commits
+`b93af48`: **2.055**, **1.027**, **78** e **139**. A diferença é de recorte e de commits
 posteriores no mesmo dia; os números deste documento são os medidos hoje e devem ser reconferidos
 antes de qualquer texto público que os cite.
 
