@@ -11,7 +11,7 @@ nomeia a vara no próprio rótulo ("Cartório da 1ª Vara Cível"): não é
 achatamento, e por isso fica de fora.
 
 O que este script faz, numa passada:
-  1. cria 14 nós novos (UNI0839…UNI0856) e aponta os contatos para eles;
+  1. cria 14 nós novos (UNI0839…UNI0852) e aponta os contatos para eles;
   2. mascara os três nomes de pessoa que sobraram no rótulo do contato
      (Comissariado (Maria Alice • Creuza) / (Fernando), em Itapemirim);
   3. escreve nos dois seeds e nos dois CSVs, e confere que os dois seeds
@@ -67,7 +67,11 @@ def main(aplicar: bool) -> int:
 
     nos = {n["id"]: n for n in s2["nos"]}
     contatos = {c["id"]: c for c in s2["contatos"]}
-    assert len(nos) == 838, len(nos)
+    # Roda uma vez sobre a base de 838 nós. Depois disso os contatos já têm `uo`
+    # e o assert do plano abaixo falharia — sinal de "já aplicado", não bug.
+    if "UNI0839" in nos:
+        print("já aplicado: UNI0839 existe; nada a fazer")
+        return 0
     assert len(contatos) == 1807, len(contatos)
 
     # 1. nós novos

@@ -64,6 +64,14 @@ PLANO = [
 def main():
     d = json.loads(V2.read_text(encoding="utf-8"))
 
+    # Uma passada só: depois de aplicado, os contatos da BSF já têm `uo` e o
+    # assert abaixo falharia — sinal de "já aplicado", não bug.
+    if any(n["id"] == "UNI0853" for n in d["nos"]):
+        print("já aplicado: UNI0853 existe; nada a fazer")
+        return
+
+    # Numeração global e crescente na ordem do catálogo (1…70 comarcas, 1…72
+    # fóruns) — o PHP da UI ordena por este campo dentro de cada comarca.
     for i, c in enumerate(d["comarcas"], 1):
         c["ordem"] = float(i)
     for i, f in enumerate(d["foruns"], 1):
