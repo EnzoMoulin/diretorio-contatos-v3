@@ -238,6 +238,10 @@ def varrer(caminho, raiz_repo):
             for m in DOC_INTERNO.finditer(linha):
                 achados["doc"].append(f"{rel}:{i}: {m.group()}")
             for m in NOME.finditer(linha):
+                # "Fórum Desembargador Annibal de Athayde Lima" é nome de prédio
+                # (homenagem), não de pessoa na base — o dado mascarado não muda.
+                if re.search(r"[Ff]órum\s+$", linha[max(0, m.start() - 12):m.start()]):
+                    continue
                 achados["nome"].append(f"{rel}:{i}: {m.group()}")
     for chave, itens in achados.items():
         print(f"\n## {chave}: {len(itens)}")
