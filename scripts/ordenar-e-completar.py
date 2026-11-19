@@ -34,7 +34,7 @@ Duas coisas, um passe só:
 
    São Domingos do Norte e Alto Rio Novo **não** entram: as duas páginas listam tudo num bloco
    único, sem cabeçalho de vara (conferido linha a linha, pelo x de cada linha). O que parece
-   repetição ali é rótulo com dois números ("Cartório (27) 3742-1921 • 3742-1439").
+   repetição ali é rótulo com dois números ("Cartório (27) 0000-0000 • 0000-0000").
 
 Uso: python3 scripts/ordenar-e-completar.py [--aplicar]
 """

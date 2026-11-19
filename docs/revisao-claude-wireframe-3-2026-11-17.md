@@ -57,7 +57,7 @@ O corte é real e já estava registrado: a dica nasce ancorada no pino (`directi
 Dois ajustes do ramal não se aplicam:
 
 - **`interactive:true` é no-op.** A dica já é clicável: `.leaflet-tooltip.pino-dica` tem
-  `pointer-events:auto` e `cursor:pointer` (`app.css:2198-2214`), e `tooltipopen` liga `dica.onclick`
+  `pointer-events:auto` e `cursor:pointer` (`app.css, linhas 2198 a 2214`), e `tooltipopen` liga `dica.onclick`
   (`mapa.js:795-801`). Pino e dica já abrem; se a captura não mostra, é caso a reproduzir, não config
   faltando.
 - **`cheia` ficou de fora.** Com a folha em `cheia` (92dvh) a área livre é de ~68 px e nenhuma
@@ -79,7 +79,7 @@ Efeito colateral que ele não pesou: no primeiro toque o mapa passa a se mover s
   amostras mediriam 26% a mais do que os discos da própria tela. O botão exigiria `raioDe` no lugar de
   `raioBase`, mais um estado de abertura/fechamento.
 - **Chave `com resultado`:** procede e é o achado mais fino do ramal. `.legenda-anel` troca o
-  preenchimento por uma borda de 2 px (`app.css:2465-2470`), mas largura e altura só são escritas para
+  preenchimento por uma borda de 2 px (`app.css, linhas 2465 a 2470`), mas largura e altura só são escritas para
   `[data-legenda-disco]` (`mapa.js:216-221`): o `i` do anel fica 0×0 e a borda rende ~4 px de ponto, em
   vez do anel de 14 px em volta de um disco teal.
 
@@ -120,7 +120,7 @@ Efeito colateral que ele não pesou: no primeiro toque o mapa passa a se mover s
    `pino-aprox`** (`mapa.js:987`), então "os 18 aproximados, vazados" não sai só trocando a forma — o
    `aprox` da lista precisa chegar ao `divIcon`.
 5. **Barra de rolagem nativa no cartão do "perto".** Procede: `.mapa-perto-lista{overflow:auto}` sem a
-   classe `.rolagem` (`app.css:2370-2378`); a barra fina existe só na classe (`:57-74`) e é usada no
+   classe `.rolagem` (`app.css, linhas 2370 a 2378`); a barra fina existe só na classe (`:57-74`) e é usada no
    `.painel-corpo` (`app.blade.php:311`).
 
 ## Decisões que só você toma
