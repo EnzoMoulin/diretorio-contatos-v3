@@ -43,7 +43,7 @@ em que o FastAPI é implementado, mantendo o Laravel da v3.
    migrations no mesmo banco, sem segunda credencial. `referencias_externas` permanece no DDL,
    sem uso na v3, reservada à separação da v4 — não removê-la agora evita uma migration de ida e
    volta quando o motor existir.
-5. **Números e contrato não mudam.** Os 1.807 contatos, os 838 nós, as 69 comarcas com IBGE, o
+5. **Números e contrato não mudam.** Os 1.807 contatos, os 856 nós, as 69 comarcas com IBGE, o
    contrato de rotas e a suíte de 94 casos do v2 continuam sendo a especificação. A v3 reimplementa;
    nenhum código Python migra.
 
