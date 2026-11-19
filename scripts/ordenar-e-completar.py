@@ -46,9 +46,20 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[2]
 V2 = RAIZ / "diretorio-contatos-v2" / "seed_mascarado.json"
 V3 = RAIZ / "diretorio-contatos-v3" / "IDEIAS PARA O V3" / "wireframe" / "data" / "seed.json"
+COORD = V3.parent / "coordenadas.json"
 CSV_UNI = RAIZ / "dados" / "mascarados-oficial" / "UNIDADES_ORGANIZACIONAIS.csv"
 CSV_CON = RAIZ / "dados" / "mascarados-oficial" / "CONTATOS.csv"
 APLICAR = "--aplicar" in sys.argv
+
+
+def preservar(foruns, coord):
+    """lat/lon não existem no seed do v2: sem reaplicar, este passe apaga os pinos do mapa."""
+    out = []
+    for f in foruns:
+        c = coord.get(f["id"])
+        out.append(f if not c else {**f, "lat": c["lat"], "lon": c["lon"], "geo_precisao": c["precisao"]})
+    return out
+
 
 BSFC = "FOR0069"
 PLANO = [
@@ -109,7 +120,8 @@ def main():
 
     V2.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
     v3 = json.loads(V3.read_text(encoding="utf-8"))
-    v3["comarcas"], v3["foruns"] = d["comarcas"], d["foruns"]
+    v3["comarcas"], v3["foruns"] = d["comarcas"], preservar(d["foruns"], json.loads(COORD.read_text(encoding="utf-8")))
+
     v3["nos"], v3["contatos"] = d["nos"], d["contatos"]
     V3.write_text(json.dumps(v3, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
