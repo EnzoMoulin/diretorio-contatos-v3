@@ -25,14 +25,14 @@ mascarados como `NN` no seed.
 | :--- | --: |
 | Locais na árvore (`/api/hierarquia`) | 70 (69 comarcas + Sede) |
 | Fóruns | 72 |
-| Nós na árvore exposta | 838 |
+| Nós na árvore exposta | 856 |
 | Úteis | 11 |
 | Contatos | 1.807 |
 | Sede | 286 contatos · 22 unidades · 166 setores |
 | Vitória | 166 contatos · 2 fóruns |
 | Vila Velha | 92 contatos |
 
-O `nos_total` de 838 é o número que o v3 usa no README. Bate — e é a primeira coisa que a
+O `nos_total` de 856 é o número que o v3 usa no README. Bate — e é a primeira coisa que a
 comparação confirma.
 
 ## Rotas e classe de paridade
@@ -59,7 +59,7 @@ equivalente** = o modelo mudou de propósito.
    entre versões não diz nada — por isso o fixture usa **nome + ordem** na estrutura e
    **contagem** nos contatos.
 2. **`unidades` + `setores` ≠ `nos`.** O v2 tem 299 unidades e 886 setores em tabelas
-   separadas; a v3 tem uma árvore única de 838 nós. O mapeamento não é 1:1 e não está
+   separadas; a v3 tem uma árvore única de 856 nós. O mapeamento não é 1:1 e não está
    demonstrado — quem escrever a migration do diretório precisa provar a equivalência antes
    de declarar paridade de estrutura. O fixture guarda as duas contagens para que a diferença
    apareça em vez de passar calada.

@@ -3,7 +3,7 @@
 
 Não é o ingestão oficial do motor (esse é do FastAPI, com normalização e `fonte`
 granular). É o teste de carga que prova o DDL contra os dados reais medidos:
-69 comarcas, 72 fóruns + 1 Sede, 838 nós, 1.807 contatos.
+69 comarcas, 72 fóruns + 1 Sede, 856 nós, 1.807 contatos.
 
 Uso:
     python3 db/carregar-seed.py ../diretorio-contatos-v2/seed_mascarado.json | psql "$URL" -v ON_ERROR_STOP=1

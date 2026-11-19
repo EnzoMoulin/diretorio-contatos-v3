@@ -30,7 +30,7 @@
 | Peça | Estado | Onde |
 |---|---|---|
 | Contrato de rotas, modelo e testes do v2 | Pronto, congelado | `~/Emprego/Projetos/diretorio-contatos-v2` (HEAD `a93aeb1`) |
-| Seed mascarado | 1.807 contatos, 70 comarcas (69 com IBGE + Sede), 72 fóruns, 838 nós, 11 úteis | `seed_mascarado.json` |
+| Seed mascarado | 1.807 contatos, 70 comarcas (69 com IBGE + Sede), 72 fóruns, 856 nós, 11 úteis | `seed_mascarado.json` |
 | DDL PostgreSQL | 9 tabelas, extensões, funções e invariantes já escritas | `db/schema.sql` |
 | Wireframe navegável | 7 estados, desktop e celular, dado real | `IDEIAS PARA O V3/wireframe/` (Laravel/TALL, descartável) |
 | Mockups de referência | 1 direção visual + 3 telas | `IDEIAS PARA O V3/*.jpg, *.png` |
@@ -113,7 +113,7 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
   Gestão do Foro" 47, "Contadoria" 34, "Oficiais de Justiça" 31, "Cartório" 30. São setores/descrições,
   não "Balcão"/"Chefia". **A interface mostra o tipo (Telefone, Ramal, WhatsApp, E-mail) e a `desc`
   quando existir; nunca inventa rótulo.**
-- **Endereço**: 72/72 fóruns têm; 1/70 comarcas (a Sede); 18/838 nós. Logo "Copiar endereço" é um
+- **Endereço**: 72/72 fóruns têm; 1/70 comarcas (a Sede); 18/856 nós. Logo "Copiar endereço" é um
   recurso **do local**, não de cada setor, com fallback para a comarca quando o local não tiver.
 - **Contagens de canal**: 1.019 telefones, 444 ramais, 297 e-mails, 47 WhatsApp.
 - **O que não portar**: FK declarada e não aplicada, `PUT` que não atualiza `atualizado_em`, estado de
@@ -268,7 +268,7 @@ desktop.
 - Mapa no topo, folha inferior de três alturas (recolhida / meia / cheia), alças de 44 px.
 - Recolhida mostra busca + chip de contagem; meia mostra lista/painel; cheia mostra canais completos.
 - Sem rolagem horizontal em nenhum estado; zoom do Leaflet fora da folha.
-- Inset desligado; rótulos só nas três comarcas mais densas; discos com 74% do raio.
+- Inset desligado; sem rótulos fixos — o nome vem da dica do disco (1º toque nomeia, 2º abre); discos com 74% do raio.
 
 ### 5.5 Componentes
 
@@ -283,7 +283,7 @@ desktop.
 | Navegação no celular | o rail (64 px de ícones) não cabe em 390 px e desaparece; no lugar entra um botão de menu de 44 px no topo que abre uma gaveta com os mesmos quatro destinos, **com rótulo escrito** e 44 px por item. Fixa no desktop, sob demanda no celular |
 | Ação de canal | **copiar sempre**. Telefone/ramal: `tel:` no **celular apenas** — no desktop não há aparelho que disque, e um botão que não faz nada é ruído. WhatsApp: `wa.me`, que abre o app no celular e o WhatsApp Web no desktop, **só com número completo** (no demo o número vem mascarado e o botão aparece desabilitado). E-mail: `mailto:` |
 | Compartilhar | botão em toda ficha de contato: usa `navigator.share` onde existe e, sem ele, copia o link canônico do contato com aviso "Link do contato copiado". O que se compartilha é a **URL do contato**, não o texto da tela: quem recebe cai na ficha certa |
-| Endereço | o endereço do local (18 dos 838 nós) é link para o Google Maps: `https://www.google.com/maps/search/?api=1&query=` + endereço e CEP urlencoded, em nova aba, com sublinhado sólido discreto e ícone de saída. Vale na ficha do contato e no cartão da unidade |
+| Endereço | o endereço do local (18 dos 856 nós) é link para o Google Maps: `https://www.google.com/maps/search/?api=1&query=` + endereço e CEP urlencoded, em nova aba, com sublinhado sólido discreto e ícone de saída. Vale na ficha do contato e no cartão da unidade |
 | Sidebar | ordem fixa: **Comarcas · Sede · Úteis · Favoritos**. Sede é `MUN0000`, não é comarca e por isso tem item próprio. **Reconferir e Ajustes não entram na consulta pública**: são gestão interna, atrás do botão `Gestão` (no v3, o painel Filament) |
 | Gestão | no **pé do rail**, separada por um fio e empurrada para baixo por `margin-top: auto`: é modo, não destino, e não disputa a ordem da navegação. Abre para a direita, com `Reconferir` e `Ajustes` desabilitado ("no painel do v3"). No celular, o mesmo lugar no pé da gaveta. Saiu do topo: a mesma ação em dois cantos da tela divide a atenção e a topbar fica para busca e tema |
 | Impressão | toda unidade tem **ficha imprimível** (`window.print()` no cabeçalho) e a folha é uma **peça própria**, não o painel: `.ficha-impressao` fica oculta na tela e, no print, `.painel-corpo > *:not(.ficha-impressao)` sai de cena. A4 retrato, duas colunas de setores, número em mono à esquerda e tipo à direita; quando o setor é homogêneo o tipo sobe para o título (`CARTÓRIO · TELEFONE · 7`) e não se repete em cada linha. E-mail e endereço ganham a linha inteira, a unidade pequena imprime em uma coluna com corpo maior, e a nota de dados fictícios fica `fixed` no pé de toda página. Setor recolhido na tela sai impresso: a ficha lê o dado, não o `x-show`. É o modo balcão: o papel não rola nem clica |
@@ -399,7 +399,7 @@ tela com uma linha.
    quer ler não clica; o clique serve para compactar uma unidade grande, não como porta de entrada.
    O cabeçalho é alvo de toque inteiro (44 px, medido no celular), com `aria-expanded` e seta que gira.
    Recolher não esconde o setor nem a contagem — esconde só as linhas de contato.
-7. Endereço e "copiar" são do local: só 18 dos 838 nós têm endereço próprio.
+7. Endereço e "copiar" são do local: só 18 dos 856 nós têm endereço próprio.
 
 ---
 
@@ -410,7 +410,7 @@ tela com uma linha.
 | Critério | Wireframe navegável | Imagens de referência |
 |---|---|---|
 | Modelo de navegação | mapa + lista + drill-down no mesmo painel | mesma ideia, mas com 3 blocos competindo (rail, sidebar, painel) |
-| Mapa como sistema | rótulos, legenda, disco de densidade, estado de falha | mapa como fundo decorativo; sem rótulo, legenda ou zoom |
+| Mapa como sistema | legenda, disco de densidade, dica com nome e contagem, estado de falha | mapa como fundo decorativo; sem chave, sem dica e sem zoom |
 | Densidade real do dado | 1.807 contatos, Vitória 166, Cariacica 137 | contagens inventadas e exemplos plausíveis |
 | Celular | folha de três alturas, alvos de 44 px | previsto no texto, não desenhado |
 | Estados | 7, incluindo mapa fora do ar e município sem comarca | só o estado "selecionado" |
@@ -424,7 +424,7 @@ tela com uma linha.
 |---|---|---|
 | Mapa protagonista, sem tiles, malha IBGE | wireframe | **entra** |
 | Discos de densidade + legenda | wireframe | **entra** (com toggle) |
-| Rótulos de comarca com lado manual | wireframe | **entra** |
+| Rótulos de comarca | wireframe | **sai** (17/11: 5 dos 6 rótulos tocavam disco alheio; o nome vem da dica do disco) |
 | Folha inferior de três alturas | wireframe | **entra** |
 | Estado "município sem comarca" + nota de ausência | wireframe | **entra**, com hachura |
 | Estado de falha do mapa com lista utilizável | wireframe | **entra** |
@@ -589,6 +589,30 @@ Não valem: unitário de helper sem regra, snapshot de HTML (quebra a cada class
 protótipo em `IDEIAS PARA O V3/` (não versionado, camada de dados descartada).
 
 ---
+
+## 14. Critérios para encerrar o planejamento
+
+O planejamento se encerra quando os quatro artefatos existirem e não se contradisserem. Estado em
+18/11/2026:
+
+| Artefato | Onde | Estado |
+|---|---|---|
+| Arquitetura: stack, serviço único, Neon, ADRs 008/009/010, DDL | `arquitetura-v3.md`, `adr-*.md`, §3 deste plano | **fechado** (10–14/11) |
+| Sistema visual: tokens, geometria de desktop e celular, componentes, mapa, admin | §5, `identidade-visual.md` | **fechado** (14–15/11) |
+| Direção visual escolhida | Direção A — mapa protagonista | **fechado** (16/11) |
+| Protótipo: 15 telas navegáveis em Laravel + Blade/Alpine/Leaflet | `"IDEIAS PARA O V3"/wireframe`, PDF `wireframe-v3-telas.pdf` | **fechado em conteúdo** (18/11: lote do ramal aplicado, rótulos fora, 9 capturas novas) |
+
+O que **não** é pendência de planejamento, e sim trabalho do `v3.0` item 5:
+
+- legenda no celular (adiada por decisão; quando entrar, as amostras usam `raioDe`);
+- toque com folha `cheia` (hoje seleciona sem dica) e o caso do pino colado na borda com `meia`;
+- medir os pares do tema claro — o controle já nasce na topbar, a medição é do componente.
+
+Regra de saída: **o planejamento pode ser declarado encerrado quando a rodada 4 de revisão voltar sem
+achado estrutural** (arquitetura, vocabulário, hierarquia de tela). Achado de detalhe — espaçamento,
+texto, estado — se resolve dentro do item 5, com o protótipo como referência, e não reabre o
+planejamento. Enquanto a rodada 4 não voltar, os itens 1–4 do `v3.0` (esqueleto, migrações, policies,
+API) podem começar: nenhum deles depende de UI.
 
 ## Anexo A — ADR-010 (pronto para `docs/adr/adr-010-backend-unico-em-laravel.md`)
 

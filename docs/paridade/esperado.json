@@ -228,14 +228,14 @@
     },
     "Alegre": {
      "n_foruns": 1,
-     "n_setores": 1,
-     "n_unidades": 1,
+     "n_setores": 5,
+     "n_unidades": 5,
      "total": 23
     },
     "Alfredo Chaves": {
      "n_foruns": 1,
-     "n_setores": 1,
-     "n_unidades": 1,
+     "n_setores": 3,
+     "n_unidades": 3,
      "total": 10
     },
     "Alto Rio Novo": {
@@ -276,8 +276,8 @@
     },
     "Barra de São Francisco": {
      "n_foruns": 1,
-     "n_setores": 1,
-     "n_unidades": 1,
+     "n_setores": 5,
+     "n_unidades": 5,
      "total": 24
     },
     "Boa Esperança": {
@@ -396,14 +396,14 @@
     },
     "Itapemirim": {
      "n_foruns": 1,
-     "n_setores": 1,
-     "n_unidades": 1,
+     "n_setores": 5,
+     "n_unidades": 5,
      "total": 39
     },
     "Itarana": {
      "n_foruns": 1,
-     "n_setores": 1,
-     "n_unidades": 1,
+     "n_setores": 3,
+     "n_unidades": 3,
      "total": 17
     },
     "Iúna": {
@@ -504,8 +504,8 @@
     },
     "Pancas": {
      "n_foruns": 1,
-     "n_setores": 1,
-     "n_unidades": 1,
+     "n_setores": 3,
+     "n_unidades": 3,
      "total": 13
     },
     "Pedro Canário": {
@@ -680,7 +680,7 @@
     "total": 1807
    },
    "atendimento": {
-    "total": 781
+    "total": 722
    },
    "cartorio": {
     "total": 0
@@ -689,7 +689,7 @@
     "total": 0
    },
    "cartório": {
-    "total": 209
+    "total": 215
    },
    "civel": {
     "total": 19
@@ -704,7 +704,7 @@
     "total": 0
    },
    "juizado": {
-    "total": 127
+    "total": 136
    },
    "protocolo": {
     "total": 37
@@ -796,7 +796,7 @@
   "hierarquia": {
    "foruns_total": 72,
    "locais": 70,
-   "nos_total": 838,
+   "nos_total": 856,
    "ordem": [
     "Sede Administrativa",
     "Vitória",

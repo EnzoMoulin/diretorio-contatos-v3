@@ -110,7 +110,7 @@ o JSON campo a campo, com diff legível.
 (`scripts/capturar-contrato.py`, `scripts/comparar-contrato.py`, autoteste PASS). Falta só capturar o
 lado da v3 quando as rotas de leitura existirem. A captura já pagou o custo: revelou que o `LIKE` do
 v2 é sensível a acento (`cartorio` 0 × `cartório` 209), que a busca satura no limite de 20 e que
-`unidades`+`setores` do v2 não mapeiam 1:1 nos 838 `nos` da v3.
+`unidades`+`setores` do v2 não mapeiam 1:1 nos 856 `nos` da v3.
 
 **Por que:** os 94 casos do v2 são a especificação da v3. Hoje a paridade é afirmação em README;
 com o harness, vira prova executável — e é argumento forte em entrevista ("migrei de stack mantendo
