@@ -110,7 +110,7 @@ PROPRIA = re.compile(r"^[A-ZÁÉÍÓÚÂÊÔÃÕÇ][a-zà-ÿ]+\.?$")
 # "Manutenção Predial": as duas têm duas palavras capitalizadas e nenhuma
 # palavra institucional, mas só a primeira tem prenome. Sem esta lista o
 # detector acusa todo rótulo de duas palavras do catálogo (eram 15 falsos
-# positivos em 838 nós).
+# positivos em 856 nós).
 NOMES_PROPRIOS = set("""
 alexandre arthur aldary dair debora debora eder eliana ewerton fabio fernando
 helimar heloisa janete jorge jose julio luiz marcos marianne namyr pedro rachel
@@ -238,6 +238,10 @@ def varrer(caminho, raiz_repo):
             for m in DOC_INTERNO.finditer(linha):
                 achados["doc"].append(f"{rel}:{i}: {m.group()}")
             for m in NOME.finditer(linha):
+                # "Fórum Desembargador Annibal de Athayde Lima" é nome de prédio
+                # (homenagem), não de pessoa na base — o dado mascarado não muda.
+                if re.search(r"[Ff]órum\s+$", linha[max(0, m.start() - 12):m.start()]):
+                    continue
                 achados["nome"].append(f"{rel}:{i}: {m.group()}")
     for chave, itens in achados.items():
         print(f"\n## {chave}: {len(itens)}")

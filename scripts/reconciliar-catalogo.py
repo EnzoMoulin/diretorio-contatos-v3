@@ -264,6 +264,36 @@ def reconcilia(pasta, pdf_comarcas, pdf_sede, pdf_oficio):
     rel["oficio"] = {"emails_citados": len(citados),
                      "fora_da_base": [e for e in citados if e not in na_base],
                      "contatos_com_obs": sum(1 for c in contatos if "oficio 432" in norm(c["OBSERVACAO"]))}
+    # G. cobertura reversa — unidade que o catálogo anuncia e a base pode ter achatado.
+    # O laudo conferia só base→catálogo: nome que está na base tem de aparecer no texto.
+    # Assim, unidade que existe no catálogo e não na base era invisível (passou em 12/11
+    # com "nós ausentes: 0", e Itapemirim tinha 24 contatos de 4 varas no nível do fórum).
+    # O sinal barato e verificável é o rótulo genérico repetido: quando o catálogo separa
+    # as varas, os contatos perdem o qualificador e viram "Cartório", "Gabinete do Juiz",
+    # "Sala de Audiências" duas ou mais vezes no mesmo fórum. Onde o rótulo já nomeia a
+    # vara ("Cartório da 1ª Vara Cível", "Cartório Vara Única"), não repete. Isto é
+    # triagem para leitura humana, não veredito: rótulo com vários números também repete.
+    GENERICOS = {"cartorio", "gabinete do juiz", "sala de audiencias"}
+    diretos_por_forum = {}
+    for c in contatos:
+        if c["FORUM_ID"] and not c["UNIDADE_ORGANIZACIONAL_ID"]:
+            diretos_por_forum.setdefault(c["FORUM_ID"], []).append(norm(c["DESCRICAO"]))
+    nos_por_forum = Counter(n["FORUM_ID"] for n in nos)
+    a_conferir = []
+    for fid, rotulos in diretos_por_forum.items():
+        repetidos = {r: q for r, q in Counter(rotulos).items() if r in GENERICOS and q > 1}
+        if repetidos:
+            a_conferir.append({"forum": next((f["NOME"] for f in foruns if f["ID"] == fid), fid),
+                               "comarca": nome_com.get(com_de_forum.get(fid, ""), ""),
+                               "nos": nos_por_forum.get(fid, 0),
+                               "rotulos": dict(sorted(repetidos.items(), key=lambda kv: -kv[1]))})
+    a_conferir.sort(key=lambda x: (-len(x["rotulos"]), x["forum"]))
+    rel["reversa"] = {
+        "nota": "fóruns com rótulo genérico repetido no nível do fórum — conferir se o catálogo "
+                "separa varas ali; rótulo com vários números repete por motivo legítimo",
+        "foruns": a_conferir,
+    }
+
     return rel
 
 
@@ -294,6 +324,7 @@ def escreve_manifesto(rel, caminho, pasta_base, pdfs, seed=None):
             "comarcas_sobrando": len(rel["comarcas"]["sobram_na_base"]),
             "foruns_ausentes": len(rel["foruns"]["ausentes"]),
             "nos_ausentes": len(rel["nos"]["ausentes"]),
+            "foruns_rotulo_repetido": len(rel["reversa"]["foruns"]),
             "emails_total": rel["emails"]["na_base"],
             "emails_confirmados": rel["emails"]["localizados"],
             "sede_nos": rel["sede"]["nos"],
@@ -360,6 +391,11 @@ def resumo(rel):
     o = rel["oficio"]
     print(f"F. OFÍCIO citados={o['emails_citados']} fora_da_base={o['fora_da_base'] or '—'} "
           f"contatos={o['contatos_com_obs']}")
+    r = rel["reversa"]
+    print(f"G. REVERSA fóruns com rótulo genérico repetido: {len(r['foruns'])} (triagem)")
+    for x in r["foruns"]:
+        rot = ", ".join(f"{k}×{v}" for k, v in x["rotulos"].items())
+        print(f"     · {x['forum']} ({x['comarca']}) nós={x['nos']}: {rot}")
 
 
 def main():

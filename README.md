@@ -27,7 +27,7 @@ ainda não começou — quando começar, entra por este README.
 | **Decisão de 12/11/2026: a v4 mora neste repositório** — dois deployáveis (`apps/web`, `services/busca`), um `db/` | `docs/adr-009-um-repo-para-v3-e-v4.md` |
 | Briefing da direção A com mapa real e layout de celular (a executar) | `docs/v3-interface.md` |
 
-> **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 838 nós,
+> **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
 > 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
 > `diretorio-contatos-v2` @ `400d8e6`, não copiadas de texto. A perna
 > `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 12/11/2026: `Ran 95`,
@@ -67,7 +67,7 @@ do v2, lido por caminho relativo de irmão e nunca versionado aqui.
 # estrutura do banco (cria <base>_teste, aplica o DDL duas vezes, roda as invariantes)
 db/testar-schema.sh
 
-# com o seed da v2 ao lado (1.807 contatos, 838 nós) — os repos são irmãos por desenho
+# com o seed da v2 ao lado (1.807 contatos, 856 nós) — os repos são irmãos por desenho
 SEED_JSON=../diretorio-contatos-v2/seed_mascarado.json db/testar-schema.sh
 
 # imagem
@@ -145,7 +145,7 @@ Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_J
 ## Base de demonstração (congelada)
 
 A base da v3 e da v4 é a que foi conferida em 12/11/2026 contra os três catálogos
-oficiais: **69 comarcas + Sede · 72 fóruns · 838 nós · 1.807 contatos · 11 telefones
+oficiais: **69 comarcas + Sede · 72 fóruns · 856 nós · 1.807 contatos · 11 telefones
 úteis**, com 296 dos 297 e-mails confirmados por documento. Não há segunda conferência
 a fazer enquanto a fonte não mudar.
 

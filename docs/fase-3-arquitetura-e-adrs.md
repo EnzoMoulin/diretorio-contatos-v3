@@ -139,8 +139,8 @@ Os dois números não são comparáveis: a conta abaixo inclui página e asset.
 - `SCHEMA`: **78 linhas**, **11 tabelas** (`comarcas`, `foruns`, `unidades`, `setores`, `contatos`,
   `uteis`, `historico`, `usuarios`, `notificacoes`, `acessos`, `pedidos`).
 - Seed (`seed_mascarado.json`): **69 comarcas + 1 linha que é a Sede** (órgão, `MUN0000`, `tipo =
-  ORGAO` — a planilha não distingue), **72 fóruns**, **838 nós** (598 `SETOR`, 210
-  `UNIDADE`, 20 de outros tipos — `VARA`, `SECRETARIA`, `JUIZADO`, `SESAO`, `GABINETE`…),
+  ORGAO` — a planilha não distingue), **72 fóruns**, **856 nós** (598 `SETOR`, 228
+  `UNIDADE`, 30 de outros tipos — `VARA`, `SECRETARIA`, `JUIZADO`, `SESAO`, `GABINETE`…),
   **1.807 contatos** (1.019 telefone, 444 ramal, 297 e-mail, 47 WhatsApp), **11 úteis**.
 - Front-end: **4.786 linhas** (`public.js` 1.461, `admin.js` 2.079, `mapa.js` 110, CSS 542, HTML 594).
 - Suíte: **1.288 linhas** em 5 arquivos (`test_regras` 561, `test_seguranca_demo` 323,
@@ -248,7 +248,7 @@ do banco, invisíveis para a integração.
 | Comarca (geografia) | `MUN0001` | `MUN` | 69 | `MUN-<ULID>` |
 | Órgão (fórum) | `FOR0001` | `FOR` | 72 | `ORG-<ULID>` |
 | Órgão central (Sede) | `MUN0000` | — (legado do seed) | 1 | `ORG-<ULID>` |
-| Nó (unidade/setor) | `UNI0001` | `UNI` | 838 | `NO-<ULID>` |
+| Nó (unidade/setor) | `UNI0001` | `UNI` | 856 | `NO-<ULID>` |
 | Contato | `C000001` | `C` | 1.807 | `CT-<ULID>` |
 | Útil | `UTL0001` | `UTL` | 11 | `UT-<ULID>` |
 
@@ -287,7 +287,7 @@ instituição e faz a vara parecer "órgão do fórum". Por isso a tabela âncor
 `tipo` em `FORUM`/`SEDE` — o nível é o mesmo, o que muda é o que a linha é.
 
 Medido no seed: **69 comarcas**, **72 fóruns** (três comarcas têm dois — Vitória, Vila Velha e Viana),
-**838 nós** em lista única, 612 com `pai` e profundidade máxima de dois níveis abaixo do local, e
+**856 nós** em lista única, 612 com `pai` e profundidade máxima de dois níveis abaixo do local, e
 **179 nós / 286 contatos na estrutura central**, todos pendurados na linha `MUN0000` ("Sede
 Administrativa", `tipo = ORGAO`) da lista de comarcas.
 
@@ -871,7 +871,7 @@ Nenhum estado fica "meio aplicado" silenciosamente: a operação administrativa 
   administrativa; falha de rede entre serviços não perde operação nem duplica registro; o relatório
   de divergência dá visibilidade a deriva que hoje seria invisível.
 - *Negativas aceitas:* um pouco mais de código do que "chamar e torcer" (outbox, reconciliação,
-  idempotência); nós arquivados continuam ocupando linha (irrelevante: são 838 nós e crescem
+  idempotência); nós arquivados continuam ocupando linha (irrelevante: são 856 nós e crescem
   devagar); a operação de arquivamento não é instantânea em toda a base — é por subárvore, como
   manda a seção 5.3.
 - *Reabre se:* (a) aparecer caso de uso que exija exclusão física imediata de nó referenciado
@@ -916,7 +916,7 @@ para GET com escopo explícito) ou se o Laravel passar a gerar cliente tipado a 
 
 ### ADR-006 — Órgão como âncora da hierarquia, árvore única abaixo dele
 
-**Contexto.** O seed é uma lista única de 838 nós com campo `pai` (612 preenchidos) e profundidade
+**Contexto.** O seed é uma lista única de 856 nós com campo `pai` (612 preenchidos) e profundidade
 máxima de dois níveis abaixo do local. Duas distorções vêm da origem em planilha:
 
 1. A Sede — que é **órgão, no mesmo nível do fórum** — está gravada como **linha de comarca**
@@ -1152,7 +1152,7 @@ escopo nem relatório salvo.
    | `GET /api/v1/comarcas` | 69 |
    | `GET /api/v1/locais?tipo=FORUM` | 72 |
    | `GET /api/v1/locais?sede=1` | 1 local (a Sede), 179 nós, 286 contatos |
-   | `GET /api/v1/nos` | 838 |
+   | `GET /api/v1/nos` | 856 |
    | `GET /api/v1/contatos` | 1.807 |
    | Contatos com `no_id` nulo | 631 (626 + 5) |
 
@@ -1257,7 +1257,7 @@ imutável, então não se renomeia para `ORG…`; o `tipo = 'SEDE'` é o que a d
 | Invariantes de carga | 20 PASS |
 | Invariantes de plano | 5 PASS |
 | comarcas / locais / fóruns | 69 / 73 / 72 |
-| nós (1º nível / total) | 226 / 838 |
+| nós (1º nível / total) | 244 / 856 |
 | contatos (no local / em nó) | 631 / 1.176 |
 | contatos da Sede | 286 |
 | contatos com local divergente do local do nó | 0 |
@@ -1279,7 +1279,7 @@ de `catalogo-comarcas-2026-06-26.pdf`:
 | :--- | ---: | ---: |
 | comarcas | 69 | **69 (100%)** |
 | fóruns | 72 | **72 (100%)** |
-| nós de 1º nível | 226 | 202 (89,4%) |
+| nós de 1º nível | 244 | 216 (88,5%) |
 | nós de 2º nível | 612 | 418 (68,3%) |
 
 As comarcas e os fóruns batem integralmente — a taxonomia do seed é a do catálogo. O que não bate são
