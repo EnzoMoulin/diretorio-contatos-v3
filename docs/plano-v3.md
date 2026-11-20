@@ -598,14 +598,17 @@ protótipo em `IDEIAS PARA O V3/` (não versionado, camada de dados descartada).
 ## 14. Critérios para encerrar o planejamento
 
 O planejamento se encerra quando os quatro artefatos existirem e não se contradisserem. Estado em
-18/11/2026:
+20/11/2026:
 
 | Artefato | Onde | Estado |
 |---|---|---|
 | Arquitetura: stack, serviço único, Neon, ADRs 008/009/010, DDL | `arquitetura-v3.md`, `adr-*.md`, §3 deste plano | **fechado** (10–14/11) |
 | Sistema visual: tokens, geometria de desktop e celular, componentes, mapa, admin | §5, `identidade-visual.md` | **fechado** (14–15/11) |
 | Direção visual escolhida | Direção A — mapa protagonista | **fechado** (16/11) |
-| Protótipo: 15 telas navegáveis em Laravel + Blade/Alpine/Leaflet | `"IDEIAS PARA O V3"/wireframe`, PDF `wireframe-v3-telas.pdf` | **fechado em conteúdo** (18/11: lote do ramal aplicado, rótulos fora, 9 capturas novas) |
+| Protótipo: 15 telas em Laravel + Blade/Alpine/Leaflet (desktop, celular e a ficha A4) | `"IDEIAS PARA O V3"/wireframe`, PDF `wireframe-v3-telas.pdf` | **fechado em conteúdo** (20/11: a rodada 6 aplicou a revisão da 5 e os três pedidos do dono — F-7 e F-11 junto; a rodada 7 varreu os sete estados sem mudar uma linha de código; PDF de 16 páginas) |
+
+O único item do protótipo sem prova é Safari/iOS: o WebKit não abre neste host (faltam
+`libgstreamer-plugins-bad1.0-0` e `libavif16`), então é pendência de ambiente, não de produto.
 
 O que **não** é pendência de planejamento, e sim trabalho do `v3.0` item 5:
 
@@ -616,8 +619,11 @@ O que **não** é pendência de planejamento, e sim trabalho do `v3.0` item 5:
 Regra de saída: **o planejamento pode ser declarado encerrado quando a rodada 4 de revisão voltar sem
 achado estrutural** (arquitetura, vocabulário, hierarquia de tela). Achado de detalhe — espaçamento,
 texto, estado — se resolve dentro do item 5, com o protótipo como referência, e não reabre o
-planejamento. Enquanto a rodada 4 não voltar, os itens 1–4 do `v3.0` (esqueleto, migrações, policies,
-API) podem começar: nenhum deles depende de UI.
+planejamento. **A condição foi cumprida em 18/11**: a rodada 4 voltou sem achado estrutural — o que
+sobrava era a dica do 1º toque saindo da tela pela esquerda, resolvida no mesmo dia — e as rodadas 5–7
+só produziram detalhe e evidência (realce de hover preso no toque, alvo do toque entre discos, os sete
+estados). Os itens 1–4 do `v3.0` (esqueleto, migrações, policies, API) podem começar: nenhum deles
+depende de UI.
 
 ## Anexo A — ADR-010 (pronto para `docs/adr/adr-010-backend-unico-em-laravel.md`)
 
