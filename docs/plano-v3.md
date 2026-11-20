@@ -1,6 +1,6 @@
 # Plano do v3 — arquitetura e direção visual
 
-**Data:** 14/11/2026 · **Status:** base para o início da implementação do v3
+**Data:** 14/11/2026 · **Status:** planejamento encerrado em 20/11/2026 — base para o início da implementação do v3
 **Substitui, onde houver conflito:** `docs/fase-3-arquitetura-e-adrs.md`, `docs/arquitetura-v3.md`,
 `docs/v3-interface.md` e `docs/v3-arquitetura-preparacao.md`.
 **Documento irmão:** `db/schema.sql` continua sendo a fonte do DDL; o ADR-010 (Anexo A) entra em
@@ -609,6 +609,10 @@ O planejamento se encerra quando os quatro artefatos existirem e não se contrad
 
 O único item do protótipo sem prova é Safari/iOS: o WebKit não abre neste host (faltam
 `libgstreamer-plugins-bad1.0-0` e `libavif16`), então é pendência de ambiente, não de produto.
+
+**Planejamento declarado encerrado em 20/11/2026, por decisão do Enzo.** A ordem a partir daqui é
+terminar e publicar o v2, e só então começar o `v3.0` pelo item 1 (esqueleto) — a UI é o item 5 e não
+bloqueia os quatro primeiros.
 
 O que **não** é pendência de planejamento, e sim trabalho do `v3.0` item 5:
 
