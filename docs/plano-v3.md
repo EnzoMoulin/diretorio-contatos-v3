@@ -1,6 +1,6 @@
 # Plano do v3 — arquitetura e direção visual
 
-**Data:** 14/11/2026 · **Status:** base para o início da implementação do v3
+**Data:** 14/11/2026 · **Status:** planejamento encerrado em 20/11/2026 — base para o início da implementação do v3
 **Substitui, onde houver conflito:** `docs/fase-3-arquitetura-e-adrs.md`, `docs/arquitetura-v3.md`,
 `docs/v3-interface.md` e `docs/v3-arquitetura-preparacao.md`.
 **Documento irmão:** `db/schema.sql` continua sendo a fonte do DDL; o ADR-010 (Anexo A) entra em
@@ -562,14 +562,19 @@ de execução sugerida, não a de valor.
 | F-2 | **Selo de procedência no contato** | "ofício de março/2024 · desde 03/2024" ao lado do canal: o diferencial do v2 que o wireframe perdeu, porque o `seed_mascarado.json` não tem `fonte`/`vigente_desde`. Depende do **export do seed** (D-3) | baixo depois do seed |
 | F-3 | **`Ctrl K` como paleta de verdade** | hoje o atalho só foca o campo. Paleta com resultados agrupados (comarcas, unidades, setores, contatos), ↑↓ e Enter, destino já com âncora | médio (~150 linhas de JS) |
 | F-4 | **Página "v1 → v2 → v3"** | uma captura por versão, os números de cada uma e a decisão que a definiu. Serve à candidatura: mostra arco, não três repositórios soltos | baixo, e vive nos docs |
-| F-5 | **Largura do painel com a lista aberta** (424 × 520 px) | a revisão externa de 16/11 propôs 520 px a partir da comarca. A medição diz que o mapa é limitado pela altura, então 520 **não** encolhe o mapa — mas estica as linhas de leitura. Com o valor de contato quebrando em duas linhas (feito no bloco A), o corte que motivava a proposta sumiu. Decidir com as telas na mão, em 10 min: 424 é o padrão, 520 é conforto | baixo |
+| F-5 | **Largura do painel com a lista aberta** (424 × 520 px) | a revisão externa de 16/11 propôs 520 px a partir da comarca. A medição diz que o mapa é limitado pela altura, então 520 **não** encolhe o mapa — mas estica as linhas de leitura. Com o valor de contato quebrando em duas linhas (feito no bloco A), o corte que motivava a proposta sumiu | baixo — **decidido em 20/11/2026: mantém 424 px** (520 não encolhe o mapa, que é limitado pela altura, e só alonga a linha de leitura) |
 | F-6 | **Busca multitermo** | hoje `Diretorio::busca()` compara o termo inteiro (`str_contains`): “1 vara civel vitoria” e “cartorio vitoria” não acham nada, porque a frase não existe. Tokens com AND, um `ILIKE` por palavra sobre `busca_texto`. É a única pendência que muda **comportamento**, não aparência — entra junto com a busca da v3, não como polimento | baixo no protótipo, médio no SQL/índice |
-| F-7 | **Cabeçalhos “Grande Vitória” e “Interior”** | a ordem da lista não é acidente: são as 7 da RMGV e depois o interior alfabético, herdadas do catálogo. O problema é não estar declarado. Dois cabeçalhos fixos + cabeçalho de colunas fixo; a ordem não muda (decisão de 15/11) | baixo |
+| F-7 | **Cabeçalhos “Grande Vitória” e “Interior”** | a ordem da lista não é acidente: são as 7 da RMGV e depois o interior alfabético, herdadas do catálogo. O problema é não estar declarado. Dois cabeçalhos fixos + cabeçalho de colunas fixo; a ordem não muda (decisão de 15/11) | baixo — **aplicado em 19/11/2026** (rodada 6) |
 | F-8 | **Formato único de telefone na exibição** | o seed tem três grafias (`(27) 3145 XXXX`, `(27) 3232. XXXX`, `(27) 3145-XXXX`). Normalizar separador **não** completa dígito (o mascaramento fica), mas toca a regra “mostra o valor como está” — decidir junto da normalização do seed | baixo |
-| F-9 | **Anatomia da linha de contato: rótulo antes do valor** | a pessoa procura “Recepção”, não “(27) 3145-XXXX”, e hoje o rótulo está embaixo, em 11 px. Inverte a linha de `valor / tipo · desc` para `rótulo / valor`, e tira o tile de ícone (o tipo já está no formato). Mesma anatomia da lista de Úteis | baixo |
+| F-9 | **Anatomia da linha de contato: rótulo antes do valor** | a pessoa procura “Recepção”, não “(27) 3145-XXXX”, e hoje o rótulo está embaixo, em 11 px. Inverte a linha de `valor / tipo · desc` para `rótulo / valor`, e tira o tile de ícone (o tipo já está no formato). Mesma anatomia da lista de Úteis | baixo — **descartado em 20/11/2026** por medição: 843 de 1.807 contatos não têm `desc`, então valor-primeiro fica |
 | F-10 | **Reconferência por local, com progresso** | agrupar por local, contador “12 de 329 conferidos”, aba “sem documento · 1.478” e “✓ Conferi” por local. No v3 isso é **Filament**, não Blade — não investir no protótipo | médio (2–3 dias com escrita) |
-| F-11 | **“Úteis” → “Telefones” no rail** | “Úteis” é adjetivo sem substantivo; “Telefones” nomeia. Um minuto de mudança, mas mexe em nome de destino decidido em 15/11 — por isso é decisão, não acabamento | mínimo |
+| F-11 | **“Úteis” → “Telefones” no rail** | “Úteis” é adjetivo sem substantivo; “Telefones” nomeia. Um minuto de mudança, mas mexe em nome de destino decidido em 15/11 — por isso é decisão, não acabamento | mínimo — **aplicado em 19/11/2026** (“Telefones”, 43,61 px em 51) |
 | F-12 | **Conferir no seed um e-mail em dois níveis** | a revisão de 16/11 apontou o mesmo endereço como contato direto da comarca (pág. 3) e dentro do 3º Juizado (pág. 5): “uma das duas mente”. Se for o mesmo registro contado em dois níveis, é erro de dado — e a consulta pública herda | baixo, e é conferência de dado |
+
+**Status em 20/11/2026:** F-7 e F-11 foram aplicados na rodada 6 (19/11), F-9 foi descartado por
+medição (valor-primeiro vence: 843 de 1.807 contatos não têm `desc`) e **F-5 foi decidido: o painel
+fica em 424 px**. Nenhuma decisão de interface da §13 segue aberta; F-6, F-8 e F-12 entram com a v3 e
+F-10 pertence ao Filament. F-1…F-4 continuam na fila de retomada, depois do deploy do v2.
 
 ### Testes a escrever quando a primeira rota Laravel existir (anotado em 17/11)
 
@@ -593,14 +598,21 @@ protótipo em `IDEIAS PARA O V3/` (não versionado, camada de dados descartada).
 ## 14. Critérios para encerrar o planejamento
 
 O planejamento se encerra quando os quatro artefatos existirem e não se contradisserem. Estado em
-18/11/2026:
+20/11/2026:
 
 | Artefato | Onde | Estado |
 |---|---|---|
 | Arquitetura: stack, serviço único, Neon, ADRs 008/009/010, DDL | `arquitetura-v3.md`, `adr-*.md`, §3 deste plano | **fechado** (10–14/11) |
 | Sistema visual: tokens, geometria de desktop e celular, componentes, mapa, admin | §5, `identidade-visual.md` | **fechado** (14–15/11) |
 | Direção visual escolhida | Direção A — mapa protagonista | **fechado** (16/11) |
-| Protótipo: 15 telas navegáveis em Laravel + Blade/Alpine/Leaflet | `"IDEIAS PARA O V3"/wireframe`, PDF `wireframe-v3-telas.pdf` | **fechado em conteúdo** (18/11: lote do ramal aplicado, rótulos fora, 9 capturas novas) |
+| Protótipo: 15 telas em Laravel + Blade/Alpine/Leaflet (desktop, celular e a ficha A4) | `"IDEIAS PARA O V3"/wireframe`, PDF `wireframe-v3-telas.pdf` | **fechado em conteúdo** (20/11: a rodada 6 aplicou a revisão da 5 e os três pedidos do dono — F-7 e F-11 junto; a rodada 7 varreu os sete estados sem mudar uma linha de código; PDF de 16 páginas) |
+
+O único item do protótipo sem prova é Safari/iOS: o WebKit não abre neste host (faltam
+`libgstreamer-plugins-bad1.0-0` e `libavif16`), então é pendência de ambiente, não de produto.
+
+**Planejamento declarado encerrado em 20/11/2026, por decisão do Enzo.** A ordem a partir daqui é
+terminar e publicar o v2, e só então começar o `v3.0` pelo item 1 (esqueleto) — a UI é o item 5 e não
+bloqueia os quatro primeiros.
 
 O que **não** é pendência de planejamento, e sim trabalho do `v3.0` item 5:
 
@@ -611,8 +623,11 @@ O que **não** é pendência de planejamento, e sim trabalho do `v3.0` item 5:
 Regra de saída: **o planejamento pode ser declarado encerrado quando a rodada 4 de revisão voltar sem
 achado estrutural** (arquitetura, vocabulário, hierarquia de tela). Achado de detalhe — espaçamento,
 texto, estado — se resolve dentro do item 5, com o protótipo como referência, e não reabre o
-planejamento. Enquanto a rodada 4 não voltar, os itens 1–4 do `v3.0` (esqueleto, migrações, policies,
-API) podem começar: nenhum deles depende de UI.
+planejamento. **A condição foi cumprida em 18/11**: a rodada 4 voltou sem achado estrutural — o que
+sobrava era a dica do 1º toque saindo da tela pela esquerda, resolvida no mesmo dia — e as rodadas 5–7
+só produziram detalhe e evidência (realce de hover preso no toque, alvo do toque entre discos, os sete
+estados). Os itens 1–4 do `v3.0` (esqueleto, migrações, policies, API) podem começar: nenhum deles
+depende de UI.
 
 ## Anexo A — ADR-010 (pronto para `docs/adr/adr-010-backend-unico-em-laravel.md`)
 
