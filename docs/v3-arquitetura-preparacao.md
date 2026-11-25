@@ -1,6 +1,6 @@
 # V3 (Laravel) e V4 (FastAPI): plano
 
-Registro de 11/11/2026, revisado em 12/11/2026. Vive em `docs/` deste repositório: é o plano vigente da v3 e da v4, e substitui, **para a v3**, o plano de dois serviços de `docs/fase-3-arquitetura-e-adrs.md` (revisões de 10 e 11/11) — desse plano só continua valendo o que está em "Arquivado para a v4", e o documento fica preservado como especificação da v4. Nome da fase do FastAPI: **v4**, não "v3.1" (`docs/adr-008-v3-um-servico-e-fastapi-na-v4.md`). Código lido: v2 no HEAD a93aeb1 (12/11, 13:43; clone raso, somente leitura; suíte rodada em cópias isoladas, nos dois modos). O SQL e o PHP citados aqui são esboço: não há Postgres nem PHP neste ambiente.
+Registro de 11/11/2026, revisado em 12/11/2026. Vive em `docs/` deste repositório: foi o plano vigente da v3 e da v4 até a consolidação do `plano-v3.md` (a v4 foi adiada pelo ADR-010), e substitui, **para a v3**, o plano de dois serviços de `docs/fase-3-arquitetura-e-adrs.md` (revisões de 10 e 11/11) — desse plano só continua valendo o que está em "Arquivado para a v4", e o documento fica preservado como especificação da v4. Nome da fase do FastAPI: **v4**, não "v3.1" (`docs/adr-008-v3-um-servico-e-fastapi-na-v4.md`). Código lido: v2 no HEAD a93aeb1 (12/11, 13:43; clone raso, somente leitura; suíte rodada em cópias isoladas, nos dois modos). O SQL e o PHP citados aqui são esboço: não há Postgres nem PHP neste ambiente.
 
 ## O que mudou na revisão de 12/11
 - **HEAD do v2:** d565fda → a93aeb1. A suíte passou de 71/72 para **94 casos** (medido; ver "Testes").

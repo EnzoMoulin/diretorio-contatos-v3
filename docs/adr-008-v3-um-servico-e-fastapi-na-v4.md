@@ -1,8 +1,8 @@
 # ADR-008 — v3 com um serviço só (Laravel) e o motor FastAPI como v4
 
-- **Status:** aceito em 12/11/2026.
+- **Status:** aceito em 12/11/2026; **substituído pelo ADR-010 na parte do FastAPI (25/11/2026)** — a v4 está adiada, e o desenho de **um serviço só para a v3** continua valendo.
 - **Substitui, para a v3:** o plano de dois serviços de `fase-3-arquitetura-e-adrs.md` (seções 2.3, 3, 6 e ADR-001 a ADR-007).
-- **Plano vigente:** `v3-arquitetura-preparacao.md`.
+- **Plano vigente:** `plano-v3.md` (na época deste ADR, `v3-arquitetura-preparacao.md`).
 - **Renomeia:** a fase do FastAPI, que o README, o `arquitetura-v3.md` e o `PROJETOS-FUTUROS.md` chamavam de **v3.1**, passa a se chamar **v4**.
 
 ## Contexto
@@ -72,7 +72,8 @@ em que o FastAPI é implementado, mantendo o Laravel da v3.
 
 ## Referências
 
-- `v3-arquitetura-preparacao.md` — plano vigente (v3 e v4).
+- `plano-v3.md` — plano vigente. `v3-arquitetura-preparacao.md` é o registro anterior.
+- `adr-010-backend-unico-em-laravel.md` — backend único em Laravel; aposenta o marco "v4".
 - `v3-interface.md` — briefing da direção A (mapa protagonista).
 - `fase-3-arquitetura-e-adrs.md` — documento preservado, especificação da v4.
 - `arquitetura-v3.md` — decisão de stack de 10/11/2026, com a nota de revisão de 12/11/2026.

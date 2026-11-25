@@ -141,7 +141,7 @@ fonte não mudar.
 
 ## O que fica congelado a partir daqui
 
-Esta é a base final de demonstração da v3 e da v4. Duas travas baratas garantem que ela
+Esta é a base final de demonstração da v3. Duas travas baratas garantem que ela
 não se perde nem se contamina:
 
 1. **Manifesto com hash** — `../dados/catalogo-2026/base-verificada.json`, gerado junto
