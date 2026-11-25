@@ -136,9 +136,11 @@ respondeu; falta a aplicação. Em cima dele vêm a busca pública e o mapa geoc
 
 ## Deploy
 
-Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_JSON`,
-`ADMIN_EMAILS`) só no painel, nunca no repositório. Runbook completo em
-`docs/fase-3-arquitetura-e-adrs.md`. Ainda não deployado.
+Blueprint do Render em `render.yaml`; o que não vai para o repositório são `APP_URL`, `APP_KEY` e
+`DB_URL`, preenchidos no painel. Banco no Neon free (o Postgres do Render expira em 30 dias), fila
+`sync` e health check em `/up`, a rota de health do próprio Laravel. Runbook e decisão em
+`docs/plano-v3.md` §3.7 — `docs/fase-3-arquitetura-e-adrs.md` é documento histórico da v4, não runbook.
+Ainda não deployado.
 
 ## Documentos
 

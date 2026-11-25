@@ -41,14 +41,4 @@ services:
       - key: CACHE_STORE
         value: database
       - key: QUEUE_CONNECTION
-        value: database
-      - key: GOOGLE_CLIENT_ID
-        sync: false
-      - key: GOOGLE_CLIENT_SECRET
-        sync: false
-      - key: GOOGLE_REDIRECT_URI
-        sync: false
-      - key: FASTAPI_URL
-        sync: false
-      - key: FASTAPI_TOKEN
-        sync: false
+        value: sync
