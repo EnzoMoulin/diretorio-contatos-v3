@@ -43,8 +43,6 @@
             color: var(--verde);
         }
 
-        .marca span { color: var(--dourado); }
-
         .selo {
             font-size: 12px;
             letter-spacing: .08em;
@@ -164,7 +162,7 @@
 <body>
     <div class="pagina">
         <header>
-            <div class="marca">Diretório de Contatos <span>· TJES</span></div>
+            <div class="marca">Diretório de Contatos</div>
             <div class="selo">v3 · esqueleto</div>
         </header>
 

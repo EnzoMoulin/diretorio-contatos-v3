@@ -2,7 +2,7 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "enzo-moulin/diretorio-contatos-v3",
     "type": "project",
-    "description": "Diretório de Contatos do TJES — Laravel 13 + TALL + Postgres",
+    "description": "Diretório de Contatos — Laravel 13 + TALL + Postgres",
     "keywords": [
         "laravel",
         "framework"
