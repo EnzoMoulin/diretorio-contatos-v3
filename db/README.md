@@ -12,8 +12,8 @@ saíram do baseline em 25/11/2026.
 
 | Arquivo | Papel |
 | :--- | :--- |
-| `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 7 tabelas (6 de dado + `historico_mensal`, o agregado do expurgo), índices, `CHECK`s, triggers. |
-| `verificar-schema.sql` | 40 invariantes estruturais (39 do arquivo + a idempotência do `schema.sql`): o que cada `CHECK` deve recusar e aceitar. |
+| `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 8 tabelas (7 de dado + `historico_mensal`, o agregado do expurgo), índices, `CHECK`s, triggers. |
+| `verificar-schema.sql` | 45 invariantes estruturais (44 do arquivo + a idempotência do `schema.sql`): o que cada `CHECK` deve recusar e aceitar. |
 | `carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` do v2. Andaime de teste, não o ingestão oficial. |
 | `verificar-carga.sql` | 20 invariantes sobre a base carregada (volumes, vínculos, profundidade, procedência, busca). |
 | `verificar-plano.sql` | 5 invariantes de **plano**: prova que o índice GIN serve a `busca_texto ILIKE norm_texto(...)` e que `lower(unaccent(valor))` não usa índice nenhum. |

@@ -8,6 +8,9 @@ PR #34; este é o esqueleto da aplicação, com Pint, Larastan e Pest ligados.
 - `GET /` — capa com os totais do diretório (comarcas, fóruns, nós, telefones úteis).
 - `GET /api/v1/hierarquia` — mesma leitura em JSON, no formato do contrato do v2
   (`docs/paridade/esperado.json`, rota `hierarquia`).
+- `GET /api/v1/busca?q=&limite=` — busca por trigrama sobre comarcas, locais, nós,
+  contatos e telefones úteis, com léxico de sinônimos (`SinonimoSeeder`). O
+  contrato está no README da raiz, seção *Busca por sinônimos*.
 - `GET /up` — health check do Laravel (usado pelo Render).
 - `php artisan migrate --seed` — cria o administrador e carrega o seed mascarado
   do v2 quando ele existe; sem o arquivo, gera um conjunto sintético.
@@ -44,6 +47,9 @@ SEED_JSON=../../diretorio-contatos-v2/seed_mascarado.json \
 ```
 
 O seeder é idempotente por `chave` (roda de novo sem duplicar).
+
+O `SinonimoSeeder` não depende do seed do v2: o léxico de busca é dado de
+referência e entra em todo `migrate --seed`, sintético ou real.
 
 ## Testes, estilo e tipos
 
