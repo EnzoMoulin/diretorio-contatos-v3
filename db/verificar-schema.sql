@@ -260,18 +260,23 @@ END $$;
 -- ---------------------------------------------------------------------------
 DO $$
 BEGIN
-  INSERT INTO historico (acao, entidade, contato_chave, contato_rotulo, detalhe, autor, request_id)
-  VALUES ('remover', 'contato', 'C000001', 'Institucional (27) 99111-0001',
-          'removido a pedido', 'usr_00042:admin', '0193f0c2-0000-7000-8000-000000000001');
+  INSERT INTO historico (acao, entidade, entidade_chave, antes, depois, autor, request_id)
+  VALUES ('remover', 'contato', 'C000001',
+          '{"descricao": "Institucional", "valor": "(27) 99111-0001"}'::jsonb, NULL,
+          'usr_00042:admin', '0193f0c2-0000-7000-8000-000000000001');
   PERFORM _passa('histórico aceita autor opaco + request_id');
 
   PERFORM _espera_erro('autor com CRLF é recusado no histórico',
     $q$INSERT INTO historico (acao, autor) VALUES ('criar', 'usr_1:admin' || chr(13) || chr(10) || 'X: y')$q$, '23514');
 
+  PERFORM _espera_erro('histórico sem antes nem depois é recusado',
+    $q$INSERT INTO historico (acao, entidade, entidade_chave) VALUES ('atualizar', 'contato', 'C000001')$q$, '23514');
+
   PERFORM _espera_ok('histórico aceita entidade util',
-    $q$INSERT INTO historico (acao, entidade, detalhe) VALUES ('atualizar', 'util', 'ramal da central')$q$);
+    $q$INSERT INTO historico (acao, entidade, entidade_chave, depois)
+       VALUES ('atualizar', 'util', 'UTL0001', '{"valor": "(27) 3232-0000"}'::jsonb)$q$);
   PERFORM _espera_erro('histórico recusa entidade de auditoria administrativa',
-    $q$INSERT INTO historico (acao, entidade) VALUES ('criar', 'escopo_acesso')$q$, '23514');
+    $q$INSERT INTO historico (acao, entidade, depois) VALUES ('criar', 'escopo_acesso', '{}'::jsonb)$q$, '23514');
 
   PERFORM _espera_ok('procedência consultável por fonte',
     $q$INSERT INTO telefones_uteis (chave, nome, valor, fonte, vigente_desde)

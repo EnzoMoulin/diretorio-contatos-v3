@@ -1,9 +1,9 @@
 -- -----------------------------------------------------------------------------
 -- expurgar-historico.sql — retenção de 180 dias do histórico do dado
 -- -----------------------------------------------------------------------------
--- O histórico guarda o retrato do contato (rótulo, chave, detalhe) para quem
--- precisar saber "como estava em tal dia". Isso não pode virar arquivo
--- permanente de dado pessoal: passados 180 dias, sobra só a contagem.
+-- O histórico guarda o retrato antes/depois (JSONB) para quem precisar saber
+-- "como estava em tal dia". Isso não pode virar arquivo permanente de dado
+-- pessoal: passados 180 dias, sobra só a contagem.
 --
 -- O que este script faz, numa transação:
 --   1. agrega em `historico_mensal` (mês, ação, entidade) tudo que passou do prazo;
@@ -53,10 +53,12 @@ SELECT (SELECT count(*) FROM gravado) AS meses_gravados,
        (SELECT count(*) FROM apagado) AS linhas_apagadas
 \gset
 
-INSERT INTO historico (acao, entidade, detalhe)
+INSERT INTO historico (acao, entidade, depois)
 VALUES ('expurgar', 'contato',
-        format('retenção de %s dias: %s linha(s) apagada(s), %s agregado(s) atualizado(s)',
-               :dias, :'linhas_apagadas', :'meses_gravados'));
+        jsonb_build_object(
+          'dias', :dias,
+          'linhas_apagadas', :'linhas_apagadas'::bigint,
+          'agregados_atualizados', :'meses_gravados'::bigint));
 
 COMMIT;
 

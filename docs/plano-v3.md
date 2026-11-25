@@ -129,9 +129,12 @@ senão o planejador ignora o índice. Ordenar por `similarity()` com piso, e dev
 
 ### 3.6 Histórico e auditoria
 
-Um único histórico (`historico` no `schema.sql`), escrito por observers/ações, com autor, data, antes e
-depois. Filament não ganha pacote de auditoria paralelo. O que o visitante vê é a trilha desse histórico;
-o que o admin vê é a mesma trilha com diff.
+Um único histórico (`historico` no `schema.sql`), escrito por observers/ações, com autor, data e o
+retrato **antes/depois em JSONB** (`antes`, `depois`), ancorado pela chave lógica `entidade_chave`.
+Filament não ganha pacote de auditoria paralelo. O que o visitante vê é a trilha desse histórico;
+o que o admin vê é a mesma trilha com diff. O histórico é do **dado** (`contato`, `no`, `local`,
+`comarca`, `util`); `usuario`, `acesso` e `pedido` são tabelas do app, com auditoria própria, e não
+entram nessa tabela nem no expurgo de 180 dias.
 
 ### 3.7 Deploy
 
@@ -583,8 +586,8 @@ F-10 pertence ao Filament. F-1…F-4 continuam na fila de retomada, depois do de
 
 ### Testes a escrever quando a primeira rota Laravel existir (anotado em 17/11)
 
-Nada disso se escreve antes da primeira rota: o v3 tem hoje 41 invariantes de schema, 20 de carga, 5 de
-plano e 33 casos de autoteste do scanner, e nenhuma linha de aplicação. A ordem abaixo é de custo, não
+Nada disso se escreve antes da primeira rota: o v3 tem hoje 40 invariantes de schema, 20 de carga, 5 de
+plano e 33 casos de autoteste do scanner, e nenhuma linha de aplicação além das migrations de banco. A ordem abaixo é de custo, não
 de valor.
 
 | # | Teste | Por que | Custo |

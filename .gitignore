@@ -5,11 +5,11 @@ __pycache__/
 venv/
 
 # Laravel / PHP (a v3 começa de fato aqui)
-/vendor/
-/node_modules/
-/public/build/
-/public/hot
-/storage/*.key
+vendor/
+node_modules/
+public/build/
+public/hot
+storage/*.key
 .env
 .env.*
 !.env.example
