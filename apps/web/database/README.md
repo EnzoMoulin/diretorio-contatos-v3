@@ -41,7 +41,7 @@ isso resolve para a raiz do repositório, tanto no host quanto no container (`/a
 
 O teste mínimo, num banco vazio e descartável:
 
-1. `migrate` → 15 tabelas em `public`: `migrations` + 7 do baseline + 7 do app.
+1. `migrate` → 16 tabelas em `public`: `migrations` + 8 do baseline + 7 do app.
 2. `historico` tem `entidade_chave`, `antes` e `depois`; **não** tem `contato_chave`, `contato_rotulo`
    nem `detalhe`.
 3. `sessions.user_id` tem FK para `usuarios`; `usuarios` e `pedidos` têm o trigger

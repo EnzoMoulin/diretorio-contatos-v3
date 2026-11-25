@@ -53,4 +53,4 @@ disso; todas saíram ou foram corrigidas antes de o arquivo virar baseline das m
 O baseline fica com sete tabelas — seis de dado (`comarcas`, `locais`, `nos`, `contatos`,
 `telefones_uteis`, `historico`) e o agregado do expurgo (`historico_mensal`).
 `db/verificar-schema.sql` acompanha: 65 `PASS` e `OK` em `db/testar-schema.sh` com o seed do v2
-(40 invariantes estruturais + 20 de carga + 5 de plano).
+(45 invariantes estruturais + 20 de carga + 5 de plano).

@@ -593,7 +593,7 @@ F-10 pertence ao Filament. F-1…F-4 continuam na fila de retomada, depois do de
 
 ### Testes a escrever quando a primeira rota Laravel existir (anotado em 17/11)
 
-Nada disso se escreve antes da primeira rota: o v3 tem hoje 40 invariantes de schema, 20 de carga, 5 de
+Nada disso se escreve antes da primeira rota: o v3 tem hoje 45 invariantes de schema, 20 de carga, 5 de
 plano e 33 casos de autoteste do scanner, e nenhuma linha de aplicação além das migrations de banco. A ordem abaixo é de custo, não
 de valor.
 

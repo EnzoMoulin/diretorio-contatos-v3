@@ -18,7 +18,7 @@ autoriza código agora.
 | 01 | Mapa geocodificado (CEP → lat/lon) | v3, busca pública | migrations + seed carregados | **fazer** |
 | 02 | Índice de confiança + tela "Saúde da base" | v3, painel | ADR-008 em aberto (procedência no mínimo da v3) | condicional |
 | 03 | Ingestão com quarentena e diff por chave | v4 | v4 ter começado, com "motivo medido" | **fazer** (é o motivo da v4) |
-| 04 | Sinônimos e intenção na busca | v3, busca pública | busca `ILIKE` + `word_similarity` já em pé | **fazer** |
+| 04 | Sinônimos e intenção na busca | v3, busca pública | busca `ILIKE` + `word_similarity` já em pé | feita em 26/11/2026 |
 | 05 | Atestado de vigência em PDF com QR | v3, depois do deploy | ideia 02 entregue | condicional |
 | 06 | Paridade de contrato v2 × v3 | v3, CI | rotas de leitura da v3 respondendo | **fazer** |
 | 07 | "Modo balcão": busca em menos de 5 s | v3, busca pública | mesma etapa da ideia 01 | **fazer** |
@@ -91,6 +91,15 @@ palavras — pequeno o bastante para um léxico curado à mão, sem modelo e sem
 **Como:** `sinonimos(termo, expansao[])` + view `busca_texto` expandida. Publicar no README uma
 tabela de 30 consultas reais com resultado antes/depois: é a cultura de "medido, não estimado"
 virando feature.
+
+> **Status em 26/11/2026 — entregue (issue #6).** A tabela `sinonimos` entrou no `db/schema.sql`
+> (seção 7) com `CHECK` de termo normalizado e expansão preenchida; o léxico curado tem 39 termos em
+> `SinonimoSeeder`; a busca virou `GET /api/v1/busca` (`app/Actions/Buscar.php`) e o README publica
+> 39 consultas medidas, antes e depois. Duas diferenças em relação ao desenho original: não houve
+> view `busca_texto` expandida — a expansão substitui a consulta na aplicação, o que deixa o critério
+> de aceite testável ("mesmo conjunto da consulta canônica") —, e a contagem de vocabulário é de 619
+> palavras alfabéticas de 3+ letras, não 467 (670 tokens contando os números; medida em 26/11/2026
+> sobre nomes e descrições do seed).
 
 ### 05 — Atestado de vigência em PDF com QR
 

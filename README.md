@@ -15,7 +15,8 @@ banco é a capa (`GET /`) e o `GET /api/v1/hierarquia`, no contrato do v2. A int
 antes num **protótipo navegável em Laravel + TALL** que vive fora do repositório (`IDEIAS PARA O V3/
 wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e respostas em
 `IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
-aplicação. O que ainda falta é a busca pública e o mapa — issues abertas, não promessa de README.
+aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); a interface de
+busca e o mapa seguem como issues abertas, não promessa de README.
 
 | Já feito | Onde |
 | :--- | :--- |
@@ -101,6 +102,95 @@ similaridade em 0,45: `db/README.md`. `scripts/` guarda as ferramentas de base �
 os catálogos, ordem do catálogo, coordenadas dos fóruns, captura e comparação do contrato do v2 e a
 varredura de privacidade; cada uma abre com o porquê no docstring.
 
+## Busca por sinônimos (ideia 04)
+
+`GET /api/v1/busca?q=<termo>&limite=<1..20>` responde `termo`, `expansao`, `total` e `resultados` —
+cada resultado com `tipo` (`comarca`, `local`, `no`, `contato`, `util`), `chave`, `rotulo`,
+`contexto` e `pontuacao`. A varredura é trigrama (`pg_trgm`) sobre o texto normalizado
+(`norm_texto`: sem acento, sem caixa) de 2.816 trechos, ordenada por semelhança; `total` é o tamanho
+antes do corte e `limite` para em 20, sem devolver erro para quem pede mais.
+
+Trigramas resolvem erro de digitação, não vocabulário: `reconhecimento de firma` e `cartorio` não
+têm trigrama em comum e são a mesma pergunta. Por isso existe um léxico curado à mão
+(`apps/web/database/seeders/SinonimoSeeder.php`, 39 termos) que **substitui** o termo digitado por
+frases canônicas. O critério de aceite é literal e está em teste: a consulta com sinônimo devolve
+**exatamente** o conjunto da consulta canônica — mesma ordem, mesmo `total`, não uma lista parecida.
+
+### O que muda na prática
+
+| Digite | Antes, só trigrama | Depois, com o léxico |
+| :--- | :--- | :--- |
+| `reconhecimento de firma` | 0 resultados | 154 linhas de cartório |
+| `inss` | 98 linhas por letra parecida — e-mails com "ins" no meio | 8 linhas de previdência (perícia) |
+| `testamento` | 56 linhas: CPD, assessoria de serventias, processamento de recursos | 11 linhas de órfãos e sucessões |
+| `pequenas causas` | 0 resultados | 148 linhas de juizado especial |
+| `medida protetiva` | 0 resultados | 8 linhas de violência doméstica e familiar |
+
+### As 39 consultas medidas
+
+Contagem de linhas por consulta, com `limite` desligado, no seed da v2 (1.807 contatos, 856 nós,
+73 locais, 69 comarcas, 11 úteis) em 26/11/2026. "Antes" é a mesma busca com a expansão desligada — é o número
+que o usuário veria hoje; "Depois" é com o léxico. Quando "antes" é maior que "depois", o trigrama
+estava devolvendo letra parecida, não o serviço.
+
+| Termo digitado | Expansão | Antes | Depois |
+| :--- | :--- | ---: | ---: |
+| `reconhecimento de firma` | `cartorio` | 0 | **154** |
+| `firma reconhecida` | `cartorio` | 0 | **154** |
+| `tabelionato` | `cartorio` | 0 | **154** |
+| `escritura publica` | `cartorio` | 0 | **154** |
+| `registro de imoveis` | `registro` | 0 | **18** |
+| `certidao de nascimento` | `registro` | 0 | **18** |
+| `pensao alimenticia` | `familia` | 0 | **42** |
+| `divorcio` | `familia` | 0 | **42** |
+| `guarda de filho` | `familia` | 0 | **42** |
+| `heranca` | `sucessoes` | 13 | **11** |
+| `inventario` | `sucessoes` | 0 | **11** |
+| `testamento` | `sucessoes` | 56 | **11** |
+| `tutela de menor` | `orfaos` | 0 | **15** |
+| `conselho tutelar` | `infancia juventude` | 0 | **28** |
+| `crianca e adolescente` | `infancia juventude` | 0 | **28** |
+| `menor infrator` | `socioeducativo` | 0 | **1** |
+| `justica do trabalho` | `trabalho` | 0 | **9** |
+| `processo do trabalho` | `trabalho` | 0 | **9** |
+| `inss` | `previdencia` | 98 | **8** |
+| `aposentadoria` | `previdencia` | 73 | **8** |
+| `pericia medica` | `previdencia` | 0 | **8** |
+| `auxilio doenca` | `previdencia` | 0 | **8** |
+| `intimacao` | `mandados` | 0 | **28** |
+| `oficial de justica` | `oficiais de justica` | 37 | **37** |
+| `marcar audiencia` | `audiencias` | 0 | **35** |
+| `pequenas causas` | `juizado` | 0 | **148** |
+| `juizado de pequenas causas` | `juizado` | 0 | **148** |
+| `medida protetiva` | `violencia mulher` | 0 | **8** |
+| `crime` | `criminal` | 96 | **131** |
+| `juri popular` | `juri` | 0 | **23** |
+| `tribunal do juri` | `juri` | 2 | **23** |
+| `divida ativa` | `execucao fiscal` | 0 | **1** |
+| `divida` | `execucao` | 1 | **15** |
+| `iptu` | `fazenda` | 0 | **23** |
+| `tributo` | `fazenda` | 4 | **23** |
+| `balcao` | `atendimento` | 0 | **119** |
+| `atendimento ao publico` | `atendimento` | 13 | **119** |
+| `plantao judiciario` | `plantao` | 10 | **27** |
+| `urgencia` | `plantao` | 0 | **27** |
+
+A medição é reproduzível: `SinonimoSeeder::LEXICO` percorrido com `Buscar::executar($termo, 0, false)`
+e `Buscar::executar($termo, 0, true)`. Três pares por família (cartório, família, sucessões) viram
+teste de feature em `apps/web/tests/Feature/BuscaTest.php`, e um teste de unidade recusa termo com
+acento, caixa alta ou expansão vazia antes de o `CHECK` do banco derrubar o `migrate --seed`.
+
+### Limites declarados
+
+- O léxico expande a **consulta inteira**: `reconhecimento de firma em vitória` ainda não compõe com
+  comarca. Entra quando houver caso real, com a consulta que motivou.
+- O vocabulário é o do cidadão, não o do catálogo: nome próprio e erro de digitação continuam por
+  conta do trigrama. Termo novo é decisão de revisão, não aprendizado automático.
+- `pontuacao` ordena, não filtra: o conjunto é o da consulta canônica, e a nota serve para o
+  desempate na tela.
+- A tabela fala de linhas do banco, não de telas; agrupar contatos por nó na interface é trabalho da
+  issue de busca na UI.
+
 ## Fluxo de contribuição
 
 Nada entra na `main` por push direto. O caminho é sempre o mesmo:
@@ -123,7 +213,7 @@ issue (problema) → branch → commits semânticos → PR ("Closes #N") → CI 
 | Workflow | Dispara em | Prova |
 | :--- | :--- | :--- |
 | `testes.yml` → `Varredura de privacidade` | todo push e PR | nenhum telefone/e-mail real e nenhum nome de pessoa fora do padrão sintético |
-| `testes.yml` → `DDL e invariantes (Postgres 16)` | todo push e PR | `db/schema.sql` aplica duas vezes (idempotência) e as 40 invariantes estruturais passam |
+| `testes.yml` → `DDL e invariantes (Postgres 16)` | todo push e PR | `db/schema.sql` aplica duas vezes (idempotência) e as 45 invariantes estruturais passam |
 | `testes.yml` → `Varredura do seed (a pedido)` | `workflow_dispatch` | o seed da v2, clonado na hora, também está limpo |
 | `laravel.yml` → Pint, Larastan, Pest, Blade/rotas | todo push e PR | estilo PSR-12, tipos nível 5, fluxos de feature em Postgres 16 e compilação de view/rotas |
 
