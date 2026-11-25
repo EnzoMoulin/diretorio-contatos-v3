@@ -53,12 +53,17 @@ O teste mínimo, num banco vazio e descartável:
 O seed não é migration: `db/carregar-seed.py` emite o SQL e `psql -1 -f` carrega num banco já migrado.
 Ele é andaime de teste, não o ingestão oficial.
 
-## Duas armadilhas
+## Três armadilhas
 
 - **`composer create-project` exige diretório vazio.** Quando a issue #4 rodar, crie o esqueleto num
   diretório temporário e mova `database/migrations/` para dentro dele; ou mova estas migrations para
   um lugar temporário, crie o projeto em `apps/web/` e devolva os arquivos. Não rode
   `composer create-project` direto em `apps/web/` com esta pasta no lugar.
+- **Apague as migrations padrão que o esqueleto traz.** O Laravel 13 gera
+  `0001_01_01_000000_create_users_table`, `..._000001_create_cache_table` e `..._000002_create_jobs_table`;
+  as duas primeiras criam `password_reset_tokens`, `sessions`, `cache` e `cache_locks`, que já nascem
+  aqui. Sem apagá-las, o primeiro `migrate` falha por tabela duplicada — e `jobs` não serve, porque a
+  fila é `sync`; a tabela de usuários é `usuarios`, não `users`.
 - **`pdo_pgsql` não vem no PHP desta máquina.** Para o teste local, o driver foi carregado de um
   `.deb` extraído (`php8.3-pgsql`) com `php -d extension=.../pdo_pgsql.so`; a instalação definitiva
   (PHP 8.4 + composer) é o item adiado do início do v3. No CI, `laravel.yml` já instala
