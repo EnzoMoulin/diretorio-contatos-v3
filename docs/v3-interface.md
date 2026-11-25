@@ -50,7 +50,7 @@ Arquivos soltos, fora do repositório do v2 (público; não colocar nada da v3 l
 ## Painel e navegação
 - Busca no topo do painel, sempre visível; é o caminho principal. O mapa é o modo de navegar.
 - Entrada fixa "Estrutura central" no topo da lista (a Sede não tem polígono), com a contagem dela.
-- Drill-down no mesmo painel, sem trocar de tela, com breadcrumb: comarca → fórum → unidade → setor → contato. Nem todo contato passa por unidade e setor: 631 dos 1.807 não têm unidade no seed (ficam direto no fórum ou na comarca), então o breadcrumb precisa aceitar um contato logo abaixo do fórum ou da comarca.
+- Drill-down no mesmo painel, sem trocar de tela, com breadcrumb: comarca → fórum → unidade → setor → contato. Nem todo contato passa por unidade e setor: 572 dos 1.807 não têm unidade no seed (ficam direto no fórum ou na comarca), então o breadcrumb precisa aceitar um contato logo abaixo do fórum ou da comarca.
 - Telefones e WhatsApp com os 4 últimos dígitos ocultos (`XXXX`), como no seed; ramais aparecem como `XXXX`.
 
 ## Estados a desenhar

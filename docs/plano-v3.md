@@ -108,7 +108,7 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
   aparece na tela do contato — a parte que interessa ao visitante. A fila "Reconferir" (do documento mais
   antigo para o mais novo) é **tela de gestão interna**, não da consulta pública.
   Contato sem documento não ganha selo: a ausência de data nunca vira "atual".
-- **631 contatos não têm `uo`**: o modelo e a tela aceitam contato pendurado direto no local.
+- **572 contatos não têm `uo`**: o modelo e a tela aceitam contato pendurado direto no local.
 - **`desc` não é rótulo de canal.** Medido: 843 vazios, "Geral" 93, "Institucional" 87, "Secretaria de
   Gestão do Foro" 47, "Contadoria" 34, "Oficiais de Justiça" 31, "Cartório" 30. São setores/descrições,
   não "Balcão"/"Chefia". **A interface mostra o tipo (Telefone, Ramal, WhatsApp, E-mail) e a `desc`
@@ -389,7 +389,7 @@ contatos de cada um na mesma página. Motivo medido no seed: 202 unidades têm f
 1,5 setor** por unidade e **mediana de 1 contato** por nó — clicar num setor quase sempre abre uma
 tela com uma linha.
 
-1. A página do local lista, nesta ordem: contatos pendurados direto no local (631 no seed) e depois os
+1. A página do local lista, nesta ordem: contatos pendurados direto no local (572 no seed) e depois os
    setores na ordem `ordem`, cada um como **seção com âncora** (`#UNI0027`).
 2. Setor sem contato continua visível, com "sem canal cadastrado": ausência é informação e mostra onde
    falta levantar dado.
