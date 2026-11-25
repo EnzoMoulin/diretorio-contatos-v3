@@ -9,10 +9,14 @@
 
 ## Status
 
-**Fase de fundação, não de código.** O que existe aqui é o que se prova antes da primeira
-linha de Laravel: o modelo físico do banco, o desenho de deploy, a direção visual e as
-decisões registradas. O esqueleto da aplicação (migrations, models, Livewire, Filament)
-ainda não começou — quando começar, entra por este README.
+**Fase de fundação: nenhuma linha da aplicação está versionada ainda.** O que existe aqui é o
+que se prova antes do esqueleto — modelo físico do banco, desenho de deploy, direção visual e
+decisões registradas. A interface, porém, já foi validada num **protótipo navegável em Laravel +
+TALL** que vive fora do repositório (`IDEIAS PARA O V3/wireframe`, no `.gitignore`): nove rodadas
+de revisão externa, com capturas e respostas em `IDEIAS PARA O V3/`. A fumaça desse protótipo está
+versionada em `tests/e2e/` e vira o e2e da aplicação quando `apps/web/` existir. O esqueleto em si
+(`composer.json`, migrations, Livewire, Filament) é a issue
+[#4](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues/4).
 
 | Já feito | Onde |
 | :--- | :--- |
@@ -23,9 +27,12 @@ ainda não começou — quando começar, entra por este README.
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
 | **Fluxo de PR com rastreabilidade**: formulário de PR (`Closes #N`), formulários de issue e checks obrigatórios para entrar na `main` | `.github/`, seção *Fluxo de contribuição* abaixo |
 | **Régua Laravel escrita e adormecida**: Pint, Larastan, Pest e cache de rotas/views prontos, disparando quando `apps/web/` existir | `.github/workflows/laravel.yml`, `docs/convencoes-laravel.md` |
-| Plano vigente da v3 e da v4: o que migra, o que não migra, critério do FastAPI | `docs/v3-arquitetura-preparacao.md`, `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` |
+| **Protótipo navegável da direção A em Laravel + TALL**, com mapa real do ES e o seed da v2 — nove rodadas de revisão, mantido fora do git | `IDEIAS PARA O V3/wireframe`, `docs/plano-v3.md` |
+| **Fumaça e2e do protótipo**: sete verificações em Chromium, saída em JSON | `tests/e2e/` |
+| **Plano do v3 encerrado em 20/11/2026**: arquitetura, interface, telas e critérios de aceite | `docs/plano-v3.md` |
+| Plano da v3 e da v4: o que migra, o que não migra, critério do FastAPI | `docs/plano-v3.md` (vence onde houver conflito), `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` |
 | **Decisão de 12/11/2026: a v4 mora neste repositório** — dois deployáveis (`apps/web`, `services/busca`), um `db/` | `docs/adr-009-um-repo-para-v3-e-v4.md` |
-| Briefing da direção A com mapa real e layout de celular (a executar) | `docs/v3-interface.md` |
+| Briefing original da direção A (11/11/2026) — executado como protótipo fora do repositório; registro da decisão, não briefing vigente | `docs/v3-interface.md`, `tests/e2e/` |
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
 > 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
@@ -72,11 +79,17 @@ SEED_JSON=../diretorio-contatos-v2/seed_mascarado.json db/testar-schema.sh
 
 # imagem
 docker build -t diretorio-contatos-v3 .
+
+# fumaça do protótipo — o alvo vive fora do repositório (ver tests/e2e/README.md)
+cd "IDEIAS PARA O V3/wireframe" && php artisan serve --port=8123   # noutro terminal
+BASE_URL=http://127.0.0.1:8123 node tests/e2e/fumaca.js
 ```
 
 O script só age em banco terminado em `_teste`, então produção nunca é atingida por acidente.
 Detalhe de cada arquivo de `db/`, pegadinhas já pagas e a medição que fixou o limiar de
-similaridade em 0,45: `db/README.md`.
+similaridade em 0,45: `db/README.md`. `scripts/` guarda as ferramentas de base — reconciliação com
+os catálogos, ordem do catálogo, coordenadas dos fóruns, captura e comparação do contrato do v2 e a
+varredura de privacidade; cada uma abre com o porquê no docstring.
 
 ## Fluxo de contribuição
 
@@ -117,8 +130,8 @@ não em promessa de README. Duas listas se complementam:
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
-Prioridade vigente: fechar o **esqueleto Laravel** (é o que destrava Pint/Larastan/Pest no CI e
-as rotas de leitura) e, em cima dele, a busca pública.
+Prioridade vigente: fechar o **esqueleto Laravel** (#4) — a pergunta da interface o protótipo já
+respondeu; falta a aplicação. Em cima dele vêm a busca pública e o mapa geocodificado, nessa ordem.
 
 ## Deploy
 
@@ -130,9 +143,11 @@ Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_J
 
 | Documento | Conteúdo |
 | :--- | :--- |
+| `docs/plano-v3.md` | **Plano vigente** (14/11/2026, encerrado em 20/11/2026): arquitetura, interface, telas e critérios de aceite. Onde houver conflito, vence sobre `fase-3`, `arquitetura-v3`, `v3-interface` e `v3-arquitetura-preparacao`. |
 | `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026: a fase do FastAPI é a **v4**. |
-| `docs/v3-arquitetura-preparacao.md` | **Plano vigente**: o que a v3 entrega, o que o v2 deixa como especificação, escopo mínimo publicável e os candidatos da v4. |
-| `docs/v3-interface.md` | Briefing da direção A para o mockup: mapa real do ES, layout de celular, sete estados, restrições de marca. Ainda não executado. |
+| `docs/v3-arquitetura-preparacao.md` | Plano anterior à consolidação do `plano-v3.md`; preservado como registro do que a v3 entrega e do que o v2 deixa como especificação. |
+| `docs/v3-interface.md` | Briefing original da direção A (11/11/2026): mapa real do ES, layout de celular, sete estados, restrições de marca. Executado como protótipo fora do repositório; hoje é registro da decisão. |
+| `docs/revisao-claude-wireframe-*-2026-11-1*.md` | Triagem das três rodadas de revisão externa do wireframe: o que procedia, o que foi corrigido no protótipo e o que virou decisão de produto. |
 | `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR da decisão de 12/11/2026: v3 com um serviço só, FastAPI na v4, banco único na v3. |
 | `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR da decisão de 12/11/2026: v3 e v4 num repositório, dois deployáveis, `db/` compartilhado. |
 | `docs/backlog-ideias.md` | Ideias de produto com fase, gatilho e veredito — inclusive as descartadas, com motivo. |
