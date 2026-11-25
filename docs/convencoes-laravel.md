@@ -1,7 +1,7 @@
 # Convenções de código — Laravel (v3)
 
-Registro de 17/11/2026. Vale para `apps/web/` no dia em que o esqueleto existir: a régua vem
-antes do código, porque convenção decidida depois é convenção negociada commit a commit.
+Registro de 17/11/2026, aplicado a partir do esqueleto (issue #4): a régua veio antes do código,
+porque convenção decidida depois é convenção negociada commit a commit.
 
 Cada regra abaixo responde três perguntas: **o que**, **por que** e **quem faz cumprir**. O que
 não tem mecanismo de enforcement está marcado como revisão humana — e revisão humana é a
@@ -24,8 +24,8 @@ está na camada errada.
 
 ## Pint — estilo (PSR-12)
 
-- Preset `laravel` (que é PSR-12 com as escolhas do framework), zero config própria no começo.
-  Config divergente é dívida: cada opção muda o diff de todo mundo.
+- Preset `psr12` no `pint.json` — é o que a issue #4 pede. O preset `laravel` acrescentaria escolhas
+  do framework por cima do PSR-12; se a régua mudar, muda-se o `pint.json` num commit próprio.
 - Local: `./vendor/bin/pint` antes do commit (reescreve). No CI: `--test` (só reporta).
 - **Por que não no hook de pre-commit:** o hook local já barra commit em `main` e mensagem fora
   do padrão; somar reescrita de arquivo ali esconde o que foi alterado entre o `git add` e o
@@ -38,14 +38,13 @@ O piso é **PHP 8.4**, e quem decide isso é o Pest, não o Laravel: `pestphp/pe
 `phpunit/phpunit` `^13.4`; `laravel/laravel` 13.11 aceita `^8.3`, `larastan/larastan` 3.15 e
 `filament/filament` 5.12 aceitam `^8.2` e cobrem `illuminate ^11.44 || ^12.4 || ^13`.
 
-Antes do `composer create-project` nesta máquina, conferir o que falta — em 25/11/2026 não havia nada
-disso:
+Antes do `composer create-project`, esta máquina não tinha o ambiente — o scaffold contornou assim:
 
-| Ferramenta | Estado em 25/11/2026 | Por que importa |
+| Ferramenta | Estado em 25/11/2026 | Como o esqueleto rodou |
 |---|---|---|
-| `php` | 8.3.6 (`/usr/bin/php8.3`) | o Pest 5 recusa instalar: `requires php ^8.4` |
-| `composer` | ausente | é o que cria o esqueleto |
-| `docker` | ausente | Sail e a imagem de teste dependem dele |
+| `php` | 8.3.6 (`/usr/bin/php8.3`) | o Pest 5 recusa: `requires php ^8.4`; foi usado o static-php **8.4.23** em `/tmp/php` |
+| `composer` | ausente | baixado como `composer.phar` em `/tmp` |
+| `docker` | ausente | Sail e a imagem **não** rodaram nesta máquina; a suíte rodou com Postgres 16 local e `pdo_pgsql` do static-php |
 
 Sem PHP 8.4 local, a saída é instalar o 8.4 ou rodar a suíte no container — nunca baixar a versão do
 Pest, que reverteria a régua do plano (§3.2).
@@ -55,8 +54,8 @@ Pest, que reverteria a régua do plano (§3.2).
 - `larastan/larastan` no nível **5** no primeiro PR, subindo um nível por marco fechado.
   Começar em 9 num projeto de banco grande produz uma lista que ninguém lê e que vira
   `@phpstan-ignore` em cascata — pior que nível baixo cumprido.
-- `phpstan.neon` versionado, com `paths: [app, routes, database]`. `tests/` entra depois que a
-  suíte existir (os helpers do Pest confundem o analisador no começo).
+- `phpstan.neon` versionado, com `paths: [app, routes, database]`. `tests/` ainda fica fora: os
+  helpers globais do Pest confundem o analisador no começo; entra quando houver regra estável.
 - Supressão exige comentário de uma linha dizendo **por que** o tipo é desconhecido. Suppress
   sem motivo é removido na revisão.
 - Falhou no CI = corrigir o tipo ou estreitar o nível do arquivo; não baixar o nível global.
@@ -80,8 +79,8 @@ Pest, que reverteria a régua do plano (§3.2).
 
 - `compose.yaml` de **desenvolvimento** (PHP, Postgres, Mailpit; Redis só se houver fila),
   versionado, com `./vendor/bin/sail up -d` funcionando do zero.
-- O `Dockerfile` da raiz continua sendo o de **produção** (nginx + php-fpm, migrations no
-  entrypoint). Sail não é usado em produção e não substitui o build de deploy.
+- O `apps/web/Dockerfile` é o de **produção** (nginx + php-fpm, migrations no entrypoint). Sail não é
+  usado em produção e não substitui o build de deploy.
 - `.env.example` completo: quem clona não deve precisar adivinhar variável. Segredo real nunca
   no `.env.example`.
 
@@ -89,7 +88,7 @@ Pest, que reverteria a régua do plano (§3.2).
 
 - `php artisan migrate --seed` num banco limpo tem de deixar a aplicação utilizável: um
   administrador e dados realistas. É a promessa do README e o CI a executa em todo PR
-  (`laravel.yml`, job `Pest`).
+  (`laravel.yml`, job `testes`).
 - Migration descreve o schema; `db/schema.sql` é a fonte das invariantes. Divergência entre os
   dois é bug de migration, não de DDL — o CI roda os dois.
 - Factory nunca gera telefone, e-mail ou nome de pessoa fora do padrão sintético: a varredura

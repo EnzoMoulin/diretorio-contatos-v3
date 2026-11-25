@@ -6,8 +6,10 @@
 # Ruby, Go, Rust e Elixir). No free tier não existe pre-deploy command, então
 # as migrations rodam no entrypoint, antes do php-fpm subir.
 #
-# Build:  docker build -t diretorio-contatos-v3 .
-# Local:  docker run --rm -p 10000:10000 --env-file .env diretorio-contatos-v3
+# Build (contexto apps/web):
+#   docker build -t diretorio-contatos-v3 apps/web
+# Local:
+#   docker run --rm -p 10000:10000 --env-file apps/web/.env diretorio-contatos-v3
 
 # ---------------------------------------------------------------- dependências
 FROM composer:2 AS vendor
@@ -15,17 +17,6 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist \
       --no-progress --optimize-autoloader --ignore-platform-reqs
-COPY . .
-RUN composer dump-autoload --no-dev --optimize --ignore-platform-reqs
-
-# ---------------------------------------------------------------------- assets
-FROM node:22-alpine AS assets
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
-COPY . .
-COPY --from=vendor /app/vendor ./vendor
-RUN npm run build
 
 # --------------------------------------------------------------------- runtime
 FROM php:8.4-fpm-alpine AS runtime
@@ -38,16 +29,18 @@ RUN apk add --no-cache nginx gettext icu-dev libzip-dev postgresql-dev oniguruma
     && docker-php-ext-install -j"$(nproc)" intl pdo_pgsql zip opcache pcntl \
     && rm -rf /var/cache/apk/*
 
-COPY docker/php.ini /usr/local/etc/php/conf.d/zz-app.ini
-COPY docker/nginx.conf.template /etc/nginx/templates/default.conf.template
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/producao/php.ini /usr/local/etc/php/conf.d/zz-app.ini
+COPY docker/producao/nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/producao/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 WORKDIR /app
-COPY --from=assets /app /app
+COPY --from=vendor /app/vendor ./vendor
+COPY . .
 
-RUN mkdir -p storage/framework/cache/data storage/framework/sessions \
-             storage/framework/views storage/logs bootstrap/cache \
+RUN php artisan package:discover --ansi \
+    && mkdir -p storage/framework/cache/data storage/framework/sessions \
+                storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production \

@@ -1,33 +1,19 @@
 name: Laravel (Pint, Larastan, Pest)
 
-# Escrito antes do esqueleto existir, de propósito: a régua de estilo, de tipo e de teste
-# é a primeira coisa que o scaffold tem de obedecer, não a última.
+# A régua de estilo, de tipo e de teste acompanha o esqueleto desde o primeiro PR.
 #
-# **Hoje só o job `Detectar esqueleto` roda.** O filtro de `paths` casa com `apps/web/**`, e as
-# migrations de `apps/web/database/` já estão versionadas, mas `apps/web/composer.json` ainda não
-# existe (issue #4). A guarda `needs: esqueleto` mantém os quatro jobs de verdade em `skipped` até
-# o scaffold existir; job pulado por `if` reporta `skipped`, que conta como sucesso para required
-# check. No PR do esqueleto:
-#   1. conferir se o caminho é `apps/web/` — se o scaffold pousar na raiz, corrigir aqui;
-#   2. rodar este workflow uma vez vermelho e uma verde, de propósito;
-#   3. só então incluir os quatro nomes de job abaixo como required status check no ruleset
-#      `protege-default` (issue de rastreio: esqueleto Laravel).
-#   4. **tirar o filtro de `paths` antes de marcar os quatro como required.** Workflow que não
-#      dispara não cria check-run: o PR que não toca `apps/web/` fica preso em "Expected" e nada o
-#      destrava. Mantendo o desejo de economizar CI, troque o filtro por guarda no job
-#      (`if: hashFiles('apps/web/composer.json') != ''`) — job pulado por `if` reporta `skipped`,
-#      que conta como sucesso para o required check.
+# O workflow **não** usa filtro de `paths`: os quatro jobs são required status
+# check do ruleset `protege-default`, e workflow que não dispara não cria
+# check-run — o PR que não toca `apps/web/` ficaria preso em "Expected".
+# Quem economiza CI é a guarda `if: needs.esqueleto.outputs.existe == 'true'`
+# (job pulado reporta `skipped`, que conta como sucesso para required check).
 #
 # Regras de código que acompanham esta régua: `docs/convencoes-laravel.md`.
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'apps/web/**'
   pull_request:
-    paths:
-      - 'apps/web/**'
   workflow_dispatch:
 
 permissions:
