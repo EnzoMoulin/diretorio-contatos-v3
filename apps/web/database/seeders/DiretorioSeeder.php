@@ -222,7 +222,7 @@ class DiretorioSeeder extends Seeder
                 'no_id' => $no->id,
                 'tipo' => 'Telefone',
                 'descricao' => 'Atendimento',
-                'valor' => '(27) 3333-4444',
+                'valor' => '(27) 3333-0000',
             ]);
 
             Contato::factory()->create([
@@ -230,7 +230,7 @@ class DiretorioSeeder extends Seeder
                 'no_id' => $no->id,
                 'tipo' => 'Ramal',
                 'descricao' => 'Gabinete',
-                'valor' => '32323232',
+                'valor' => '(27) 3333-0001',
             ]);
 
             Contato::factory()->create([

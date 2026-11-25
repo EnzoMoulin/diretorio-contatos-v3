@@ -20,7 +20,7 @@ class ContatoFactory extends Factory
             'no_id' => null,
             'tipo' => 'Telefone',
             'descricao' => 'Geral',
-            'valor' => '(27) 3333-4444',
+            'valor' => '(27) 3333-0000',
             'ordem_num' => 1,
             'ordem_idx' => 0,
             'fonte' => 'teste',
