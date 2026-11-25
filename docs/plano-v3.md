@@ -6,6 +6,13 @@
 **Documento irmão:** `db/schema.sql` continua sendo a fonte do DDL; o ADR-010 (Anexo A) entra em
 `docs/adr/`.
 
+> **Status em 25/11/2026 — item 1 do `v3.0` entregue.** Laravel 13 + PHP 8.4 em `apps/web/` (PR #35,
+> squash `aa9a0c9`; issue #4 fechada), com a primeira leitura (`GET /` e `GET /api/v1/hierarquia`) lendo o
+> Postgres e os quatro jobs do `laravel.yml` verdes e **required** no ruleset `27478802`: `Pint (PSR-12)`,
+> `Larastan (análise estática)`, `Pest (Feature)` e `Blade e rotas (sem servidor)`, somados aos dois que já
+> eram exigidos. As migrations do item 2 também estão versionadas (PR #34). **Risco registrado:** o build da
+> imagem Docker **não** foi exercitado — esta máquina não tem Docker; é risco do primeiro deploy do v3, não do v2.
+
 > Nota de escopo: este documento é de trabalho, com números medidos e comparações francas. A parte
 > publicável daqui é o ADR-010 e o quadro técnico da seção 3. Nada aqui cita instituição, marca real,
 > pessoa ou domínio institucional — e o produto também não pode citar.
@@ -493,7 +500,7 @@ implementa.
 
 | # | Entrega | Critério de pronto |
 |---|---|---|
-| 1 | Esqueleto Laravel 13 + PHP 8.4, Docker, Pint, Pest, CI (lint + testes) | `pest` verde no CI |
+| 1 | ~~Esqueleto Laravel 13 + PHP 8.4, Docker, Pint, Pest, CI (lint + testes)~~ — **entregue em 25/11/2026** (PR #35, `aa9a0c9`) | `pest` verde no CI — **cumprido**: quatro jobs verdes e required no ruleset (Docker versionado, build não exercitado) |
 | 2 | Migrações do `db/schema.sql` (FKs e CHECK reais) + carga do seed do v2 (com `fonte`/`vigente_desde`) | seed idempotente, contagens conferidas |
 | 3 | Policies de escopo por nó + testes portados da tabela do v2 | casos do `test_regras` cobertos |
 | 4 | API `/api/v1` só leitura + testes de contrato | rotas do contrato respondendo |
