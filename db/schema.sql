@@ -8,10 +8,13 @@
 -- -----------------------------------------------------------------------------
 --  O que este arquivo NÃO faz:
 --   - não importa o seed (é a carga do item 2 do v3.0, com normalização e `fonte`);
---   - não cria papéis nem GRANTs (secção 11 traz o modelo comentado);
---   - não contém identidade, permissão, pedidos ou auditoria administrativa —
---     elas são migrations do Laravel no MESMO banco (ADR-010); separá-las em
---     `db_admin` pertence ao desenho de dois serviços, fora do escopo.
+--   - não cria papéis nem GRANTs (secção 9 traz o modelo comentado);
+--   - não contém identidade, permissão, pedidos nem auditoria administrativa:
+--     são tabelas do app, criadas por migrations do Laravel no MESMO banco
+--     (ADR-010). `db_admin` é desenho de dois serviços, retirado em 25/11/2026;
+--   - não tem `referencias_externas` nem `idempotencia`: as duas existiam para o
+--     motor separado (espelho de referência e Idempotency-Key de escrita). Com
+--     um backend só a API é de leitura e o expurgo consulta o app direto.
 --  O que o banco garante sozinho: integridade referencial, unicidade de chave
 --  lógica, `tipo FORUM ⇔ comarca`, unicidade de nome entre irmãos, formato de
 --  contato e as colunas derivadas de busca. O que fica na aplicação (porque
@@ -281,7 +284,7 @@ CREATE INDEX IF NOT EXISTS ix_uteis_busca_trgm ON telefones_uteis USING gin (bus
 CREATE INDEX IF NOT EXISTS ix_uteis_busca_dig  ON telefones_uteis (busca_digitos text_pattern_ops);
 
 -- -----------------------------------------------------------------------------
--- 7. historico — histórico do dado (fica no motor), com expurgo de 180 dias
+-- 7. historico — histórico do dado, com expurgo de 180 dias
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS historico (
   id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -290,7 +293,7 @@ CREATE TABLE IF NOT EXISTS historico (
   contato_chave   TEXT,                           -- retrato: sobrevive à exclusão física do contato
   contato_rotulo  TEXT NOT NULL DEFAULT '',       -- retrato de exibição no momento da ação
   detalhe         TEXT NOT NULL DEFAULT '',
-  autor           TEXT NOT NULL DEFAULT '',       -- X-Acting-User (opaco: usr_00042:admin)
+  autor           TEXT NOT NULL DEFAULT '',       -- opaco: usr_00042:admin (id do usuário + papel)
   request_id      TEXT NOT NULL DEFAULT '',
   criado_em       TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT historico_autor_formato
@@ -298,9 +301,9 @@ CREATE TABLE IF NOT EXISTS historico (
 );
 
 COMMENT ON TABLE historico IS
-  'Histórico do dado, não auditoria administrativa (essa fica em db_admin). Guarda o retrato de exibição e a chave lógica; exclusão física do contato não apaga a linha.';
+  'Histórico do dado, não auditoria de permissão. Guarda o retrato de exibição e a chave lógica; exclusão física do contato não apaga a linha.';
 COMMENT ON COLUMN historico.entidade IS
-  'Entidades do motor: contato, no, local, comarca, util. `escopo_acesso`, `pedido` e `usuario` NÃO entram aqui — são auditoria administrativa e vivem em db_admin. Uma tabela, um dono: o motor não escreve auditoria de permissão e o Laravel não escreve histórico de dado.';
+  'Entidades do dado: contato, no, local, comarca, util. `usuario`, `acesso` e `pedido` NÃO entram aqui: são tabelas do app (migrations do Laravel, mesmo banco) e a auditoria delas não está sujeita ao expurgo de 180 dias.';
 COMMENT ON COLUMN historico.criado_em IS
   'Base do expurgo de 180 dias: depois dele sobra só agregado (quantidade por mês, sem nome, telefone, e-mail ou chave).';
 
@@ -323,42 +326,7 @@ CREATE TABLE IF NOT EXISTS historico_mensal (
 CREATE INDEX IF NOT EXISTS ix_historico_request ON historico (request_id) WHERE request_id <> '';
 
 -- -----------------------------------------------------------------------------
--- 8. referencias_externas — o que o db_admin aponta (5.2), escrito pelo Laravel
--- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS referencias_externas (
-  chave_logica TEXT NOT NULL,
-  origem       TEXT NOT NULL CHECK (origem IN ('escopo_acesso', 'pedido', 'relatorio', 'job', 'snapshot')),
-  referencia   TEXT NOT NULL,
-  criada_em    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  PRIMARY KEY (chave_logica, origem, referencia)
-);
-
-COMMENT ON TABLE referencias_externas IS
-  'Tabela espelho mantida pelo Laravel na mesma transação lógica da escrita dele. Fail-closed: chave desconhecida conta como referenciada e bloqueia o expurgo.';
-
-CREATE INDEX IF NOT EXISTS ix_refext_chave ON referencias_externas (chave_logica);
-
--- -----------------------------------------------------------------------------
--- 9. idempotencia — mutações com Idempotency-Key (6.3), TTL de 24 h
--- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS idempotencia (
-  chave           TEXT PRIMARY KEY,
-  requisicao_hash TEXT NOT NULL,                  -- sha256(método + rota + corpo normalizado)
-  status          SMALLINT NOT NULL,
-  resposta        JSONB NOT NULL,
-  criada_em       TIMESTAMPTZ NOT NULL DEFAULT now(),
-  expira_em       TIMESTAMPTZ NOT NULL,
-  CONSTRAINT idem_chave_formato CHECK (chave ~ '^[A-Za-z0-9._:-]{8,64}$'),
-  CONSTRAINT idem_status_valido CHECK (status BETWEEN 100 AND 599)
-);
-
-COMMENT ON TABLE idempotencia IS
-  'Mesma chave + mesmo hash ⇒ devolve status/resposta gravados (Idempotency-Replayed: true) e nunca reexecuta. Mesma chave + hash diferente ⇒ 409 idempotency_key_reuse. A linha nasce depois do commit da transação de negócio.';
-
-CREATE INDEX IF NOT EXISTS ix_idem_expira ON idempotencia (expira_em);
-
--- -----------------------------------------------------------------------------
--- 10. atualizado_em automático
+-- 8. atualizado_em automático
 -- -----------------------------------------------------------------------------
 DROP TRIGGER IF EXISTS tg_comarcas_atualiza ON comarcas;
 CREATE TRIGGER tg_comarcas_atualiza BEFORE UPDATE ON comarcas
@@ -383,19 +351,18 @@ CREATE TRIGGER tg_uteis_atualiza BEFORE UPDATE ON telefones_uteis
 COMMIT;
 
 -- =============================================================================
--- 11. Papéis (NÃO executado por este arquivo — aplicar no Neon, uma vez)
+-- 9. Papéis (NÃO executado por este arquivo — aplicar no Neon, uma vez)
 -- -----------------------------------------------------------------------------
--- O motor é o único dono de `db_diretorio`; o Laravel nunca escreve aqui, exceto
--- em `referencias_externas` (ADR-001: banco por serviço, sem JOIN entre os dois).
+-- Um banco, um dono: o papel da aplicação (ADR-010). O desenho anterior, com
+-- `diretorio_motor` e `diretorio_espelho`, existia para separar o motor do
+-- Laravel e caiu junto com o segundo serviço — não recriar dois papéis.
 --
---   CREATE ROLE diretorio_motor LOGIN PASSWORD '***';
---   CREATE ROLE diretorio_espelho LOGIN PASSWORD '***';   -- Laravel, só o espelho
---   GRANT USAGE ON SCHEMA public TO diretorio_motor, diretorio_espelho;
---   GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO diretorio_motor;
---   GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO diretorio_motor;
---   GRANT SELECT, INSERT, DELETE ON referencias_externas TO diretorio_espelho;
+--   CREATE ROLE diretorio_app LOGIN PASSWORD '***';
+--   GRANT USAGE ON SCHEMA public TO diretorio_app;
+--   GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO diretorio_app;
+--   GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO diretorio_app;
 --   ALTER DEFAULT PRIVILEGES IN SCHEMA public
---     GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO diretorio_motor;
+--     GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO diretorio_app;
 --
 -- No Neon, `pg_trgm` e `unaccent` estão disponíveis e o schema `public` já existe;
 -- `CREATE EXTENSION` exige o papel dono do banco (o mesmo que roda este arquivo).

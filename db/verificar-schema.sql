@@ -52,12 +52,12 @@ DECLARE faltando TEXT;
 BEGIN
   SELECT string_agg(t, ', ') INTO faltando
   FROM unnest(ARRAY['comarcas', 'locais', 'nos', 'contatos', 'telefones_uteis',
-                    'historico', 'historico_mensal', 'referencias_externas', 'idempotencia']) AS t
+                    'historico', 'historico_mensal']) AS t
   WHERE to_regclass('public.' || t) IS NULL;
   IF faltando IS NOT NULL THEN
     RAISE EXCEPTION 'FALHOU: tabelas ausentes: %', faltando;
   END IF;
-  PERFORM _passa('as 9 tabelas do db_diretorio existem');
+  PERFORM _passa('as 7 tabelas do baseline existem');
 END $$;
 
 -- ---------------------------------------------------------------------------
@@ -277,15 +277,6 @@ BEGIN
     $q$INSERT INTO telefones_uteis (chave, nome, valor, fonte, vigente_desde)
        VALUES ('UTL0001','Central de ajuda','(27) 3232-0000','catalogo-comarcas-2026-06-26.pdf','2026-06-25')$q$);
 
-  PERFORM _espera_ok('idempotência grava chave e resposta',
-    $q$INSERT INTO idempotencia (chave, requisicao_hash, status, resposta, expira_em)
-       VALUES ('abc12345-xyz','sha256:deadbeef',201,'{"ok":true}'::jsonb, now() + interval '24 hours')$q$);
-  PERFORM _espera_erro('mesma Idempotency-Key não entra duas vezes',
-    $q$INSERT INTO idempotencia (chave, requisicao_hash, status, resposta, expira_em)
-       VALUES ('abc12345-xyz','sha256:outro',200,'{}'::jsonb, now() + interval '1 hour')$q$, '23505');
-  PERFORM _espera_erro('chave de idempotência curta é recusada',
-    $q$INSERT INTO idempotencia (chave, requisicao_hash, status, resposta, expira_em)
-       VALUES ('abc','h',200,'{}'::jsonb, now())$q$, '23514');
 END $$;
 
 -- ---------------------------------------------------------------------------
@@ -320,8 +311,8 @@ END $$;
 -- ---------------------------------------------------------------------------
 -- limpeza: o schema fica, os dados de teste saem
 -- ---------------------------------------------------------------------------
-TRUNCATE idempotencia, historico, referencias_externas, telefones_uteis,
-         contatos, nos, locais, comarcas RESTART IDENTITY CASCADE;
+TRUNCATE historico, telefones_uteis, contatos, nos, locais, comarcas
+  RESTART IDENTITY CASCADE;
 
 DROP FUNCTION IF EXISTS _passa(TEXT);
 DROP FUNCTION IF EXISTS _espera_erro(TEXT, TEXT, TEXT);
