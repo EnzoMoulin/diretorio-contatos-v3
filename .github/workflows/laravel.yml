@@ -12,6 +12,11 @@ name: Laravel (Pint, Larastan, Pest)
 #   2. rodar este workflow uma vez vermelho e uma verde, de propósito;
 #   3. só então incluir os quatro nomes de job abaixo como required status check no ruleset
 #      `protege-default` (issue de rastreio: esqueleto Laravel).
+#   4. **tirar o filtro de `paths` antes de marcar os quatro como required.** Workflow que não
+#      dispara não cria check-run: o PR que não toca `apps/web/` fica preso em "Expected" e nada o
+#      destrava. Mantendo o desejo de economizar CI, troque o filtro por guarda no job
+#      (`if: hashFiles('apps/web/composer.json') != ''`) — job pulado por `if` reporta `skipped`,
+#      que conta como sucesso para o required check.
 #
 # Regras de código que acompanham esta régua: `docs/convencoes-laravel.md`.
 
