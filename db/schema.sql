@@ -12,7 +12,7 @@
 --  com "There is no active transaction", deixando o DDL aplicado.
 --  O que este arquivo NÃO faz:
 --   - não importa o seed (é a carga do item 2 do v3.0, com normalização e `fonte`);
---   - não cria papéis nem GRANTs (secção 9 traz o modelo comentado);
+--   - não cria papéis nem GRANTs (secção 10 traz o modelo comentado);
 --   - não contém identidade, permissão, pedidos nem auditoria administrativa:
 --     são tabelas do app, criadas por migrations do Laravel no MESMO banco
 --     (ADR-010). `db_admin` é desenho de dois serviços, retirado em 25/11/2026;
@@ -286,7 +286,35 @@ CREATE INDEX IF NOT EXISTS ix_uteis_busca_trgm ON telefones_uteis USING gin (bus
 CREATE INDEX IF NOT EXISTS ix_uteis_busca_dig  ON telefones_uteis (busca_digitos text_pattern_ops);
 
 -- -----------------------------------------------------------------------------
--- 7. historico — histórico do dado, com expurgo de 180 dias
+-- 7. sinonimos — vocabulário de busca (ideia 04 do backlog)
+-- -----------------------------------------------------------------------------
+-- Trigrama resolve erro de digitação, não vocabulário: "reconhecimento de firma"
+-- e "cartorio" não têm trigrama em comum, e é a mesma pergunta. O vocabulário da
+-- base é pequeno (619 palavras alfabéticas, medido em 26/11/2026), então o léxico é
+-- curado à mão, sem modelo, sem custo e revisável em revisão de código.
+--
+-- `termo` é a forma digitada, já normalizada por `norm_texto` (o CHECK garante —
+-- evita duas linhas para "Cartório" e "cartorio"); `expansao` são frases
+-- canônicas que substituem o termo na consulta. Dentro da mesma frase as palavras
+-- valem juntas (E); frases diferentes valem como alternativas (OU).
+CREATE TABLE IF NOT EXISTS sinonimos (
+  id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  termo     TEXT NOT NULL,
+  expansao  TEXT[] NOT NULL,
+  CONSTRAINT sinonimo_termo_unico UNIQUE (termo),
+  CONSTRAINT sinonimo_termo_normalizado
+    CHECK (termo = norm_texto(termo) AND btrim(termo) <> ''),
+  CONSTRAINT sinonimo_expansao_preenchida
+    CHECK (cardinality(expansao) > 0 AND array_position(expansao, '') IS NULL)
+);
+
+COMMENT ON TABLE sinonimos IS
+  'Léxico de busca (ideia 04): termo digitado -> frases canônicas. Curado à mão; o léxico versionado está em SinonimoSeeder.';
+COMMENT ON COLUMN sinonimos.expansao IS
+  'Frases canônicas que substituem o termo na consulta: E dentro da frase, OU entre frases.';
+
+-- -----------------------------------------------------------------------------
+-- 8. historico — histórico do dado, com expurgo de 180 dias
 -- -----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS historico (
   id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -340,7 +368,7 @@ CREATE TABLE IF NOT EXISTS historico_mensal (
 CREATE INDEX IF NOT EXISTS ix_historico_request ON historico (request_id) WHERE request_id <> '';
 
 -- -----------------------------------------------------------------------------
--- 8. atualizado_em automático
+-- 9. atualizado_em automático
 -- -----------------------------------------------------------------------------
 DROP TRIGGER IF EXISTS tg_comarcas_atualiza ON comarcas;
 CREATE TRIGGER tg_comarcas_atualiza BEFORE UPDATE ON comarcas
@@ -363,7 +391,7 @@ CREATE TRIGGER tg_uteis_atualiza BEFORE UPDATE ON telefones_uteis
   FOR EACH ROW EXECUTE FUNCTION marca_atualizacao();
 
 -- =============================================================================
--- 9. Papéis (NÃO executado por este arquivo — aplicar no Neon, uma vez)
+-- 10. Papéis (NÃO executado por este arquivo — aplicar no Neon, uma vez)
 -- -----------------------------------------------------------------------------
 -- Um banco, um dono: o papel da aplicação (ADR-010). O desenho anterior, com
 -- `diretorio_motor` e `diretorio_espelho`, existia para separar o motor do

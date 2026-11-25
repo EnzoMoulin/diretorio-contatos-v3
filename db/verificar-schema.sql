@@ -52,12 +52,12 @@ DECLARE faltando TEXT;
 BEGIN
   SELECT string_agg(t, ', ') INTO faltando
   FROM unnest(ARRAY['comarcas', 'locais', 'nos', 'contatos', 'telefones_uteis',
-                    'historico', 'historico_mensal']) AS t
+                    'sinonimos', 'historico', 'historico_mensal']) AS t
   WHERE to_regclass('public.' || t) IS NULL;
   IF faltando IS NOT NULL THEN
     RAISE EXCEPTION 'FALHOU: tabelas ausentes: %', faltando;
   END IF;
-  PERFORM _passa('as 7 tabelas do baseline existem');
+  PERFORM _passa('as 8 tabelas do baseline existem');
 END $$;
 
 -- ---------------------------------------------------------------------------
@@ -147,6 +147,26 @@ BEGIN
   SELECT count(*) INTO n FROM locais WHERE norm_texto(nome) LIKE norm_texto('%forum crim%') ;
   IF n <> 1 THEN RAISE EXCEPTION 'trigrama em locais achou %', n; END IF;
   PERFORM _passa('norm_texto serve para qualquer tabela, não só contatos');
+END $$;
+
+-- ---------------------------------------------------------------------------
+-- 3b. sinonimos: o léxico guarda a chave normalizada e não aceita vazio
+-- ---------------------------------------------------------------------------
+DO $$
+DECLARE n INT;
+BEGIN
+  PERFORM _espera_erro('sinonimo recusa termo com acento ou caixa',
+    $q$INSERT INTO sinonimos (termo, expansao) VALUES ('Cartório', ARRAY['cartorio'])$q$, '23514');
+  PERFORM _espera_erro('sinonimo recusa expansão vazia',
+    $q$INSERT INTO sinonimos (termo, expansao) VALUES ('teste', ARRAY[]::TEXT[])$q$, '23514');
+  PERFORM _espera_erro('sinonimo recusa termo repetido',
+    $q$INSERT INTO sinonimos (termo, expansao) VALUES ('cartorio', ARRAY['cartorio']);
+       INSERT INTO sinonimos (termo, expansao) VALUES ('cartorio', ARRAY['cartorio'])$q$, '23505');
+  PERFORM _espera_ok('sinonimo aceita termo normalizado com expansão',
+    $q$INSERT INTO sinonimos (termo, expansao) VALUES ('cartorio', ARRAY['cartorio'])$q$);
+  SELECT count(*) INTO n FROM sinonimos WHERE termo = 'cartorio';
+  IF n <> 1 THEN RAISE EXCEPTION 'sinonimo gravado devia ser 1, foi %', n; END IF;
+  PERFORM _passa('o léxico lê a chave normalizada de volta');
 END $$;
 
 -- ---------------------------------------------------------------------------
@@ -316,7 +336,7 @@ END $$;
 -- ---------------------------------------------------------------------------
 -- limpeza: o schema fica, os dados de teste saem
 -- ---------------------------------------------------------------------------
-TRUNCATE historico, telefones_uteis, contatos, nos, locais, comarcas
+TRUNCATE historico, telefones_uteis, contatos, nos, locais, comarcas, sinonimos
   RESTART IDENTITY CASCADE;
 
 DROP FUNCTION IF EXISTS _passa(TEXT);
