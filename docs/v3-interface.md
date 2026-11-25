@@ -73,3 +73,18 @@ Arquivos soltos, fora do repositório do v2 (público; não colocar nada da v3 l
 
 ## O que reportar (no `NOTAS.md`)
 Fonte, licença e atribuição da geometria; ferramenta e tolerância da simplificação; tamanhos; comarcas sem polígono e polígonos sem comarca; tabela de contrastes medidos; qualquer ponto em que não deu para cumprir este briefing, dito sem suavizar.
+
+## Decisões de navegação e da lista de comarcas (24/11/2026, no wireframe)
+
+Valem para o v3.0; o protótipo já está assim.
+
+1. **Gestão sem sessão é porta, não menu.** Sem sessão, o item do rail é link direto para `/entrar`; um popover de um item só custa um clique e não oferece escolha. Com sessão, o popover mostra Conferência e Sair. Em v3.0 o item aponta para o `/admin` do Filament (que já tem a própria casca), então esse popover não deve ser portado.
+2. **O pós-login pousa na Conferência**, porque a fila é o trabalho (ordenada do mais antigo para o mais novo) e é a única função da área. Só muda quando a área tiver uma segunda função, ou quando a fila puder vir vazia para um escopo — nesse caso o estado vazio da própria Conferência oferece o próximo passo, não uma home genérica.
+3. **No popover, a identidade fica no cabeçalho** (nome do usuário abaixo do rótulo "gestão interna") e **Sair é ação de conta, não destino**: linha única, menor, em `muted`, separada por fio alinhado à margem do texto. Nunca como subtítulo do Sair.
+4. **Nada de item "em breve" em menu de protótipo.** "Ajustes" foi removido por isso: era o único item que não fazia nada, e prometia produto onde havia roadmap. Em v3.0 os ajustes reais vivem no Filament, em `/admin`.
+5. **Na lista de comarcas não há cabeçalho de coluna (24/11).** O rótulo "comarcas" saiu por ser redundante com o título do painel e com a linha "69 comarcas · 1.807 contatos"; o rótulo "contatos" também saiu — a linha de totais já nomeia os contatos, e repetir em letra miúda criava uma faixa vazia sobre a lista. A lista começa direto no primeiro item. Isso diverge do mockup original, que tinha os dois rótulos.
+6. **Nos cards de fórum, a contagem não flutua no canto**: ela entra na linha de métricas ("15 unidades · 81 contatos"), com o número nomeado. Número solto no topo à direita exigiria centralização vertical ou rótulo para não virar métrica sem dono; na linha, ele compara entre cards e não disputa com o nome.
+7. **Favorito de setor** usa o mesmo mecanismo (código do nó, índice do servidor, `localStorage`), com a estrela ao lado do cabeçalho recolhível — irmã do botão, nunca dentro dele, para o toque na estrela não recolher a seção. O destino do favorito é a unidade, na âncora do setor.
+8. **Fórum e losango são o mesmo objeto visto duas vezes**: hover (ou foco de teclado) no cartão acende o losango e abre a dica dele no mapa; hover no losango acende o cartão. A dica é a mesma do hover real, então o deslocamento lateral (`virarDica`) vale igual. No v3 isso é estado de interface, derivado do mesmo `chave` — não é dado novo nem rota nova.
+9. **"Telefones Úteis" no fim do painel é atalho, não acordeão**: a lista completa é uma tela (`/uteis`) e a versão em miniatura repetia nome e número sem os canais de ação. O contador fica, porque informa quanto há do outro lado.
+
