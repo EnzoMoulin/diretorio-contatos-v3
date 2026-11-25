@@ -30,8 +30,8 @@ versionada em `tests/e2e/` e vira o e2e da aplicação quando `apps/web/` existi
 | **Protótipo navegável da direção A em Laravel + TALL**, com mapa real do ES e o seed da v2 — nove rodadas de revisão, mantido fora do git | `IDEIAS PARA O V3/wireframe`, `docs/plano-v3.md` |
 | **Fumaça e2e do protótipo**: sete verificações em Chromium, saída em JSON | `tests/e2e/` |
 | **Plano do v3 encerrado em 20/11/2026**: arquitetura, interface, telas e critérios de aceite | `docs/plano-v3.md` |
-| Plano da v3 e da v4: o que migra, o que não migra, critério do FastAPI | `docs/plano-v3.md` (vence onde houver conflito), `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` |
-| **Decisão de 12/11/2026: a v4 mora neste repositório** — dois deployáveis (`apps/web`, `services/busca`), um `db/` | `docs/adr-009-um-repo-para-v3-e-v4.md` |
+| Plano do v3 — e o que ficou fora dele, inclusive a v4 adiada | `docs/plano-v3.md` (vence onde houver conflito), `docs/adr-010-backend-unico-em-laravel.md` |
+| **Decisão de 12/11/2026, revisada em 25/11: a v4 moraria neste repositório** — hoje um só deployável (`apps/web`), porque a v4 está adiada | `docs/adr-009-um-repo-para-v3-e-v4.md`, `docs/adr-010-backend-unico-em-laravel.md` |
 | Briefing original da direção A (11/11/2026) — executado como protótipo fora do repositório; registro da decisão, não briefing vigente | `docs/v3-interface.md`, `tests/e2e/` |
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
@@ -48,25 +48,26 @@ versionada em `tests/e2e/` e vira o e2e da aplicação quando `apps/web/` existi
   Laravel no portfólio sem construir dois backends.
 - **Postgres no Neon free**, fora do Render: o Postgres free do Render expira em 30 dias e o
   demo quebraria sozinho.
-- **FastAPI na v4**, em serviço separado e com o Laravel da v3 mantido, quando houver medição
-  que justifique — importação com `ftfy`, deduplicação e busca fonética em português.
+- **FastAPI na v4, adiada** (ADR-010): só entra com medição que justifique — importação com
+  `ftfy`, deduplicação e busca fonética em português. O `v3.0` é Laravel sozinho.
 
-## Estrutura (v3 e v4 no mesmo repositório)
+## Estrutura (v3 agora; v4 adiada)
 
-Decidido em 12/11/2026 (`docs/adr-009-um-repo-para-v3-e-v4.md`). A v4 não é um quarto repositório:
-é um **segundo deployável** aqui dentro. Layout alvo, aplicado quando a primeira linha de Laravel
-for escrita — hoje a raiz continua como está:
+Decidido em 12/11/2026 (`docs/adr-009-um-repo-para-v3-e-v4.md`) e revisado em 25/11/2026
+(`docs/adr-010-backend-unico-em-laravel.md`). A v4 não é um quarto repositório — mas também não é
+fase em curso: o `v3.0` tem **um** deployável. Layout alvo, aplicado quando a primeira linha de
+Laravel for escrita — hoje a raiz continua como está:
 
 ```
 apps/web/          Laravel 13 + TALL + Filament   → deployável 1 (Render, Dockerfile próprio)
-services/busca/    FastAPI                        → deployável 2 (v4, Dockerfile próprio)
-db/                schema.sql, invariantes, carga do seed — fonte única das duas fases
+services/busca/    FastAPI (v4, adiada)           → sem deployável enquanto o ADR-010 valer
+db/                schema.sql, invariantes, carga do seed — fonte única do v3
 infra/             render.yaml e docker/ do web
 docs/              ADRs, planos, backlog
 ```
 
-A fronteira entre os dois é HTTP (`/api/v1`), não import de código. O seed continua no repositório
-do v2, lido por caminho relativo de irmão e nunca versionado aqui.
+Se a v4 voltar, a fronteira entre os dois é HTTP (`/api/v1`), não import de código. O seed continua
+no repositório do v2, lido por caminho relativo de irmão e nunca versionado aqui.
 
 ## Rodar o que existe
 
@@ -144,22 +145,23 @@ Blueprint do Render em `render.yaml`; segredos (`APP_BASE_URL`, `GOOGLE_CLIENT_J
 | Documento | Conteúdo |
 | :--- | :--- |
 | `docs/plano-v3.md` | **Plano vigente** (14/11/2026, encerrado em 20/11/2026): arquitetura, interface, telas e critérios de aceite. Onde houver conflito, vence sobre `fase-3`, `arquitetura-v3`, `v3-interface` e `v3-arquitetura-preparacao`. |
-| `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026: a fase do FastAPI é a **v4**. |
+| `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026 (a fase do FastAPI é a **v4**) e em 25/11/2026: a v4 está **adiada** (ADR-010). |
 | `docs/v3-arquitetura-preparacao.md` | Plano anterior à consolidação do `plano-v3.md`; preservado como registro do que a v3 entrega e do que o v2 deixa como especificação. |
 | `docs/v3-interface.md` | Briefing original da direção A (11/11/2026): mapa real do ES, layout de celular, sete estados, restrições de marca. Executado como protótipo fora do repositório; hoje é registro da decisão. |
 | `docs/revisao-claude-wireframe-*-2026-11-1*.md` | Triagem das três rodadas de revisão externa do wireframe: o que procedia, o que foi corrigido no protótipo e o que virou decisão de produto. |
-| `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR da decisão de 12/11/2026: v3 com um serviço só, FastAPI na v4, banco único na v3. |
-| `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR da decisão de 12/11/2026: v3 e v4 num repositório, dois deployáveis, `db/` compartilhado. |
+| `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR de 12/11/2026: v3 com um serviço só, banco único. **Substituído pelo ADR-010 na parte do FastAPI.** |
+| `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR de 12/11/2026: v3 e v4 num repositório, `db/` compartilhado. **Revisado em 25/11: um deployável, v4 adiada.** |
+| `docs/adr-010-backend-unico-em-laravel.md` | ADR de 14/11/2026: backend único em Laravel, sem serviço FastAPI; aposenta o marco "v4". |
 | `docs/backlog-ideias.md` | Ideias de produto com fase, gatilho e veredito — inclusive as descartadas, com motivo. |
 | `docs/paridade-contrato-v2.md` | Contrato de leitura congelado: o que a v3 tem de devolver igual ao v2, e onde a diferença é decisão. |
-| `docs/reconciliacao-2026-11-12.md` | Laudo de aderência da base aos três catálogos oficiais, com as divergências e o que o método não prova. É a **base final de demonstração** da v3 e da v4. |
-| `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4. Tem aviso no topo; não é o plano da v3. |
+| `docs/reconciliacao-2026-11-12.md` | Laudo de aderência da base aos três catálogos oficiais, com as divergências e o que o método não prova. É a **base final de demonstração** da v3. |
+| `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4, que está adiada. Tem aviso no topo; não é o plano da v3. |
 | `docs/identidade-visual.md` | Direção A, mapa protagonista. Inclui o que **não** fazer: `direcoes-visuais.html` é instrumento de decisão, não markup. |
 | `db/README.md` | O banco lógico: tabelas, invariantes, medições e as regras que ficam na aplicação. |
 
 ## Base de demonstração (congelada)
 
-A base da v3 e da v4 é a que foi conferida em 12/11/2026 contra os três catálogos
+A base da v3 é a que foi conferida em 12/11/2026 contra os três catálogos
 oficiais: **69 comarcas + Sede · 72 fóruns · 856 nós · 1.807 contatos · 11 telefones
 úteis**, com 296 dos 297 e-mails confirmados por documento. Não há segunda conferência
 a fazer enquanto a fonte não mudar.

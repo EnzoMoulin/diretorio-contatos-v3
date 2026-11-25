@@ -1,8 +1,19 @@
-# ADR-009 — Um repositório para a v3 e a v4 (dois deployáveis)
+# ADR-009 — Um repositório para a v3 e a v4 (v4 adiada)
 
-- **Status:** aceito em 12/11/2026, por decisão do Enzo.
+- **Status:** aceito em 12/11/2026, por decisão do Enzo; **revisado em 25/11/2026** — ver "Revisão de 25/11" abaixo.
 - **Complementa:** o ADR-008 (v3 com um serviço só, FastAPI na v4). Não o substitui.
 - **Vale para:** topologia de repositório. Não altera contrato, modelo de dados nem hospedagem.
+
+## Revisão de 25/11/2026
+
+O ADR-010 aposentou o serviço FastAPI e o marco "v4". O que muda neste documento:
+
+- **Um deployável, não dois:** `apps/web/` é o único deployável do `v3.0`; `services/busca/` não existe, e o `db/` continua na raiz como fonte única.
+- **Um serviço free no Render, não dois** (item 3 da Decisão).
+- **A v4 fica adiada/indefinida**, sem data: só volta diante de requisito medido (ADR-010, "Quando revisitar").
+- A tabela de contexto abaixo é **retrato de 12/11** — v2 com 24 commits e v3 com 13; em 25/11 são 33 e 22 — e o plano vigente é `plano-v3.md`.
+
+O resto continua valendo: um repositório só, `db/` na raiz compartilhado, seed no repositório do v2 por caminho de irmão e a regra de topologia (fase com stack distinta = repo próprio; serviço da mesma fase = pasta).
 
 ## Contexto
 
@@ -32,13 +43,13 @@ Criar um quarto repositório para a v4 teria três custos concretos:
 
 ## Decisão
 
-1. **v3 e v4 vivem no mesmo repositório**, como **dois deployáveis independentes**. O repositório é
+1. **v3 e v4 vivem no mesmo repositório** (hoje, **um** deployável: `apps/web/`; a v4 está adiada — ver revisão de 25/11). O repositório é
    `diretorio-contatos-v3` (nome mantido; renomear é decisão separada, porque quebra link).
 2. **Estrutura alvo**, aplicada quando a primeira linha de Laravel for escrita — não antes:
 
    ```
    apps/web/            Laravel 13 + TALL + Filament   → deployável 1 (Render, Dockerfile próprio)
-   services/busca/      FastAPI                        → deployável 2 (v4, Dockerfile próprio)
+   services/busca/      FastAPI (v4, adiada)           → sem deployável enquanto o ADR-010 valer
    db/                  schema.sql, invariantes, carga do seed (fonte única, compartilhada)
    infra/               render.yaml, docker/ do web
    docs/                ADRs, planos, backlog
@@ -48,9 +59,9 @@ Criar um quarto repositório para a v4 teria três custos concretos:
    deslocamento para `apps/web/` acontece junto com o `composer create-project`: mover um esqueleto
    sem aplicação não prova nada e só gera commit de mudança de caminho.
 
-3. **Hospedagem não muda.** Continuam dois serviços free no Render, cada um com seu Dockerfile —
-   monorepo não é serviço único. No `render.yaml`, o serviço do web aponta `dockerContext` para
-   `apps/web/`. O banco continua único (ADR-008) até a v4 ter motivo medido para separar.
+3. **Hospedagem.** Com a v4 adiada (ADR-010), é **um** serviço free no Render, com um Dockerfile —
+   o do `apps/web/` quando o deslocamento acontecer. O banco continua único. O desenho de dois
+   serviços, se a v4 voltar, é o da revisão de 25/11.
 4. **Fronteira entre os dois é HTTP, não import.** Nenhum código Python conhece o banco do Laravel
    por ORM nem compartilha model; a v4 fala com o diretório pelo contrato `/api/v1` descrito em
    `fase-3-arquitetura-e-adrs.md` e pela mesma `DB_URL` só onde o ADR da v4 autorizar.
@@ -87,6 +98,7 @@ Criar um quarto repositório para a v4 teria três custos concretos:
 ## Referências
 
 - `adr-008-v3-um-servico-e-fastapi-na-v4.md` — v3 com um serviço, FastAPI na v4.
-- `v3-arquitetura-preparacao.md` — plano vigente das duas fases.
+- `plano-v3.md` — plano vigente. `v3-arquitetura-preparacao.md` é o registro anterior.
+- `adr-010-backend-unico-em-laravel.md` — backend único em Laravel; aposenta o marco "v4".
 - `backlog-ideias.md` — ideias de produto, com fase, gatilho e veredito.
 - `../../README.md` (workspace) — convenção de topologia de repositório.

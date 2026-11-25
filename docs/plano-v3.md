@@ -29,7 +29,7 @@
 
 | Peça | Estado | Onde |
 |---|---|---|
-| Contrato de rotas, modelo e testes do v2 | Pronto, congelado | `~/Emprego/Projetos/diretorio-contatos-v2` (HEAD `a93aeb1`) |
+| Contrato de rotas, modelo e testes do v2 | Pronto, congelado | `~/Emprego/Projetos/diretorio-contatos-v2` (HEAD `a93aeb1`; SHA apagado na limpeza de 20/11 — HEAD em 25/11: `fcdb719`) |
 | Seed mascarado | 1.807 contatos, 70 comarcas (69 com IBGE + Sede), 72 fóruns, 856 nós, 11 úteis | `seed_mascarado.json` |
 | DDL PostgreSQL | 9 tabelas, extensões, funções e invariantes já escritas | `db/schema.sql` |
 | Wireframe navegável | 7 estados, desktop e celular, dado real | `IDEIAS PARA O V3/wireframe/` (Laravel/TALL, descartável) |
@@ -633,7 +633,7 @@ só produziram detalhe e evidência (realce de hover preso no toque, alvo do toq
 estados). Os itens 1–4 do `v3.0` (esqueleto, migrações, policies, API) podem começar: nenhum deles
 depende de UI.
 
-## Anexo A — ADR-010 (pronto para `docs/adr/adr-010-backend-unico-em-laravel.md`)
+## Anexo A — ADR-010 (registrado em `docs/adr-010-backend-unico-em-laravel.md`; o texto abaixo é cópia)
 
 ```markdown
 # ADR-010: Backend único em Laravel, sem serviço FastAPI
@@ -675,13 +675,14 @@ extração possível.
 
 | Arquivo | Ajuste |
 |---|---|
-| `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | marcar como substituído pelo ADR-010 na parte do FastAPI |
-| `docs/adr-009-um-repo-para-v3-e-v4.md` | registrar que a v4 fica adiada/indefinida, sem segundo deployável |
-| `db/schema.sql` (cabeçalho) | remover a menção à v4/FastAPI como motivo do DDL |
-| `docs/identidade-visual.md` | acrescentar topbar, rail e painel fixo; manter paleta |
-| `docs/v3-interface.md` | substituir pela seção 5 deste plano |
-| `docs/backlog-ideias.md` | mover para "adiado" o que a seção 9 deixa fora do `v3.0` |
-| `IDEIAS PARA O V3/` | ficar **fora** do repositório público: contém PDFs e imagens com marca institucional |
+| `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | marcar como substituído pelo ADR-010 na parte do FastAPI — **feito em 25/11/2026** |
+| `docs/adr-009-um-repo-para-v3-e-v4.md` | registrar que a v4 fica adiada/indefinida, sem segundo deployável — **feito em 25/11/2026** |
+| `db/schema.sql` (cabeçalho) | remover a menção à v4/FastAPI como motivo do DDL — **feito em 25/11/2026** |
+| `README.md`, `docs/arquitetura-v3.md`, `db/README.md` | notas de status: um deployável, v4 adiada — **feito em 25/11/2026** |
+| `docs/identidade-visual.md` | acrescentar topbar, rail e painel fixo; manter paleta — **item 5** |
+| `docs/v3-interface.md` | nota de status no topo apontando a §5; corpo fica como registro de 11–12/11 — **feito em 25/11/2026** |
+| `docs/backlog-ideias.md` | mover para "adiado" o que a seção 9 deixa fora do `v3.0` — **nota de status em 25/11; itens v4 ficam congelados** |
+| `IDEIAS PARA O V3/` | ficar **fora** do repositório público: contém PDFs e imagens com marca institucional — **feito** (`.gitignore`) |
 
 ## Anexo C — o wireframe como especificação viva (revisão 15/11)
 

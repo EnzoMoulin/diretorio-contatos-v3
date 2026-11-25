@@ -1,11 +1,12 @@
 # `db/` — o banco lógico `db_diretorio`
 
 Materializa as seções 4.4, 4.5, 5.2, 5.3, 5.6 e 6.3 de
-`docs/fase-3-arquitetura-e-adrs.md` (Apêndice D). O documento de origem descreve o desenho de
-**dois serviços**; na v3 o banco é **único** e este DDL é o baseline das migrations do Laravel
-(`docs/adr-008-v3-um-servico-e-fastapi-na-v4.md`). Onde os comentários do SQL dizem `db_admin`,
-leia-se "tabelas administrativas do Laravel": na v3 elas ficam no mesmo banco, e a separação é
-da v4.
+`docs/fase-3-arquitetura-e-adrs.md` (Apêndice D), origem **histórica**: aquele documento descreve
+o desenho de dois serviços, que o ADR-010 aposentou. Na v3 o banco é **único** e este DDL é o
+baseline das migrations do Laravel (`docs/adr-010-backend-unico-em-laravel.md`). Onde os
+comentários do SQL dizem `db_admin`, leia-se "tabelas administrativas do Laravel": elas ficam no
+mesmo banco, e a separação em dois bancos lógicos pertence ao desenho de dois serviços, fora do
+escopo.
 
 ## Arquivos
 
