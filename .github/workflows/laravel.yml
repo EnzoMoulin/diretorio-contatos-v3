@@ -3,11 +3,11 @@ name: Laravel (Pint, Larastan, Pest)
 # Escrito antes do esqueleto existir, de propósito: a régua de estilo, de tipo e de teste
 # é a primeira coisa que o scaffold tem de obedecer, não a última.
 #
-# **Hoje este workflow não roda.** O filtro de `paths` exige `apps/web/**`; enquanto o
-# Laravel não estiver em `apps/web/` (ADR-009), nenhum PR casa com o filtro — e não existe
-# job verde que não testou nada. Editar este arquivo também não o dispara (path filter de
-# propósito): enquanto não há app, o `composer install` falharia por ausência de árvore.
-# No PR do esqueleto:
+# **Hoje só o job `Detectar esqueleto` roda.** O filtro de `paths` casa com `apps/web/**`, e as
+# migrations de `apps/web/database/` já estão versionadas, mas `apps/web/composer.json` ainda não
+# existe (issue #4). A guarda `needs: esqueleto` mantém os quatro jobs de verdade em `skipped` até
+# o scaffold existir; job pulado por `if` reporta `skipped`, que conta como sucesso para required
+# check. No PR do esqueleto:
 #   1. conferir se o caminho é `apps/web/` — se o scaffold pousar na raiz, corrigir aqui;
 #   2. rodar este workflow uma vez vermelho e uma verde, de propósito;
 #   3. só então incluir os quatro nomes de job abaixo como required status check no ruleset
@@ -47,8 +47,28 @@ env:
   PHP_VERSION: '8.4'
 
 jobs:
+  # O filtro de `paths` passou a casar quando as migrations de `apps/web/database/` foram
+  # versionadas, mas o esqueleto (composer.json) ainda não existe. Sem esta guarda, todo PR que
+  # toca `apps/web/**` acordaria os quatro jobs e eles falhariam no `composer install`. O job é
+  # barato e os demais só rodam quando o esqueleto existir de fato.
+  esqueleto:
+    name: Detectar esqueleto
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    defaults:
+      run:
+        working-directory: .
+    outputs:
+      existe: ${{ steps.check.outputs.existe }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: echo "existe=$(test -f apps/web/composer.json && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
   estilo:
     name: Pint (PSR-12)
+    needs: esqueleto
+    if: needs.esqueleto.outputs.existe == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -73,6 +93,8 @@ jobs:
 
   analise:
     name: Larastan (análise estática)
+    needs: esqueleto
+    if: needs.esqueleto.outputs.existe == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -95,6 +117,8 @@ jobs:
 
   testes:
     name: Pest (Feature)
+    needs: esqueleto
+    if: needs.esqueleto.outputs.existe == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
@@ -157,6 +181,8 @@ jobs:
 
   formularios:
     name: Blade e rotas (sem servidor)
+    needs: esqueleto
+    if: needs.esqueleto.outputs.existe == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

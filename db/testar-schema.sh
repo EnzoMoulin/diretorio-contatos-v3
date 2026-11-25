@@ -12,6 +12,10 @@
 #  SEGURANÇA: o script só trabalha em banco terminado em `_teste`. O nome vem de
 #  DB_BASE (padrão `diretorio`) e o sufixo é sempre acrescentado, então o banco
 #  de produção nunca é o alvo. Ao fim, o banco de teste é apagado.
+#
+#  `psql -1` (--single-transaction) é obrigatório: db/schema.sql não abre nem
+#  fecha transação porque é o corpo da migration baseline — a transação é de
+#  quem aplica. Sem `-1`, uma falha no meio deixaria metade do DDL aplicado.
 # =============================================================================
 set -euo pipefail
 
@@ -53,12 +57,12 @@ echo "== banco de teste: $NOME"
 conectar postgres -q -c "DROP DATABASE IF EXISTS \"$NOME\";" -c "CREATE DATABASE \"$NOME\";"
 
 echo "== aplicando db/schema.sql"
-conectar "$NOME" -q -v ON_ERROR_STOP=1 -f "$AQUI/schema.sql" >"$LOG" 2>&1 || {
+conectar "$NOME" -q -1 -v ON_ERROR_STOP=1 -f "$AQUI/schema.sql" >"$LOG" 2>&1 || {
   echo "FALHOU: schema.sql não aplicou" >&2; cat "$LOG" >&2; exit 1;
 }
 
 echo "== aplicando db/schema.sql pela 2ª vez (idempotência)"
-if ! conectar "$NOME" -q -v ON_ERROR_STOP=1 -f "$AQUI/schema.sql" >"$LOG" 2>&1; then
+if ! conectar "$NOME" -q -1 -v ON_ERROR_STOP=1 -f "$AQUI/schema.sql" >"$LOG" 2>&1; then
   echo "FALHOU: o DDL não é idempotente" >&2; cat "$LOG" >&2; exit 1
 fi
 echo "PASS  schema.sql roda duas vezes sem erro"

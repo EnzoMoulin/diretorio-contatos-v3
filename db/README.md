@@ -13,7 +13,7 @@ saíram do baseline em 25/11/2026.
 | Arquivo | Papel |
 | :--- | :--- |
 | `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 7 tabelas (6 de dado + `historico_mensal`, o agregado do expurgo), índices, `CHECK`s, triggers. |
-| `verificar-schema.sql` | 41 invariantes estruturais (o que cada `CHECK` deve recusar e aceitar). |
+| `verificar-schema.sql` | 40 invariantes estruturais (39 do arquivo + a idempotência do `schema.sql`): o que cada `CHECK` deve recusar e aceitar. |
 | `carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` do v2. Andaime de teste, não o ingestão oficial. |
 | `verificar-carga.sql` | 20 invariantes sobre a base carregada (volumes, vínculos, profundidade, procedência, busca). |
 | `verificar-plano.sql` | 5 invariantes de **plano**: prova que o índice GIN serve a `busca_texto ILIKE norm_texto(...)` e que `lower(unaccent(valor))` não usa índice nenhum. |
@@ -35,12 +35,32 @@ Conexão pelas variáveis padrão do `psql` (`PGHOST`, `PGPORT`, `PGUSER`, `PGPA
 
 ## Aplicar em produção (Neon)
 
+No deploy, quem aplica é o Laravel: a migration `0001_01_01_000000_criar_baseline_do_diretorio.php`
+executa este arquivo inteiro. Para aplicar à mão num banco vazio — teste, não produção —, use
+`-1`, porque o arquivo não abre nem fecha transação:
+
 ```bash
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
+psql "$DATABASE_URL" -1 -v ON_ERROR_STOP=1 -f db/schema.sql
 ```
 
+`-1` (`--single-transaction`) é obrigatório: o arquivo é o corpo da migration e a transação pertence a
+quem aplica. Sem ele, uma falha no meio deixaria metade do DDL aplicado; dentro do migrator, um
+`COMMIT` no arquivo encerraria a transação do Laravel e o rollback falharia com "There is no active
+transaction".
+
 O papel precisa ser dono do banco (para `CREATE EXTENSION`). Papéis e `GRANT`s estão comentados na
-seção 11 do `schema.sql` e não são executados por ele.
+seção 9 do `schema.sql` e não são executados por ele.
+
+## Carga do seed (banco vazio, depois das migrations)
+
+```bash
+python3 db/carregar-seed.py ../diretorio-contatos-v2/seed_mascarado.json > /tmp/seed-v3.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f /tmp/seed-v3.sql
+```
+
+O SQL emitido abre e fecha a própria transação e **não trunca**: rodar duas vezes no mesmo banco
+falha por chave duplicada. O destino é banco vazio — teste ou Neon recém-criado. É andaime de
+teste, não a ingestão oficial.
 
 ## Regras que não são `CHECK`
 
@@ -53,7 +73,7 @@ O `CHECK` não enxerga outra linha; estas ficam na aplicação (e o `verificar-c
 - vigência ("reconfirmar este contato") a partir de `fonte` + `vigente_desde`;
 - `historico.entidade` só aceita entidade do **dado** (`contato`, `no`, `local`, `comarca`, `util`):
   `usuario`, `acesso` e `pedido` são tabelas do app e a auditoria delas não expira junto;
-- expurgo do `historico` aos 180 dias (job do motor).
+- expurgo do `historico` aos 180 dias (script manual; sem produção, roda-se à mão).
 
 ## Vocabulário: local, não órgão
 
@@ -82,9 +102,10 @@ cada; não é preciso inventar número. A busca principal não usa limiar nenhum
 
 ## Expurgo do histórico
 
-`historico` guarda o retrato do contato; não pode ser arquivo permanente de dado pessoal. Passados
-180 dias, o script agrega em `historico_mensal` (mês, ação, entidade, quantidade — sem nome, telefone,
-e-mail, chave ou autor) e apaga a linha crua, tudo na mesma transação:
+`historico` guarda o retrato do dado (chave lógica + `antes`/`depois` em JSONB); não pode ser arquivo
+permanente de dado pessoal. Passados 180 dias, o script agrega em `historico_mensal` (mês, ação,
+entidade, quantidade — sem nome, telefone, e-mail, chave ou autor) e apaga a linha crua, tudo na mesma
+transação:
 
 ```bash
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -v dias=180 -f db/expurgar-historico.sql

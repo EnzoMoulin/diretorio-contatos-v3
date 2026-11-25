@@ -3,9 +3,13 @@
 --  PostgreSQL 16 (Neon). Na v3 é o baseline das migrations do Laravel (ADR-010:
 --  backend único em Laravel, sem serviço FastAPI).
 --  Documento de origem (histórico): docs/fase-3-arquitetura-e-adrs.md (seções 4.4, 4.5, 5.2, 5.6, 6.3)
---  Aplicar:  psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
+--  Aplicar:  psql "$DATABASE_URL" -1 -v ON_ERROR_STOP=1 -f db/schema.sql
 --  Testar:   db/testar-schema.sh   (cria banco temporário e roda as invariantes)
 -- -----------------------------------------------------------------------------
+--  O arquivo NÃO abre BEGIN nem COMMIT: ele é o corpo da migration baseline e a
+--  transação pertence a quem aplica (`psql -1` ou o migrator do Laravel). Um
+--  COMMIT aqui encerraria a transação do migrator e o rollback seguinte falharia
+--  com "There is no active transaction", deixando o DDL aplicado.
 --  O que este arquivo NÃO faz:
 --   - não importa o seed (é a carga do item 2 do v3.0, com normalização e `fonte`);
 --   - não cria papéis nem GRANTs (secção 9 traz o modelo comentado);
@@ -22,8 +26,6 @@
 --  `contatos.local_id = no.local_id`, profundidade ≤ 2 e unicidade de
 --  `(local, nó, valor)` de contato.
 -- =============================================================================
-
-BEGIN;
 
 -- -----------------------------------------------------------------------------
 -- 1. Extensões e normalização
@@ -290,25 +292,37 @@ CREATE TABLE IF NOT EXISTS historico (
   id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   acao            TEXT NOT NULL,                  -- criar | atualizar | remover | arquivar | restaurar | importar | expurgar
   entidade        TEXT NOT NULL DEFAULT 'contato' CHECK (entidade IN ('contato', 'no', 'local', 'comarca', 'util')),
-  contato_chave   TEXT,                           -- retrato: sobrevive à exclusão física do contato
-  contato_rotulo  TEXT NOT NULL DEFAULT '',       -- retrato de exibição no momento da ação
-  detalhe         TEXT NOT NULL DEFAULT '',
+  entidade_chave  TEXT NOT NULL DEFAULT '',       -- chave lógica; vazio quando a ação não aponta uma linha (expurgar)
+  antes           JSONB,                          -- estado antes da ação; NULL em criar/importar
+  depois          JSONB,                          -- estado depois da ação; NULL em remover
   autor           TEXT NOT NULL DEFAULT '',       -- opaco: usr_00042:admin (id do usuário + papel)
   request_id      TEXT NOT NULL DEFAULT '',
   criado_em       TIMESTAMPTZ NOT NULL DEFAULT now(),
   CONSTRAINT historico_autor_formato
-    CHECK (autor = '' OR autor ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$')
+    CHECK (autor = '' OR autor ~ '^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$'),
+  CONSTRAINT historico_estado_presente
+    CHECK (antes IS NOT NULL OR depois IS NOT NULL),
+  CONSTRAINT historico_estado_objeto
+    CHECK ((antes IS NULL OR jsonb_typeof(antes) = 'object')
+       AND (depois IS NULL OR jsonb_typeof(depois) = 'object'))
 );
 
 COMMENT ON TABLE historico IS
-  'Histórico do dado, não auditoria de permissão. Guarda o retrato de exibição e a chave lógica; exclusão física do contato não apaga a linha.';
+  'Histórico do dado, não auditoria de permissão. Guarda a chave lógica e o retrato antes/depois em JSONB; exclusão física do contato não apaga a linha.';
 COMMENT ON COLUMN historico.entidade IS
   'Entidades do dado: contato, no, local, comarca, util. `usuario`, `acesso` e `pedido` NÃO entram aqui: são tabelas do app (migrations do Laravel, mesmo banco) e a auditoria delas não está sujeita ao expurgo de 180 dias.';
+COMMENT ON COLUMN historico.entidade_chave IS
+  'Chave lógica da linha alterada (C000001, UNI0027, MUN0001, FOR0001, UTL0001). Vazia quando a ação não aponta uma linha, como o registro do próprio expurgo.';
+COMMENT ON COLUMN historico.antes IS
+  'Estado do dado antes da ação, em JSONB. NULL quando a linha nasceu (criar/importar).';
+COMMENT ON COLUMN historico.depois IS
+  'Estado do dado depois da ação, em JSONB. NULL quando a linha deixou de existir (remover).';
 COMMENT ON COLUMN historico.criado_em IS
   'Base do expurgo de 180 dias: depois dele sobra só agregado (quantidade por mês, sem nome, telefone, e-mail ou chave).';
 
 CREATE INDEX IF NOT EXISTS ix_historico_expurgo ON historico (criado_em);
-CREATE INDEX IF NOT EXISTS ix_historico_contato ON historico (contato_chave) WHERE contato_chave IS NOT NULL;
+CREATE INDEX IF NOT EXISTS ix_historico_entidade ON historico (entidade, entidade_chave)
+  WHERE entidade_chave <> '';
 
 -- 7b. historico_mensal — o que sobrevive ao expurgo de 180 dias
 -- O expurgo apaga a linha crua; sobra a contagem por mês, ação e entidade. Sem
@@ -347,8 +361,6 @@ CREATE TRIGGER tg_contatos_atualiza BEFORE UPDATE ON contatos
 DROP TRIGGER IF EXISTS tg_uteis_atualiza ON telefones_uteis;
 CREATE TRIGGER tg_uteis_atualiza BEFORE UPDATE ON telefones_uteis
   FOR EACH ROW EXECUTE FUNCTION marca_atualizacao();
-
-COMMIT;
 
 -- =============================================================================
 -- 9. Papéis (NÃO executado por este arquivo — aplicar no Neon, uma vez)

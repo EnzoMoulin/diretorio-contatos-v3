@@ -6,8 +6,13 @@
 > Conceitos que continuam valendo nas duas fases: chave lógica, `locais`, árvore única, busca por
 > trigrama, LGPD, invariantes de `db/`. O que é de dois serviços (ADR-001 a ADR-007, `db_admin`
 > separado, chaves de API, `X-Acting-User`, `/api/v1`) e o "Fase 4" da seção 2.4 (motor de relatórios,
-> `ftfy`) valem para a v4. Ver `v3-arquitetura-preparacao.md` (plano vigente) e
-> `adr-008-v3-um-servico-e-fastapi-na-v4.md` (a decisão).
+> `ftfy`) valem para a v4. Ver `plano-v3.md` (plano vigente) e
+> `adr-010-backend-unico-em-laravel.md` (a decisão vigente).
+>
+> **Nota de status (25/11/2026).** O desenho de `historico` deste documento é o retrato de 10/11 e
+> foi substituído: o baseline usa `entidade_chave` + `antes`/`depois` em JSONB, e não
+> `contato_chave`/`contato_rotulo`/`detalhe`. As tabelas de identidade (`usuarios`, `acessos`,
+> `pedidos`) são migrations do Laravel no mesmo banco, não um `db_admin` separado.
 
 _10/11/2026 · base medida: `diretorio-contatos-v2` @ commit `b93af48` ("Sede na API e no painel, e a auditoria com o autor de cada ação"; histórico do v2 reescrito em 12/11/2026 e em 17/11/2026, mesma árvore nas duas vezes) · destino: `diretorio-contatos-v3`_
 

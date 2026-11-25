@@ -50,6 +50,7 @@ disso; todas saíram ou foram corrigidas antes de o arquivo virar baseline das m
   `db_admin`": essas tabelas são do app, criadas por migrations do Laravel no **mesmo** banco, e a
   auditoria de permissão não é histórico de dado (não expira aos 180 dias).
 
-O baseline fica com sete tabelas de dado — `comarcas`, `locais`, `nos`, `contatos`, `telefones_uteis`,
-`historico`, `historico_mensal`. `db/verificar-schema.sql` acompanha: 64 `PASS` e `OK` em
-`db/testar-schema.sh` com o seed do v2.
+O baseline fica com sete tabelas — seis de dado (`comarcas`, `locais`, `nos`, `contatos`,
+`telefones_uteis`, `historico`) e o agregado do expurgo (`historico_mensal`).
+`db/verificar-schema.sql` acompanha: 65 `PASS` e `OK` em `db/testar-schema.sh` com o seed do v2
+(40 invariantes estruturais + 20 de carga + 5 de plano).
