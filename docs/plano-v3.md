@@ -31,7 +31,7 @@
 |---|---|---|
 | Contrato de rotas, modelo e testes do v2 | Pronto, congelado | `~/Emprego/Projetos/diretorio-contatos-v2` (HEAD `a93aeb1`; SHA apagado na limpeza de 20/11 — HEAD em 25/11: `fcdb719`) |
 | Seed mascarado | 1.807 contatos, 70 comarcas (69 com IBGE + Sede), 72 fóruns, 856 nós, 11 úteis | `seed_mascarado.json` |
-| DDL PostgreSQL | 9 tabelas, extensões, funções e invariantes já escritas | `db/schema.sql` |
+| DDL PostgreSQL | 7 tabelas, extensões, funções e invariantes já escritas | `db/schema.sql` |
 | Wireframe navegável | 7 estados, desktop e celular, dado real | `IDEIAS PARA O V3/wireframe/` (Laravel/TALL, descartável) |
 | Mockups de referência | 1 direção visual + 3 telas | `IDEIAS PARA O V3/*.jpg, *.png` |
 | Proposta escrita | arquitetura + direção visual do Claude | `IDEIAS PARA O V3/v3-proposta-para-hermes.md` |
@@ -51,10 +51,10 @@ Monólito modular em Laravel, com dois namespaces que não se importam mutuament
 - `Access` — usuários, escopo por nó, pedidos de acesso, notificações.
 
 Regras:
-1. `Directory` não depende de `Access`; `Access` referencia o nó pelo `codigo` lógico, nunca pelo `id`.
+1. `Directory` não depende de `Access`; `Access` referencia o nó pela `chave` lógica, nunca pelo `id`.
 2. Interface (Livewire), admin (Filament) e API de leitura chamam **as mesmas classes de serviço**.
    Regra de negócio em componente de interface é dívida, não atalho.
-3. `codigo` (`MUN0001`, `FOR0001`, `UNI0001`, `C000001`) é a chave lógica imutável do demo; `bigint` é
+3. `chave` (`MUN0001`, `FOR0001`, `UNI0001`, `C000001`) é a chave lógica imutável do demo; `bigint` é
    detalhe interno. Ids de execução do v2 (`M1`, `F3`, `U12`) não entram.
 4. Sem serviço Python. A API `/api/v1` é só de leitura e vive no mesmo processo.
 
@@ -374,7 +374,7 @@ mesmas medições — não é "inverter as cores". Regras:
    o destino vêm de um **índice do servidor** que cobre comarca, fórum e nó (979 entradas hoje, 155 KB
    crus / 21 KB gzip). O índice manda no nome: nome guardado no navegador fica velho depois de uma
    edição. No v3 isso vira um endpoint por código, não o índice inteiro.
-2. Pessoal autenticado: sincroniza com a tabela `favoritos` (`usuario_id`, `codigo` do nó, criado_em).
+2. Pessoal autenticado: sincroniza com a tabela `favoritos` (`usuario_id`, `chave` do nó, criado_em).
    A tabela nasce nas migrações do `v3.0`; a sincronização entra depois.
 3. Ao entrar, o que estava no `localStorage` é oferecido para importar — nunca mesclado em silêncio.
 4. Favorito é sempre de **nó** (local, unidade ou setor), nunca de contato: contato muda, nó permanece.
@@ -668,7 +668,7 @@ de serviço usadas pela interface.
 
 ## Quando revisitar
 Só diante de um requisito medido que PHP e PostgreSQL não atendam, capaz de rodar fora do ciclo de
-requisição. As fronteiras entre `Directory` e `Access` e o uso de `codigo` como chave lógica mantêm uma
+requisição. As fronteiras entre `Directory` e `Access` e o uso de `chave` como chave lógica mantêm uma
 extração possível.
 ```
 

@@ -12,7 +12,7 @@ saíram do baseline em 25/11/2026.
 
 | Arquivo | Papel |
 | :--- | :--- |
-| `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 9 tabelas (8 de dado + 1 de agregado do expurgo), índices, `CHECK`s, triggers. |
+| `schema.sql` | DDL completo e idempotente: extensões, `norm_texto`/`so_digitos`, 7 tabelas (6 de dado + `historico_mensal`, o agregado do expurgo), índices, `CHECK`s, triggers. |
 | `verificar-schema.sql` | 41 invariantes estruturais (o que cada `CHECK` deve recusar e aceitar). |
 | `carregar-seed.py` | Emite o SQL de carga do `seed_mascarado.json` do v2. Andaime de teste, não o ingestão oficial. |
 | `verificar-carga.sql` | 20 invariantes sobre a base carregada (volumes, vínculos, profundidade, procedência, busca). |
