@@ -34,5 +34,22 @@ de serviço usadas pela interface.
 ## Quando revisitar
 
 Só diante de um requisito medido que PHP e PostgreSQL não atendam, capaz de rodar fora do ciclo de
-requisição. As fronteiras entre `Directory` e `Access` e o uso de `codigo` como chave lógica mantêm uma
+requisição. As fronteiras entre `Directory` e `Access` e o uso de `chave` como chave lógica mantêm uma
 extração possível.
+
+## Consequências no DDL (25/11/2026)
+
+O `db/schema.sql` foi escrito para dois serviços e carregava três coisas que só existiam por causa
+disso; todas saíram ou foram corrigidas antes de o arquivo virar baseline das migrations:
+
+- `referencias_externas` — tabela-espelho para o motor saber o que o Laravel referenciava. Com um
+  banco e um dono, o expurgo consulta o app direto: não há JOIN entre serviços a evitar.
+- `idempotencia` — `Idempotency-Key` de escrita da API do motor. A `/api/v1` da v3 é de leitura.
+- seção de papéis: `diretorio_motor` + `diretorio_espelho` viram um papel só, `diretorio_app`.
+- os comentários de `historico` deixam de dizer que `usuario`/`escopo_acesso`/`pedido` "vivem em
+  `db_admin`": essas tabelas são do app, criadas por migrations do Laravel no **mesmo** banco, e a
+  auditoria de permissão não é histórico de dado (não expira aos 180 dias).
+
+O baseline fica com sete tabelas de dado — `comarcas`, `locais`, `nos`, `contatos`, `telefones_uteis`,
+`historico`, `historico_mensal`. `db/verificar-schema.sql` acompanha: 64 `PASS` e `OK` em
+`db/testar-schema.sh` com o seed do v2.

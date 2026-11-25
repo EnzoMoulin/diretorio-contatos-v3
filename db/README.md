@@ -3,10 +3,10 @@
 Materializa as seções 4.4, 4.5, 5.2, 5.3, 5.6 e 6.3 de
 `docs/fase-3-arquitetura-e-adrs.md` (Apêndice D), origem **histórica**: aquele documento descreve
 o desenho de dois serviços, que o ADR-010 aposentou. Na v3 o banco é **único** e este DDL é o
-baseline das migrations do Laravel (`docs/adr-010-backend-unico-em-laravel.md`). Onde os
-comentários do SQL dizem `db_admin`, leia-se "tabelas administrativas do Laravel": elas ficam no
-mesmo banco, e a separação em dois bancos lógicos pertence ao desenho de dois serviços, fora do
-escopo.
+baseline das migrations do Laravel (`docs/adr-010-backend-unico-em-laravel.md`). Identidade, permissão,
+pedidos e auditoria administrativa **não estão aqui**: são tabelas do app, criadas por migrations do
+Laravel no mesmo banco. `referencias_externas` e `idempotencia`, que existiam para o motor separado,
+saíram do baseline em 25/11/2026.
 
 ## Arquivos
 
@@ -51,8 +51,8 @@ O `CHECK` não enxerga outra linha; estas ficam na aplicação (e o `verificar-c
 - deduplicação de contato — **não** existe `UNIQUE (local, nó, tipo, valor)` porque o mascaramento
   da base pública colapsa 1.510 valores em repetições falsas;
 - vigência ("reconfirmar este contato") a partir de `fonte` + `vigente_desde`;
-- `historico.entidade` só aceita entidade do **motor** (`contato`, `no`, `local`, `comarca`, `util`):
-  `escopo_acesso`, `pedido` e `usuario` são auditoria administrativa e moram em `db_admin`;
+- `historico.entidade` só aceita entidade do **dado** (`contato`, `no`, `local`, `comarca`, `util`):
+  `usuario`, `acesso` e `pedido` são tabelas do app e a auditoria delas não expira junto;
 - expurgo do `historico` aos 180 dias (job do motor).
 
 ## Vocabulário: local, não órgão
