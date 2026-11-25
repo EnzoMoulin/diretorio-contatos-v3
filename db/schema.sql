@@ -290,7 +290,7 @@ CREATE INDEX IF NOT EXISTS ix_uteis_busca_dig  ON telefones_uteis (busca_digitos
 -- -----------------------------------------------------------------------------
 -- Trigrama resolve erro de digitação, não vocabulário: "reconhecimento de firma"
 -- e "cartorio" não têm trigrama em comum, e é a mesma pergunta. O vocabulário da
--- base é pequeno (619 palavras alfabéticas, medido em 26/11/2026), então o léxico é
+-- base é pequeno (619 palavras alfabéticas, medido em 25/11/2026), então o léxico é
 -- curado à mão, sem modelo, sem custo e revisável em revisão de código.
 --
 -- `termo` é a forma digitada, já normalizada por `norm_texto` (o CHECK garante —

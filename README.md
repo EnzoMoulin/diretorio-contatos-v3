@@ -129,7 +129,7 @@ frases canônicas. O critério de aceite é literal e está em teste: a consulta
 ### As 39 consultas medidas
 
 Contagem de linhas por consulta, com `limite` desligado, no seed da v2 (1.807 contatos, 856 nós,
-73 locais, 69 comarcas, 11 úteis) em 26/11/2026. "Antes" é a mesma busca com a expansão desligada — é o número
+73 locais, 69 comarcas, 11 úteis) em 25/11/2026. "Antes" é a mesma busca com a expansão desligada — é o número
 que o usuário veria hoje; "Depois" é com o léxico. Quando "antes" é maior que "depois", o trigrama
 estava devolvendo letra parecida, não o serviço.
 
