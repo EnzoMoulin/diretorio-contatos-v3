@@ -9,25 +9,25 @@
 
 ## Status
 
-**Fase de fundação: a camada de banco já está versionada; a aplicação ainda não.** O que existe aqui é
-o que se prova antes do esqueleto — modelo físico do banco, as migrations que o aplicam, desenho de
-deploy, direção visual e decisões registradas. A interface, porém, já foi validada num **protótipo
-navegável em Laravel + TALL** que vive fora do repositório (`IDEIAS PARA O V3/wireframe`, no
-`.gitignore`): nove rodadas de revisão externa, com capturas e respostas em `IDEIAS PARA O V3/`. A
-fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da aplicação quando a issue #4
-fechar. O esqueleto em si (`composer.json`, Livewire, Filament, models) é a issue
-[#4](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues/4).
+**Fase de fundação concluída: a camada de banco e o esqueleto da aplicação estão versionados.** O
+`apps/web/` tem Laravel 13 + PHP 8.4 com Pint, Larastan, Pest e Sail; a primeira leitura ligada no
+banco é a capa (`GET /`) e o `GET /api/v1/hierarquia`, no contrato do v2. A interface foi validada
+antes num **protótipo navegável em Laravel + TALL** que vive fora do repositório (`IDEIAS PARA O V3/
+wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e respostas em
+`IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
+aplicação. O que ainda falta é a busca pública e o mapa — issues abertas, não promessa de README.
 
 | Já feito | Onde |
 | :--- | :--- |
 | Decisão de stack: **Laravel 13 + TALL + Filament + Postgres (Neon), um serviço Docker no Render free** | `docs/arquitetura-v3.md` |
 | DDL completo e idempotente do banco `db_diretorio`, com invariantes e expurgo LGPD | `db/schema.sql`, `db/README.md` |
 | **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
+| **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
-| Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `Dockerfile`, `docker/` |
+| Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
 | **Fluxo de PR com rastreabilidade**: formulário de PR (`Closes #N`), formulários de issue e checks obrigatórios para entrar na `main` | `.github/`, seção *Fluxo de contribuição* abaixo |
-| **Régua Laravel escrita e adormecida**: Pint, Larastan, Pest e cache de rotas/views prontos, disparando quando `apps/web/` existir | `.github/workflows/laravel.yml`, `docs/convencoes-laravel.md` |
+| **Régua Laravel ativa**: Pint (PSR-12), Larastan (nível 5), Pest e cache de rotas/views, com os quatro jobs rodando em todo PR | `.github/workflows/laravel.yml`, `docs/convencoes-laravel.md` |
 | **Protótipo navegável da direção A em Laravel + TALL**, com mapa real do ES e o seed da v2 — nove rodadas de revisão, mantido fora do git | `IDEIAS PARA O V3/wireframe`, `docs/plano-v3.md` |
 | **Fumaça e2e do protótipo**: sete verificações em Chromium, saída em JSON | `tests/e2e/` |
 | **Plano do v3 encerrado em 20/11/2026**: arquitetura, interface, telas e critérios de aceite | `docs/plano-v3.md` |
@@ -56,16 +56,18 @@ fechar. O esqueleto em si (`composer.json`, Livewire, Filament, models) é a iss
 
 Decidido em 12/11/2026 (`docs/adr-009-um-repo-para-v3-e-v4.md`) e revisado em 25/11/2026
 (`docs/adr-010-backend-unico-em-laravel.md`). A v4 não é um quarto repositório — mas também não é
-fase em curso: o `v3.0` tem **um** deployável. A primeira linha de Laravel já existe: as migrations
-em `apps/web/database/migrations`; o resto do esqueleto entra com a issue #4.
+fase em curso: o `v3.0` tem **um** deployável. O app está em `apps/web/`: migrations, models,
+factories, seeders, a primeira leitura (capa e `/api/v1/hierarquia`) e a régua de estilo/tipo/teste.
 
 ```
-apps/web/          Laravel 13 + TALL + Filament   → deployável 1 (Render, Dockerfile próprio)
-  database/migrations/  baseline + identidade/escopo + sessions/cache (já versionadas)
+apps/web/          Laravel 13 + TALL + Filament   → deployável 1 (Dockerfile próprio)
+  app/             models, Action, Resource, controllers
+  database/        migrations + factories + seeders
+  docker/producao/ nginx, php.ini, entrypoint
 services/busca/    FastAPI (v4, adiada)           → sem deployável enquanto o ADR-010 valer
 db/                schema.sql, invariantes, carga do seed — fonte única do v3
-infra/             render.yaml e docker/ do web
 docs/              ADRs, planos, backlog
+render.yaml        Blueprint do Render, aponta para apps/web/
 ```
 
 Se a v4 voltar, a fronteira entre os dois é HTTP (`/api/v1`), não import de código. O seed continua
@@ -80,11 +82,13 @@ db/testar-schema.sh
 # com o seed da v2 ao lado (1.807 contatos, 856 nós) — os repos são irmãos por desenho
 SEED_JSON=../diretorio-contatos-v2/seed_mascarado.json db/testar-schema.sh
 
-# migrations (precisa de um app Laravel com vendor/ e PHP com pdo_pgsql)
-# receita e o estado atual em apps/web/database/README.md
+# app
+(cd apps/web && { test -f .env || cp .env.example .env; } && ./vendor/bin/sail up -d \
+  && ./vendor/bin/sail artisan key:generate && ./vendor/bin/sail artisan migrate --seed)
+# sem Docker: DB_DATABASE=... php artisan migrate --seed (ver apps/web/README.md)
 
-# imagem (quando o esqueleto da issue #4 existir)
-docker build -t diretorio-contatos-v3 .
+# imagem de produção (contexto apps/web)
+docker build -t diretorio-contatos-v3 apps/web
 
 # fumaça do protótipo — o alvo vive fora do repositório (ver tests/e2e/README.md)
 cd "IDEIAS PARA O V3/wireframe" && php artisan serve --port=8123   # noutro terminal
@@ -121,7 +125,7 @@ issue (problema) → branch → commits semânticos → PR ("Closes #N") → CI 
 | `testes.yml` → `Varredura de privacidade` | todo push e PR | nenhum telefone/e-mail real e nenhum nome de pessoa fora do padrão sintético |
 | `testes.yml` → `DDL e invariantes (Postgres 16)` | todo push e PR | `db/schema.sql` aplica duas vezes (idempotência) e as 40 invariantes estruturais passam |
 | `testes.yml` → `Varredura do seed (a pedido)` | `workflow_dispatch` | o seed da v2, clonado na hora, também está limpo |
-| `laravel.yml` → Pint, Larastan, Pest, Blade/rotas | PR que toca `apps/web/**` | estilo PSR-12, tipos, fluxos de feature e compilação de view — **só o detector roda até `apps/web/composer.json` existir** |
+| `laravel.yml` → Pint, Larastan, Pest, Blade/rotas | todo push e PR | estilo PSR-12, tipos nível 5, fluxos de feature em Postgres 16 e compilação de view/rotas |
 
 Commits seguem Conventional Commits (`feat:`, `fix:`, `docs:`, `ci:`, `chore:`…), um assunto por
 commit; o squash preserva um commit por funcionalidade na `main`.
@@ -131,13 +135,13 @@ commit; o squash preserva um commit por funcionalidade na `main`.
 O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
 não em promessa de README. Duas listas se complementam:
 
-- **issues abertas** — trabalho reconhecido: esqueleto Laravel, busca, mapa, paridade de
+- **issues abertas** — trabalho reconhecido: busca, mapa, paridade de
   contrato, acessibilidade no CI, plano de testes;
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
-Prioridade vigente: fechar o **esqueleto Laravel** (#4) — a pergunta da interface o protótipo já
-respondeu; falta a aplicação. Em cima dele vêm a busca pública e o mapa geocodificado, nessa ordem.
+Com o esqueleto fechado, a prioridade seguinte é a **busca pública** e o **mapa geocodificado**,
+nessa ordem — as duas issues abertas que herdam o contrato do v2 e o protótipo já revisado.
 
 ## Deploy
 

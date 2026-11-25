@@ -48,6 +48,11 @@ import unicodedata
 
 PULAR_DIR = {".git", "node_modules", "__pycache__", "backups", "dist",
              ".venv", "vendor"}
+# Lockfile de dependência carrega e-mail de mantenedor de pacote, não dado do
+# projeto; storage/framework guarda view compilada, artefato de execução.
+PULAR_ARQUIVO = {"composer.lock", "package-lock.json", "pnpm-lock.yaml",
+                 "yarn.lock"}
+PULAR_TRECHO = os.path.join("storage", "framework")
 PULAR_EXT = {".png", ".jpg", ".jpeg", ".gif", ".mp4", ".pdf", ".ico",
              ".woff", ".woff2", ".db", ".sqlite", ".zip", ".pyc", ".xlsx",
              ".ndjson", ".docx", ".pptx", ".otf", ".ttf", ".map"}
@@ -65,7 +70,7 @@ NOME = re.compile(r"\b(?:Des\.|Desembargador[a]?|Comiss[áa]ri[oa])\s+"
 SINTETICO_TEL = re.compile(
     r"(?:\(27\) )?(?:3333-00\d\d|99999-000\d|0000-0000)")
 DOMINIOS_FICTICIOS = {"exemplo.jus.br", "empresa-exemplo.com.br",
-                      "example.com", "exemplo.com"}
+                      "example.com", "exemplo.com", "diretorio.test"}
 ARQUIVO_ALLOWLIST = ".privacidade-sinteticos"
 ESTE_ARQUIVO = os.path.abspath(__file__)
 
@@ -185,7 +190,11 @@ def listar_alvos(caminho):
     alvos = []
     for base, dirs, arquivos in os.walk(caminho):
         dirs[:] = sorted(d for d in dirs if d not in PULAR_DIR)
+        if PULAR_TRECHO in base:
+            continue
         for nome in arquivos:
+            if nome in PULAR_ARQUIVO:
+                continue
             if os.path.splitext(nome)[1].lower() in PULAR_EXT:
                 continue
             alvos.append(os.path.join(base, nome))

@@ -12,8 +12,8 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    dockerfilePath: ./apps/web/Dockerfile
+    dockerContext: ./apps/web
     healthCheckPath: /up
     envVars:
       - key: APP_NAME

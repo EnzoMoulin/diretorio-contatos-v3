@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Tabelas do framework para os drivers do deploy: SESSION_DRIVER=database
      * e CACHE_STORE=database (render.yaml). A fila é `sync`, então jobs não

@@ -3,8 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * O DDL do diretório continua em `db/schema.sql`, na raiz do repositório:
      * é a fonte única das invariantes e o arquivo que o CI aplica com `psql -1`.

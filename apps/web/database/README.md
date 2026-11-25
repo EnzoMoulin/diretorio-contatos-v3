@@ -1,8 +1,7 @@
 # `apps/web/database/` — migrations do Laravel
 
-A camada de banco da v3 já está versionada; o resto do esqueleto (`composer.json`, models, Livewire,
-Filament) entra com a issue #4. As migrations são a **única** fonte de DDL do app: o baseline não
-copia o schema para PHP, ele executa `db/schema.sql` inteiro.
+A camada de banco e o esqueleto da aplicação estão versionados. As migrations são a **única** fonte
+de DDL do app: o baseline não copia o schema para PHP, ele executa `db/schema.sql` inteiro.
 
 ## Ordem
 
@@ -18,21 +17,22 @@ o Laravel ordena.
 
 ## Rodar
 
-Pré-requisitos: um app Laravel com `vendor/` e PHP com `pdo_pgsql`. Enquanto a issue #4 não fecha, o
-protótipo fora do git serve de app de apoio:
+Pré-requisitos: o app em `apps/web/` com `vendor/` e PHP 8.4 com `pdo_pgsql`. Com Sail:
 
 ```bash
-cd "$HOME/Emprego/Projetos/diretorio-contatos-v3/IDEIAS PARA O V3/wireframe"
-export DB_CONNECTION=pgsql DB_HOST=127.0.0.1 DB_PORT=5432 \
-       DB_DATABASE=diretorio_migracoes_teste DB_USERNAME=enzo DB_PASSWORD=''
-php artisan migrate \
-  --path="$HOME/Emprego/Projetos/diretorio-contatos-v3/apps/web/database/migrations" \
-  --realpath --force
+cd apps/web
+cp .env.example .env
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate
 ```
 
-`--path` + `--realpath` também são obrigatórios no **rollback**: sem eles, o Laravel procura as
-migrations em `database/migrations` do app de apoio, não encontra os arquivos e responde
-`Migration not found`.
+Sem Docker, aponte o `.env` para um Postgres 16 local e rode `php artisan migrate`. O protótipo fora
+do git (`IDEIAS PARA O V3/wireframe`) continua sendo referência visual, não app de apoio.
+
+Se precisar rodar estas migrations a partir de outro app Laravel, `--path` + `--realpath` são
+obrigatórios — também no **rollback**: sem eles, o Laravel procura as migrations em
+`database/migrations` do app de apoio, não encontra os arquivos e responde `Migration not found`.
 
 O baseline usa `dirname(__DIR__, 4).'/db/schema.sql'`; a partir de `apps/web/database/migrations`
 isso resolve para a raiz do repositório, tanto no host quanto no container (`/app`).
@@ -55,16 +55,14 @@ Ele é andaime de teste, não o ingestão oficial.
 
 ## Três armadilhas
 
-- **`composer create-project` exige diretório vazio.** Quando a issue #4 rodar, crie o esqueleto num
-  diretório temporário e mova `database/migrations/` para dentro dele; ou mova estas migrations para
-  um lugar temporário, crie o projeto em `apps/web/` e devolva os arquivos. Não rode
-  `composer create-project` direto em `apps/web/` com esta pasta no lugar.
+- **`composer create-project` exige diretório vazio.** Foi o que aconteceu aqui: o esqueleto nasceu
+  em `/tmp/esq`, foi copiado para `apps/web/` com `rsync` e as migrations desta pasta ficaram no
+  lugar. Não rode `composer create-project` direto em `apps/web/` com esta pasta no lugar.
 - **Apague as migrations padrão que o esqueleto traz.** O Laravel 13 gera
   `0001_01_01_000000_create_users_table`, `..._000001_create_cache_table` e `..._000002_create_jobs_table`;
   as duas primeiras criam `password_reset_tokens`, `sessions`, `cache` e `cache_locks`, que já nascem
   aqui. Sem apagá-las, o primeiro `migrate` falha por tabela duplicada — e `jobs` não serve, porque a
   fila é `sync`; a tabela de usuários é `usuarios`, não `users`.
-- **`pdo_pgsql` não vem no PHP desta máquina.** Para o teste local, o driver foi carregado de um
-  `.deb` extraído (`php8.3-pgsql`) com `php -d extension=.../pdo_pgsql.so`; a instalação definitiva
-  (PHP 8.4 + composer) é o item adiado do início do v3. No CI, `laravel.yml` já instala
-  `pdo_pgsql`/`pgsql` e roda contra Postgres 16.
+- **`pdo_pgsql` não vem no PHP desta máquina.** O scaffold rodou com o static-php 8.4.23, que já traz
+  `pdo_pgsql`, `pgsql`, `intl`, `zip` e `mbstring`; o PHP 8.3 do sistema segue sem o driver. No CI,
+  `laravel.yml` instala `pdo_pgsql`/`pgsql` e roda contra Postgres 16.

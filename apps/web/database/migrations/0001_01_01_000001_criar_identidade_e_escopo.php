@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Identidade e escopo são do app, no mesmo banco do diretório (ADR-010).
      * O papel decide *se entra no painel*; `acessos` decide *quais linhas vê*.
