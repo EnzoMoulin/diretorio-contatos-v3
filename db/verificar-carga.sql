@@ -3,8 +3,12 @@
 --  Rodar DEPOIS de db/carregar-seed.py, no mesmo banco.
 --  Uso: db/testar-schema.sh (com SEED_JSON=... ) ou
 --       psql "$URL" -v ON_ERROR_STOP=1 -f db/verificar-carga.sql
---  Os números abaixo são os medidos no seed do v2 (HEAD d9a011a) e conferidos
---  contra os dois volumes do catálogo e o ofício de março/2024.
+--  Os números abaixo são os medidos no seed do v2 (HEAD fcdb719,
+--  sha256 7ccf1a9c…3a308c) e conferidos contra os dois volumes do catálogo e o
+--  ofício de março/2024. Mudou o seed? Recolha as contagens antes de tocar na
+--  lista: o oráculo segue o dado, nunca o contrário.
+--  (838/226/631/1.176 são de antes dos passes de 19/11 que criaram 18 nós e
+--  moveram 59 contatos para dentro de unidades — não voltar a esses números.)
 -- =============================================================================
 BEGIN;
 
@@ -24,14 +28,14 @@ BEGIN
   PERFORM _confere('comarcas (MUN0000 não é comarca)', (SELECT count(*) FROM comarcas), 69);
   PERFORM _confere('locais (72 fóruns + 1 Sede)',        (SELECT count(*) FROM locais), 73);
   PERFORM _confere('locais do tipo FORUM',               (SELECT count(*) FROM locais WHERE tipo = 'FORUM'), 72);
-  PERFORM _confere('nós em lista única',                 (SELECT count(*) FROM nos), 838);
-  PERFORM _confere('nós de primeiro nível',              (SELECT count(*) FROM nos WHERE pai_id IS NULL), 226);
+  PERFORM _confere('nós em lista única',                 (SELECT count(*) FROM nos), 856);
+  PERFORM _confere('nós de primeiro nível',              (SELECT count(*) FROM nos WHERE pai_id IS NULL), 244);
   PERFORM _confere('contatos',                           (SELECT count(*) FROM contatos), 1807);
   PERFORM _confere('telefones úteis',                    (SELECT count(*) FROM telefones_uteis), 11);
 
-  -- 2. vínculo: 626 blocos de local dos fóruns + 5 da Sede = 631 sem nó
-  PERFORM _confere('contatos do local (no_id IS NULL)',  (SELECT count(*) FROM contatos WHERE no_id IS NULL), 631);
-  PERFORM _confere('contatos ligados a nó',              (SELECT count(*) FROM contatos WHERE no_id IS NOT NULL), 1176);
+  -- 2. vínculo: 567 blocos de local dos fóruns + 5 da Sede = 572 sem nó
+  PERFORM _confere('contatos do local (no_id IS NULL)',  (SELECT count(*) FROM contatos WHERE no_id IS NULL), 572);
+  PERFORM _confere('contatos ligados a nó',              (SELECT count(*) FROM contatos WHERE no_id IS NOT NULL), 1235);
   PERFORM _confere('contatos da Sede',                   (SELECT count(*) FROM contatos c
                                                             JOIN locais o ON o.id = c.local_id
                                                            WHERE o.tipo = 'SEDE'), 286);

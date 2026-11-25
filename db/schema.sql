@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS nos (
 );
 
 COMMENT ON TABLE nos IS
-  '838 nós do seed em lista única (612 com pai, profundidade ≤ 2 abaixo do local). Unidades e setores deixam de ser tabelas distintas: o nível é a posição.';
+  '856 nós do seed em lista única (612 com pai, profundidade ≤ 2 abaixo do local). Unidades e setores deixam de ser tabelas distintas: o nível é a posição.';
 COMMENT ON COLUMN nos.local_id IS
   'NOT NULL e copiado do pai na criação: todo nó sabe seu local, o que apaga a cadeia nó→…→fórum→comarca das consultas de escopo. Consistência com pai_id é validada na aplicação.';
 COMMENT ON COLUMN nos.arquivado_em IS
@@ -183,7 +183,7 @@ CREATE INDEX IF NOT EXISTS ix_nos_pai
   ON nos (pai_id, ordem_num, ordem_idx)
   WHERE arquivado_em IS NULL;
 
--- sem irmãos homônimos no seed (medido: 0 colisões em 838 nós)
+-- sem irmãos homônimos no seed (medido: 0 colisões em 856 nós)
 CREATE UNIQUE INDEX IF NOT EXISTS ux_nos_nome_irmao
   ON nos (local_id, coalesce(pai_id, 0), nome)
   WHERE arquivado_em IS NULL;
