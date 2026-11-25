@@ -15,7 +15,7 @@ use Illuminate\Database\Seeder;
  *     palavras valem juntas (E); frases diferentes são alternativas (OU).
  *
  * O tamanho é de propósito: a base inteira tem 619 palavras alfabéticas (medido em
- * 26/11/2026), então o léxico é curado à mão e revisável — não é modelo, não tem
+ * 25/11/2026), então o léxico é curado à mão e revisável — não é modelo, não tem
  * custo e não aprende sozinho. Termo novo entra por decisão, com a consulta real
  * que o motivou.
  */
