@@ -29,8 +29,8 @@ ainda não começou — quando começar, entra por este README.
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
 > 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
-> `diretorio-contatos-v2` @ `400d8e6`, não copiadas de texto. A perna
-> `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 12/11/2026: `Ran 95`,
+> `diretorio-contatos-v2` @ `7320a46`, não copiadas de texto. A perna
+> `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 24/11/2026: `Ran 95`,
 > 1 pulado, OK. A perna 0 e o resto das contagens estão em
 > `diretorio-contatos-v2/scripts/contagens.json`, que o CI confere contra o README.
 
@@ -170,9 +170,10 @@ Duas garantias baratas acompanham isso:
 
 ## Relação com as versões anteriores
 
-O v2 não é tocado: continua público e congelado como evidência do arco v1→v2. O único
-acréscimo permitido é teste de privacidade, que não muda a aplicação (o detector de nome de
-pessoa mora lá também, ver `tests/test_sem_telefone_real.py`). O que se escreve
+O v2 não ganha funcionalidade nova: continua público, como evidência do arco v1→v2, e só
+muda por correção pontual ou por evidência visual (screencast e capturas). O único
+acréscimo de escopo permitido é teste de privacidade, que não muda a aplicação (o detector de
+nome de pessoa mora lá também, ver `tests/test_sem_telefone_real.py`). O que se escreve
 do zero é esta versão — e um dos critérios é não herdar código: a similaridade com o v1 fica
 em ≤10%. A comparação lado a lado dos três está no README do v1 e do v2.
 
