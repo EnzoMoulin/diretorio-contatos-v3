@@ -135,8 +135,9 @@ o que o admin vê é a mesma trilha com diff.
 
 ### 3.7 Deploy
 
-Um serviço Docker no Render (free) + Postgres no Neon. Fila `sync` no demo. `/healthz` **sem tocar no
-banco** (se o banco cair, o serviço não pode ser reiniciado em cascata). Seed idempotente na subida.
+Um serviço Docker no Render (free) + Postgres no Neon. Fila `sync` no demo. `/up` — a rota de health do
+Laravel, que é o `healthCheckPath` do `render.yaml` — **sem tocar no banco** (se o banco cair, o serviço
+não pode ser reiniciado em cascata). Seed idempotente na subida.
 Leitura pública; escrita só autenticada.
 
 ---
@@ -495,7 +496,7 @@ implementa.
 | 4 | API `/api/v1` só leitura + testes de contrato | rotas do contrato respondendo |
 | 5 | Consulta pública (Livewire): topbar, rail, mapa, painel, 7 estados, celular, tema escuro e claro | estados 1–7 navegáveis com dado real; os dois temas medidos |
 | 6 | Admin Filament: CRUD, pedidos, aprovação, histórico | editar contato muda o histórico |
-| 7 | Deploy Render + Neon, README com quadro de estado, ADR-010 | URL viva e `/healthz` sem banco |
+| 7 | Deploy Render + Neon, README com quadro de estado, ADR-010 | URL viva e `/up` sem banco |
 
 Depois do `v3.0`: exportação CSV (fila `sync`), favoritos com conta (sincronização do `localStorage`),
 notificações.
