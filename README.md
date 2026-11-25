@@ -176,9 +176,11 @@ estava devolvendo letra parecida, não o serviço.
 | `urgencia` | `plantao` | 0 | **27** |
 
 A medição é reproduzível: `SinonimoSeeder::LEXICO` percorrido com `Buscar::executar($termo, 0, false)`
-e `Buscar::executar($termo, 0, true)`. Três pares por família (cartório, família, sucessões) viram
-teste de feature em `apps/web/tests/Feature/BuscaTest.php`, e um teste de unidade recusa termo com
-acento, caixa alta ou expansão vazia antes de o `CHECK` do banco derrubar o `migrate --seed`.
+e `Buscar::executar($termo, 0, true)`. O critério de aceite é verificado no léxico inteiro: um teste de
+feature percorre os 39 pares comparando o conjunto com o da consulta canônica, e três deles (cartório,
+família, sucessões) têm caso explícito com fixture de diretório em
+`apps/web/tests/Feature/BuscaTest.php`. Um teste de unidade recusa termo com acento, caixa alta ou
+expansão vazia antes de o `CHECK` do banco derrubar o `migrate --seed`.
 
 ### Limites declarados
 

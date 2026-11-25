@@ -5,7 +5,9 @@ use App\Models\Contato;
 use App\Models\Local;
 use App\Models\No;
 use App\Models\Sinonimo;
+use Database\Seeders\SinonimoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
@@ -83,6 +85,34 @@ it('ignora acento e caixa como o resto da busca', function () {
 
     expect($comAcento['total'])->toBeGreaterThan(0)
         ->and(busca_chaves($comAcento))->toEqual(busca_chaves($semAcento));
+});
+
+/**
+ * O critério de aceite vale para o léxico inteiro, não para os três pares que têm
+ * caso explícito. A base sintética aqui tem uma palavra-alvo por expansão do
+ * seeder — sem ela, os dois lados da comparação seriam vazios e o teste passaria
+ * sem provar nada.
+ */
+it('devolve o mesmo conjunto da consulta canônica em todo o léxico', function () {
+    $sede = Local::factory()->sede()->create();
+
+    foreach (array_unique(array_merge(...array_values(SinonimoSeeder::LEXICO))) as $frase) {
+        $nome = Str::headline($frase);
+
+        No::factory()->create(['local_id' => $sede->id, 'nome' => $nome]);
+        No::factory()->create(['local_id' => $sede->id, 'nome' => $nome.' 2']);
+    }
+
+    $this->seed(SinonimoSeeder::class);
+
+    foreach (SinonimoSeeder::LEXICO as $termo => $expansao) {
+        $porSinonimo = $this->getJson('/api/v1/busca?q='.urlencode($termo).'&limite=20')->assertOk()->json();
+        $canonica = $this->getJson('/api/v1/busca?q='.urlencode($expansao[0]).'&limite=20')->assertOk()->json();
+
+        expect($porSinonimo['expansao'])->toBe($expansao)
+            ->and(busca_chaves($porSinonimo))->not->toBeEmpty()
+            ->and(busca_chaves($porSinonimo))->toEqual(busca_chaves($canonica));
+    }
 });
 
 it('corta no limite pedido e informa o total antes do corte', function () {
