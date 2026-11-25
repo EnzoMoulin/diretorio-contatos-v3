@@ -32,6 +32,24 @@ está na camada errada.
   commit. Formatação é passo explícito.
 - Falhou no CI = o autor roda `pint` e commita o resultado. Nunca `pint --test` com `continue-on-error`.
 
+## Ambiente e versões (medido em 25/11/2026)
+
+O piso é **PHP 8.4**, e quem decide isso é o Pest, não o Laravel: `pestphp/pest` 5.3 exige `^8.4` e
+`phpunit/phpunit` `^13.4`; `laravel/laravel` 13.11 aceita `^8.3`, `larastan/larastan` 3.15 e
+`filament/filament` 5.12 aceitam `^8.2` e cobrem `illuminate ^11.44 || ^12.4 || ^13`.
+
+Antes do `composer create-project` nesta máquina, conferir o que falta — em 25/11/2026 não havia nada
+disso:
+
+| Ferramenta | Estado em 25/11/2026 | Por que importa |
+|---|---|---|
+| `php` | 8.3.6 (`/usr/bin/php8.3`) | o Pest 5 recusa instalar: `requires php ^8.4` |
+| `composer` | ausente | é o que cria o esqueleto |
+| `docker` | ausente | Sail e a imagem de teste dependem dele |
+
+Sem PHP 8.4 local, a saída é instalar o 8.4 ou rodar a suíte no container — nunca baixar a versão do
+Pest, que reverteria a régua do plano (§3.2).
+
 ## Larastan — análise estática
 
 - `larastan/larastan` no nível **5** no primeiro PR, subindo um nível por marco fechado.
