@@ -8,7 +8,7 @@
 
 > **Status em 25/11/2026 — item 1 do `v3.0` entregue.** Laravel 13 + PHP 8.4 em `apps/web/` (PR #35,
 > squash `aa9a0c9`; issue #4 fechada), com a primeira leitura (`GET /` e `GET /api/v1/hierarquia`) lendo o
-> Postgres e os quatro jobs do `laravel.yml` verdes e **required** no ruleset `27478802`: `Pint (PSR-12)`,
+> Postgres e os quatro jobs do `laravel.yml` verdes e **required** no ruleset `protege-default`: `Pint (PSR-12)`,
 > `Larastan (análise estática)`, `Pest (Feature)` e `Blade e rotas (sem servidor)`, somados aos dois que já
 > eram exigidos. As migrations do item 2 também estão versionadas (PR #34). **Risco registrado:** o build da
 > imagem Docker **não** foi exercitado — esta máquina não tem Docker; é risco do primeiro deploy do v3, não do v2.
