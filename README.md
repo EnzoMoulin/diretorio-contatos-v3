@@ -17,7 +17,10 @@ wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e r
 `IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
 aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); o índice reverso de ramais
 já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; a interface de
-busca e o mapa seguem como issues abertas, não promessa de README.
+busca e o mapa seguem como issues abertas, não promessa de README. As outras três listagens de
+contato do seed — **Telefones** (1.019), **E-mails** (297) e **WhatsApp** (47) — existem no banco e
+no contrato, mas ainda não têm rota nem tela: o único recorte exposto hoje é o de ramais, e o
+comparador de contrato marca `contatos` como **PENDENTE** para que a lacuna não suma.
 
 | Já feito | Onde |
 | :--- | :--- |
@@ -29,6 +32,8 @@ busca e o mapa seguem como issues abertas, não promessa de README.
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
+| **Gate de acessibilidade WCAG 2.1 AA** (issue #9): axe-core, foco por Tab, alvo de toque ≥ 44 px e relatório como artefato | `tests/acessibilidade/`, `docs/acessibilidade.md` |
+| **Paridade de contrato v2 × v3 executável** (issue #8): `--v3 <url>` compara campo a campo e marca rota pendente em vez de escondê-la | `scripts/comparar-contrato.py`, `docs/paridade-contrato-v2.md` |
 | **Fluxo de PR com rastreabilidade**: formulário de PR (`Closes #N`), formulários de issue e checks obrigatórios para entrar na `main` | `.github/`, seção *Fluxo de contribuição* abaixo |
 | **Régua Laravel ativa**: Pint (PSR-12), Larastan (nível 5), Pest e cache de rotas/views, com os quatro jobs rodando em todo PR | `.github/workflows/laravel.yml`, `docs/convencoes-laravel.md` |
 | **Protótipo navegável da direção A em Laravel + TALL**, com mapa real do ES e o seed da v2 — nove rodadas de revisão, mantido fora do git | `IDEIAS PARA O V3/wireframe`, `docs/plano-v3.md` |
@@ -211,15 +216,18 @@ issue (problema) → branch → commits semânticos → PR ("Closes #N") → CI 
   issue.
 - **Descrição do PR com trade-offs**, não só a lista de arquivos: o que foi descartado, o que
   fica pior, o que ficou fora de escopo.
-- **Checks obrigatórios.** O ruleset `protege-default` exige os jobs de `.github/workflows/testes.yml`
-  verdes e recusa force-push e exclusão da `main`. PR vermelho não tem botão de merge.
+- **Checks obrigatórios.** O ruleset `protege-default` exige os jobs de teste verdes
+  (varredura, DDL, Pint, Larastan, Pest, Blade/rotas) e a **acessibilidade** (WCAG 2.1 AA);
+  recusa force-push e exclusão da `main`. PR vermelho não tem botão de merge.
 
 | Workflow | Dispara em | Prova |
 | :--- | :--- | :--- |
 | `testes.yml` → `Varredura de privacidade` | todo push e PR | nenhum telefone/e-mail real e nenhum nome de pessoa fora do padrão sintético |
 | `testes.yml` → `DDL e invariantes (Postgres 16)` | todo push e PR | `db/schema.sql` aplica duas vezes (idempotência) e as 45 invariantes estruturais passam |
 | `testes.yml` → `Varredura do seed (a pedido)` | `workflow_dispatch` | o seed da v2, clonado na hora, também está limpo |
+| `testes.yml` → `Contrato v2 × v3 (a pedido)` | `workflow_dispatch` | compara a v3 com o fixture do v2; rota pendente não falha (ainda não bloqueante) |
 | `laravel.yml` → Pint, Larastan, Pest, Blade/rotas | todo push e PR | estilo PSR-12, tipos nível 5, fluxos de feature em Postgres 16 e compilação de view/rotas |
+| `laravel.yml` → `Acessibilidade (WCAG 2.1 AA)` | todo push e PR | axe-core A/AA nas telas públicas, foco por Tab, alvo ≥ 44 px e contraste nos dois temas |
 
 Commits seguem Conventional Commits (`feat:`, `fix:`, `docs:`, `ci:`, `chore:`…), um assunto por
 commit; o squash preserva um commit por funcionalidade na `main`.
@@ -229,13 +237,15 @@ commit; o squash preserva um commit por funcionalidade na `main`.
 O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
 não em promessa de README. Duas listas se complementam:
 
-- **issues abertas** — trabalho reconhecido: busca, mapa, paridade de
-  contrato, acessibilidade no CI, plano de testes;
+- **issues abertas** — trabalho reconhecido: o mapa geocodificado e o plano de testes com
+  rastreabilidade;
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
-Com o esqueleto fechado, a prioridade seguinte é a **busca pública** e o **mapa geocodificado**,
-nessa ordem — as duas issues abertas que herdam o contrato do v2 e o protótipo já revisado.
+Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A lacuna
+funcional mais visível face ao v2 são as **listagens de telefone, WhatsApp e e-mail**: existem no
+seed e no contrato, mas ainda não têm rota, tela nem issue — o comparador de paridade as marca como
+pendentes.
 
 ## Deploy
 
@@ -258,7 +268,8 @@ Ainda não deployado.
 | `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR de 12/11/2026: v3 e v4 num repositório, `db/` compartilhado. **Revisado em 25/11: um deployável, v4 adiada.** |
 | `docs/adr-010-backend-unico-em-laravel.md` | ADR de 14/11/2026: backend único em Laravel, sem serviço FastAPI; aposenta o marco "v4". |
 | `docs/backlog-ideias.md` | Ideias de produto com fase, gatilho e veredito — inclusive as descartadas, com motivo. |
-| `docs/paridade-contrato-v2.md` | Contrato de leitura congelado: o que a v3 tem de devolver igual ao v2, e onde a diferença é decisão. |
+| `docs/paridade-contrato-v2.md` | Contrato de leitura congelado: o que a v3 tem de devolver igual ao v2, e onde a diferença é decisão. Inclui o modo `--v3` e o recall medido da busca. |
+| `docs/acessibilidade.md` | Gate WCAG 2.1 AA: o que mede, o que corrigiu, como rodar e por que é required check. |
 | `docs/reconciliacao-2026-11-12.md` | Laudo de aderência da base aos três catálogos oficiais, com as divergências e o que o método não prova. É a **base final de demonstração** da v3. |
 | `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4, que está adiada. Tem aviso no topo; não é o plano da v3. |
 | `docs/identidade-visual.md` | Direção A, mapa protagonista. Inclui o que **não** fazer: `direcoes-visuais.html` é instrumento de decisão, não markup. |

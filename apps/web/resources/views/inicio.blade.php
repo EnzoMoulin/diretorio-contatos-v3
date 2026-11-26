@@ -10,6 +10,7 @@
             --verde: #0f3d33;
             --verde-claro: #e7efe9;
             --dourado: #b98a3c;
+            --dourado-escuro: #7d5a22;
             --papel: #f6f3ec;
             --linha: #d8d2c4;
             --suave: #5d6b63;
@@ -60,7 +61,7 @@
             font-size: 12px;
             letter-spacing: .14em;
             text-transform: uppercase;
-            color: var(--dourado);
+            color: var(--dourado-escuro);
             margin: 0 0 10px;
         }
 
@@ -129,7 +130,7 @@
 
         li b {
             font-weight: 400;
-            color: var(--dourado);
+            color: var(--dourado-escuro);
             font-variant-numeric: tabular-nums;
             min-width: 22px;
         }

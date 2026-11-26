@@ -81,7 +81,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            min-height: 40px;
+            min-height: 44px;
             padding: 0 16px;
             border: 1px solid var(--verde);
             border-radius: 999px;
@@ -475,7 +475,7 @@
 
     <div class="pagina">
         <header class="topo">
-            <a class="marca" href="{{ route('inicio') }}" aria-label="Ramal — voltar à capa">
+            <a class="marca" href="{{ route('inicio') }}">
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
                     <path d="M6 26V15a4 4 0 0 1 4-4h10a4 4 0 0 0 4-4V5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
                     <circle cx="6" cy="26" r="1.9" fill="currentColor"/>
@@ -485,6 +485,7 @@
                     <b>Ramal</b>
                     <small>Diretório de contatos</small>
                 </span>
+                <span class="sr-apenas"> — voltar à capa</span>
             </a>
 
             <div class="acoes">
@@ -602,7 +603,7 @@
                                 <td class="cel-unidade" data-rotulo="Unidade">{{ $ramal['unidade'] }}</td>
                                 <td class="cel-setor" data-rotulo="Setor">
                                     @if ($ramal['setor'] === null)
-                                        <span class="vazio" aria-label="sem setor">—</span>
+                                        <span class="vazio" aria-hidden="true">—</span><span class="sr-apenas">sem setor</span>
                                     @else
                                         {{ $ramal['setor'] }}
                                     @endif

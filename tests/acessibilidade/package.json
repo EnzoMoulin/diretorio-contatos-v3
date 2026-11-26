@@ -1,0 +1,14 @@
+{
+  "name": "diretorio-contatos-v3-acessibilidade",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Gate de acessibilidade WCAG 2.1 AA do Ramal, medido em navegador real (Playwright + axe-core).",
+  "type": "module",
+  "scripts": {
+    "test": "node acessibilidade.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
+    "playwright": "1.65.0"
+  }
+}
