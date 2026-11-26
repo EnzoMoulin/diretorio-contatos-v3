@@ -87,3 +87,97 @@ jobs:
       - uses: actions/checkout@v4
       - name: Aplicar schema.sql duas vezes e rodar as invariantes
         run: bash db/testar-schema.sh
+
+  # A paridade v2 × v3 é prova executável, mas ainda **não bloqueia**: a v3 só
+  # expõe `/api/v1/hierarquia` e `/api/v1/busca`; faltam `locais`, `nos` e
+  # `contatos`. Por isso este job roda a pedido, como o `seed`: ele clona o v2,
+  # sobe a v3 com o seed real e compara o que já existe. Quando as rotas de
+  # leitura estiverem todas no ar, o `--exigir-completo` passa a ser o padrão e
+  # o job entra no push/PR — aí a paridade vira gate, não relatório.
+  contrato:
+    name: Contrato v2 × v3 (a pedido)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: enzo
+          POSTGRES_PASSWORD: enzo
+          POSTGRES_DB: diretorio_contrato
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: '5432'
+      DB_DATABASE: diretorio_contrato
+      DB_USERNAME: enzo
+      DB_PASSWORD: enzo
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      SEED_JSON: ${{ github.workspace }}/_v2/seed_mascarado.json
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, intl, pdo_pgsql, pgsql, bcmath, zip
+          coverage: none
+          tools: composer:v2
+      - name: Cache do Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Instalar dependências
+        working-directory: apps/web
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Clonar o v2 (público) para ter o seed e o contrato
+        run: git clone --depth 1 https://github.com/EnzoMoulin/diretorio-contatos-v2 _v2
+      - name: Preparar ambiente
+        working-directory: apps/web
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          php artisan key:generate --force
+      - name: Migrar e semear com o seed real do v2
+        working-directory: apps/web
+        run: php artisan migrate --seed --force
+      - name: Subir a v3 para a captura
+        working-directory: apps/web
+        run: |
+          set -euo pipefail
+          php artisan serve --host=127.0.0.1 --port=8001 > /tmp/laravel-contrato.log 2>&1 &
+          echo $! > /tmp/laravel-contrato.pid
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8001/up > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/laravel-contrato.log
+          exit 1
+      - name: Comparar o contrato (diff legível; rota pendente não falha)
+        run: |
+          set -o pipefail
+          python3 scripts/comparar-contrato.py --v3 http://127.0.0.1:8001 \
+            docs/paridade/esperado.json | tee contrato-v3.txt
+      - name: Anexar o diff
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contrato-v2-v3
+          path: contrato-v3.txt
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Logs do servidor (só em falha)
+        if: failure()
+        run: cat /tmp/laravel-contrato.log 2>/dev/null || true

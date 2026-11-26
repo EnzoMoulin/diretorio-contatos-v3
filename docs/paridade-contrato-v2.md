@@ -13,7 +13,7 @@ sucessora e não reescrita com defeito novo.
 | :--- | :--- | :--- |
 | Fixture de referência | `docs/paridade/esperado.json` | 28 KB, capturado do v2 local: nomes, ordem e contagens por rota |
 | Captura | `scripts/capturar-contrato.py` | gera o fixture a partir de um servidor v2 no ar |
-| Comparação | `scripts/comparar-contrato.py` | diff entre dois fixtures, com classe de paridade por rota |
+| Comparação | `scripts/comparar-contrato.py` | diff entre dois fixtures **ou** captura ao vivo da v3 (`--v3`), com classe de paridade por rota |
 
 O fixture **não guarda telefone, e-mail nem nome de pessoa**. Nomes de comarca, fórum e
 unidade são públicos (`dados/README.md`); a amostra de contatos usa só `nome`/`cargo` já
@@ -124,11 +124,94 @@ python3 scripts/capturar-contrato.py http://127.0.0.1:8000 /tmp/esperado-v3.json
 python3 scripts/comparar-contrato.py docs/paridade/esperado.json /tmp/esperado-v3.json
 ```
 
+Modo v3 (captura ao vivo, sem fixture intermediário):
+
+```bash
+# a v3 no ar, com o seed mascarado do v2
+python3 scripts/comparar-contrato.py --v3 http://127.0.0.1:8000
+
+# quando todas as rotas de leitura existirem, rota pendente também reprova
+python3 scripts/comparar-contrato.py --v3 http://127.0.0.1:8000 --exigir-completo
+```
+
 Autoteste (fixture contra ele mesmo, tem de dar PASS em tudo):
 
 ```bash
 python3 scripts/comparar-contrato.py docs/paridade/esperado.json docs/paridade/esperado.json
 ```
+
+## Lado da v3 — modo `--v3` (issue #8)
+
+O comparador passou a falar com a v3 no ar. Ele captura o que a v3 **já expõe**, no mesmo
+formato do fixture, e compara só os campos cobertos — o que falta vira `PENDENTE`, não
+diferença escondida:
+
+| Rota | Estado na v3 | O que é comparado |
+| :--- | :--- | :--- |
+| `hierarquia` | **completa** | `foruns_total`, `locais`, `nos_total`, `ordem`, `uteis` |
+| `comarcas` | **parcial** | `total` e `ordem`, derivados de `/api/v1/hierarquia`; `por_comarca` ainda não tem rota |
+| `busca` | **parcial** | `total` de cada uma das 16 consultas do fixture |
+| `foruns` | **pendente** | falta `/api/v1/locais?comarca=` |
+| `unidades` | **pendente** | falta `/api/v1/locais/{chave}/nos` |
+| `contatos` / `contatos_q` | **pendente** | falta `/api/v1/contatos` |
+| `setores` | **sem equivalente** | árvore única de nós no v3 |
+
+O recorte é declarado em `COBERTURA_V3`, ao lado de `CLASSES`: o comparador não pode
+anunciar paridade que a v3 não tem.
+
+### Recall da busca, medido em 25/11/2026
+
+O fixture do v2 guarda o `total` **saturado no limite de 20** (armadilha 4). A v3 conta
+todas as ocorrências; por isso a coluna v3 quase nunca bate com a v2, e isso é esperado:
+
+| Termo | v2 | v3 | Por quê |
+| :--- | --: | --: | :--- |
+| `cartorio` / `cartório` | 20 | 154 | v2 satura em 20; v3 conta tudo e normaliza acento |
+| `atendimento` | 18 | 119 | idem |
+| `civel` | 20 | 125 | idem |
+| `juizado` | 11 | 148 | idem |
+| `protocolo` | 20 | 37 | idem |
+| `distribuicao` | 9 | 21 | idem |
+| `vitoria` / `vitória` | 20 | 71 | idem |
+| `273134` | 0 | 17 | v2 mascara o telefone e perde o prefixo; v3 busca nos dígitos |
+| `a` | 20 | 0 | v3 ignora palavra com menos de 3 letras (`PARADAS`); v2 casa tudo |
+| `cartorio de registro` | 20 | 1 | v2 é OR; v3 exige todos os termos |
+| `vara do trabalho` | 20 | 9 | idem |
+| `sede` | 1 | 8 | v3 indexa nós e unidades, não só contatos |
+| `firma` / `imobiliario` | 0 | 0 | iguais |
+
+Essas diferenças são **decisão**, não regressão: por isso `busca` é classe *resultado*.
+Quando o `limite` alto for comparado por conjunto de chaves — e não por total — a linha
+`cartorio` ainda vai divergir por saturação do v2, e a justificativa continua esta.
+
+### Prova do critério de aceite
+
+Com a v3 local (seed real, 1.807 contatos):
+
+```text
+$ python3 scripts/comparar-contrato.py --v3 http://127.0.0.1:8013
+hierarquia     PASS       estrita (completa)
+comarcas       PASS       estrita (parcial 2/2 campos)
+busca          RECALL     resultado (total por consulta) — 14 diferença(s)
+foruns         PENDENTE   estrita — rota /api/v1/locais?comarca= ainda não existe
+...
+RESULTADO: ok          # exit 0
+```
+
+Diferença plantada de propósito (`nos_total` 856 → 857 num servidor falso):
+
+```text
+hierarquia     DIFERENTE  estrita (completa) — 1 diferença(s)
+                hierarquia.nos_total: 856 × 857
+RESULTADO: falhou      # exit 1
+```
+
+### CI
+
+O job `contrato` vive no `testes.yml` e roda **a pedido** (`workflow_dispatch`), como o
+`seed`: clona o v2, sobe a v3 com o seed real e compara. Ele ainda **não bloqueia** —
+falta a v3 expor `locais`, `nos` e `contatos`. No dia em que as rotas existirem, o
+`--exigir-completo` vira o padrão e o job entra no push/PR.
 
 ## O que este documento não cobre
 
