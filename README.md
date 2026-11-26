@@ -16,11 +16,17 @@ antes num **protótipo navegável em Laravel + TALL** que vive fora do repositó
 wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e respostas em
 `IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
 aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); o índice reverso de ramais
-já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; a interface de
-busca e o mapa seguem como issues abertas, não promessa de README. As outras três listagens de
-contato do seed — **Telefones** (1.019), **E-mails** (297) e **WhatsApp** (47) — existem no banco e
-no contrato, mas ainda não têm rota nem tela: o único recorte exposto hoje é o de ramais, e o
-comparador de contrato marca `contatos` como **PENDENTE** para que a lacuna não suma.
+já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; as listagens por
+canal respondem na API (`GET /api/v1/contatos`, com `tipo` e os filtros do v2) e nas três telas —
+`/telefones` (1.019), `/emails` (297) e `/whatsapp` (47) —, com filtro por comarca, local, unidade
+ou setor e texto, copiar e `tel:`/`mailto:`/`wa.me`. Cada tela tem a **folha A4 do recorte**
+(`/telefones/impressao`, `/whatsapp/impressao`, `/emails/impressao`), que leva os mesmos filtros e
+imprime o recorte inteiro, não a página. Com isso, os itens de tela e de API da #43 estão
+entregues; a issue segue aberta pelo comparador, que ainda não mede `contatos`. A interface
+de busca e o mapa seguem como issues abertas, não promessa de README.
+O comparador mantém `contatos` como **PENDENTE**: ele recorta por
+*nome* de comarca e o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade
+dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.md`.
 
 | Já feito | Onde |
 | :--- | :--- |
@@ -29,6 +35,7 @@ comparador de contrato marca `contatos` como **PENDENTE** para que a lacuna não
 | **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
 | **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
 | **Índice reverso de ramais em `/ramais`** (issue #7, fila F-1): 444 ramais com comarca · local · unidade · setor, busca por prefixo e folha A4 de 17 páginas | `apps/web/app/Actions/ListarRamais.php`, `apps/web/resources/views/ramais.blade.php` |
+| **Listagens de contatos por canal** (issue #43): `GET /api/v1/contatos` com `tipo` (`Telefone`, `WhatsApp`, `Ramal`, `E-mail`, `Fax`), comarca, local, nó e `q`; nó inclui os filhos, paginação com teto de 200 e contagem por canal no recorte; as três telas (`/telefones`, `/whatsapp`, `/emails`) com filtro por comarca, local, unidade ou setor e busca, e a **folha A4 do recorte** (`canal.*.impressao`), o recorte inteiro e sem os controles da tela | `apps/web/app/Actions/ListarContatos.php`, `apps/web/resources/views/lista-contatos-impressao.blade.php` |
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
@@ -108,6 +115,43 @@ Detalhe de cada arquivo de `db/`, pegadinhas já pagas e a medição que fixou o
 similaridade em 0,45: `db/README.md`. `scripts/` guarda as ferramentas de base — reconciliação com
 os catálogos, ordem do catálogo, coordenadas dos fóruns, captura e comparação do contrato do v2 e a
 varredura de privacidade; cada uma abre com o porquê no docstring.
+
+## Listagens por canal (issue #43)
+
+`GET /api/v1/contatos` devolve os contatos recortados por canal, com os filtros que o v2 tinha.
+`tipo` é comparado normalizado (`E-MAIL` e `email` caem em `E-mail`); comarca, local e nó usam a
+chave lógica (`MUN####`, `FOR####` — `MUN0000` é a Sede —, `UNI####`), e o nó inclui os filhos
+diretos: o contato do cartório é o telefone que o balcão procura pelo nome da vara. A resposta traz
+`total`, `paginas` e `totais` por canal **no mesmo recorte** — é o número das abas da tela.
+
+| Parâmetro | Efeito |
+| :--- | :--- |
+| `tipo` | `Telefone` (1.019), `WhatsApp` (47), `Ramal` (444), `E-mail` (297) ou `Fax` (0) |
+| `comarca` | chave `MUN####` (ex.: `MUN0001` = Vitória, 166 contatos) |
+| `local` | chave `FOR####`; `MUN0000` é a Sede (286 contatos) |
+| `no` | chave `UNI####`, com os filhos diretos |
+| `q` | trecho no texto normalizado e nos dígitos: `cartorio` acha `Cartório` |
+| `pagina` / `por_pagina` | 50 por padrão, teto de 200 |
+
+A ordem é a do seed — local, depois o `ordem_idx` do catálogo —, não a data de criação. `q` aqui é
+filtro, não busca: semelhança, ranking e erro de digitação continuam em `GET /api/v1/busca`.
+Medido contra o seed em 25/11/2026: 1.807 contatos, `q=cartorio` 215, `q=sede` 286, `q=vitoria` 166.
+
+### As telas
+
+`/telefones`, `/whatsapp` e `/emails` são a mesma listagem com o eixo trocado (`ListagemContatosController`
+recebe o canal por `defaults`). A tela tem barra de canais com a contagem do recorte, filtro por comarca,
+local (agrupado por comarca, com a Sede no começo) e **unidade ou setor** (`UNI####`, com os filhos
+diretos — escolher a vara traz o cartório — e o rótulo mostrando o pai), busca por texto, 100 linhas por
+página, copiar e o link do canal — `tel:`, `mailto:` ou `wa.me/55`. Valor mascarado (`XXXX`) aparece como
+texto, sem link: não há número para discar. O filtro por nó é encadeado na tela (comarca → local →
+unidade), mas o servidor aceita qualquer combinação; sem JavaScript a lista continua escolhível.
+
+Cada tela tem a **folha A4 do recorte** em rota própria (`/telefones/impressao`, `/whatsapp/impressao`,
+`/emails/impressao`): o link "Folha A4" leva comarca, local, nó e busca, a folha não repete os controles
+da tela e imprime o recorte inteiro, não a página de 100 — `ListarContatos` com `$porPagina = null` tira
+o `LIMIT`. O papel pagina sozinho e o `<thead>` corrente (canal · recorte · total) se repete em cada
+página. O `@media print` da tela continua imprimindo só a página; a peça completa é a folha.
 
 ## Busca por sinônimos (ideia 04)
 
@@ -237,15 +281,15 @@ commit; o squash preserva um commit por funcionalidade na `main`.
 O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
 não em promessa de README. Duas listas se complementam:
 
-- **issues abertas** — trabalho reconhecido: o mapa geocodificado e o plano de testes com
-  rastreabilidade;
+- **issues abertas** — trabalho reconhecido: o mapa geocodificado, o comparador de `contatos`
+  (#43) e o plano de testes com rastreabilidade;
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
-Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A lacuna
-funcional mais visível face ao v2 são as **listagens de telefone, WhatsApp e e-mail**: existem no
-seed e no contrato, mas ainda não têm rota, tela nem issue — o comparador de paridade as marca como
-pendentes.
+Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A **#43** está
+entregue nas telas e na API: `GET /api/v1/contatos`, as três telas com os filtros do v2 — inclusive
+o nó, que inclui os filhos —, o copiar, o `tel:`/`mailto:`/`wa.me` e a folha A4 por recorte. Falta
+ligá-la ao comparador de contrato, que depende de `/api/v1/locais`.
 
 ## Deploy
 

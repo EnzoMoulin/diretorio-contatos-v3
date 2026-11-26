@@ -56,9 +56,13 @@ jobs:
         with:
           python-version: '3.12'
       - name: Clonar o v2 (público) para ter o seed
-        run: git clone --depth 1 https://github.com/EnzoMoulin/diretorio-contatos-v2 _v2
+        # Fora do workspace de propósito: o script varre a árvore do repositório
+        # além do seed, e um clone em `_v2/` faria o job reprovar por placeholder
+        # de README e de teste do v2 (`seu@…`, `f@…`, `t@…`) e por hash de
+        # cache-busting dentro de um comentário — nada disso é dado do projeto.
+        run: git clone --depth 1 https://github.com/EnzoMoulin/diretorio-contatos-v2 "$RUNNER_TEMP/_v2"
       - name: Varrer o seed (telefone, e-mail e nome de pessoa)
-        run: python3 scripts/varrer_privacidade.py --seed _v2/seed_mascarado.json
+        run: python3 scripts/varrer_privacidade.py --seed "$RUNNER_TEMP/_v2/seed_mascarado.json"
 
   ddl:
     name: DDL e invariantes (Postgres 16)

@@ -31,6 +31,10 @@ const SAIDA = process.argv[3] || 'relatorio';
 const PAGINAS = [
   { rota: '/', nome: 'capa' },
   { rota: '/ramais', nome: 'ramais' },
+  { rota: '/telefones', nome: 'telefones' },
+  { rota: '/telefones/impressao', nome: 'folha-telefones' },
+  { rota: '/whatsapp', nome: 'whatsapp' },
+  { rota: '/emails', nome: 'emails' },
 ];
 
 const falhas = [];

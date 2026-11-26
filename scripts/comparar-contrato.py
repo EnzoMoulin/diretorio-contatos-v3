@@ -55,8 +55,8 @@ COBERTURA_V3 = {
               "origem": "/api/v1/busca?q=&limite=20"},
     "foruns": {"estado": "pendente", "motivo": "rota /api/v1/locais?comarca= ainda não existe"},
     "unidades": {"estado": "pendente", "motivo": "rota /api/v1/locais/{chave}/nos ainda não existe"},
-    "contatos": {"estado": "pendente", "motivo": "rota /api/v1/contatos ainda não existe"},
-    "contatos_q": {"estado": "pendente", "motivo": "rota /api/v1/contatos ainda não existe"},
+    "contatos": {"estado": "pendente", "motivo": "rota existe; o fixture recorta por nome de comarca e o comparador não tem o mapa nome→chave (falta /api/v1/locais)"},
+    "contatos_q": {"estado": "pendente", "motivo": "rota existe; o q do v2 lê nome/cargo, colunas que o modelo do v3 não tem — paridade medida à mão em docs/paridade-contrato-v2.md"},
     "setores": {"estado": "sem_equivalente", "motivo": "v2 separa unidades e setores; v3 tem árvore única de nós"},
 }
 
