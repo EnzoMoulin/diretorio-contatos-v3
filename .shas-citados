@@ -1,0 +1,22 @@
+# SHAs citados em docs que nao resolvem no repo da v3, declarados a mao
+# (scripts/verificar-shas-citados.py). Uma linha por SHA, com o motivo.
+#
+# Regra: so entra aqui SHA que o texto ja diz o que e — SHA do v2 (que nao
+# resolve neste repositorio) ou material historico do proprio v3 (commit que
+# existe fora da main, morto por reescrita). Nunca para calar citacao vencida
+# que o texto apresenta como estado atual.
+#
+# A allowlist nao e silenciosa: o script imprime quantos citados ela abafou e
+# qual declaracao nunca casou com nada — declaracao orfa aparece no log do CI
+# em vez de apodrecer num arquivo de configuracao.
+
+# --- v2 (historico reescrito em 12/11 e 17/11/2026; nao resolve aqui) --------
+b93af48  # v2, base medida em 10/11 (docs/fase-3-arquitetura-e-adrs.md)
+7320a46  # v2, commit medido em 24/11 — morreu na limpeza de 26/11
+fcdb719  # v2, HEAD de 25/11 — morreu na limpeza de 26/11
+bb9b62b  # v2, HEAD congelado atual (marco do README)
+939311e  # v2, medicao do contrato publicado (docs/paridade-contrato-v2.md)
+a93aeb1  # v2, medicao da paridade de testes (docs/plano-v3.md)
+
+# --- v3, fora da main --------------------------------------------------------
+c290fc5  # v3, tip do PR #47 (squash): material do pre-mortem de 26/11; moldura corrigida em 724e28e/a99256f
