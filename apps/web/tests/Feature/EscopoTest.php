@@ -149,6 +149,7 @@ it('aceita a Sede como local e recusa MUN0000 como comarca', function () {
 });
 
 it('recusa chave órfã ou de outro nível', function () {
+    fixtureEscopo();
     $editor = Usuario::factory()->create();
 
     expect(fn () => app(ConcederAcesso::class)->executar($editor, 'local', 'FOR9999'))
@@ -172,6 +173,7 @@ it('não deixa usuário inativo editar nem ver', function () {
 });
 
 it('resolve o escopo uma vez por requisição', function () {
+    fixtureEscopo();
     $editor = Usuario::factory()->create();
     app(ConcederAcesso::class)->executar($editor, 'local', 'FOR0001');
 
@@ -252,6 +254,7 @@ it('cria usuário, troca papel e desativa com auditoria', function () {
 });
 
 it('revoga acesso e deixa o retrato na auditoria', function () {
+    fixtureEscopo();
     $admin = Usuario::factory()->admin()->create();
     $editor = Usuario::factory()->create();
 
