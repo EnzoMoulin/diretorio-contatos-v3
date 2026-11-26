@@ -8,7 +8,7 @@ de DDL do app: o baseline não copia o schema para PHP, ele executa `db/schema.s
 | Migration | O que cria | Depende de |
 | :--- | :--- | :--- |
 | `0001_01_01_000000_criar_baseline_do_diretorio.php` | as 7 tabelas de `db/schema.sql` (comarcas, locais, nós, contatos, telefones úteis, histórico e o agregado do expurgo), funções, índices e triggers | das extensões `pg_trgm`/`unaccent`, criadas pelo próprio baseline |
-| `0001_01_01_000001_criar_identidade_e_escopo.php` | `usuarios`, `password_reset_tokens`, `acessos`, `pedidos` | do `marca_atualizacao()` do baseline |
+| `0001_01_01_000001_criar_identidade_e_escopo.php` | `usuarios`, `password_reset_tokens`, `acessos`, `pedidos`, `auditoria` | do `marca_atualizacao()` do baseline |
 | `0001_01_01_000002_criar_sessoes_e_cache.php` | `sessions`, `cache`, `cache_locks` | de `usuarios` (FK de `sessions.user_id`) |
 
 A ordem importa: `sessions` tem FK para `usuarios`, e as duas migrations de app usam a função de
@@ -41,14 +41,16 @@ isso resolve para a raiz do repositório, tanto no host quanto no container (`/a
 
 O teste mínimo, num banco vazio e descartável:
 
-1. `migrate` → 16 tabelas em `public`: `migrations` + 8 do baseline + 7 do app.
+1. `migrate` → 17 tabelas em `public`: `migrations` + 8 do baseline + 8 do app.
 2. `historico` tem `entidade_chave`, `antes` e `depois`; **não** tem `contato_chave`, `contato_rotulo`
    nem `detalhe`.
 3. `sessions.user_id` tem FK para `usuarios`; `usuarios` e `pedidos` têm o trigger
    `marca_atualizacao()`.
-4. `migrate:rollback --path=... --realpath` deixa só `migrations` (as funções e extensões ficam, de
+4. `auditoria` tem `ator_id`, `antes` e `depois`, com CHECK de pelo menos um retrato; ela não entra no
+   expurgo de 180 dias.
+5. `migrate:rollback --path=... --realpath` deixa só `migrations` (as funções e extensões ficam, de
    propósito: o `down()` não as derruba).
-5. `migrate` de novo recria tudo — é o que prova que o rollback não deixou sujeira.
+6. `migrate` de novo recria tudo — é o que prova que o rollback não deixou sujeira.
 
 O seed não é migration: `db/carregar-seed.py` emite o SQL e `psql -1 -f` carrega num banco já migrado.
 Ele é andaime de teste, não o ingestão oficial.

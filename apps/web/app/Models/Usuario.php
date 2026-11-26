@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\UsuarioFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -22,18 +23,23 @@ class Usuario extends Authenticatable
 
     use Notifiable;
 
+    public const PAPEIS = ['ADMIN', 'GESTOR_COMARCA', 'EDITOR', 'DEMO'];
+
     public const CREATED_AT = 'criado_em';
 
     public const UPDATED_AT = 'atualizado_em';
 
     protected $table = 'usuarios';
 
+    /**
+     * `papel` e `ativo` ficam fora do fillable de propósito: só Actions
+     * (`CriarUsuario`, `AlterarPapel`, `DefinirAtivo`) os alteram, para que
+     * nenhum request consiga escalar privilégio por mass assignment.
+     */
     protected $fillable = [
         'nome',
         'email',
         'senha',
-        'papel',
-        'ativo',
     ];
 
     protected $hidden = [
@@ -60,5 +66,27 @@ class Usuario extends Authenticatable
     public function getAuthPasswordName(): string
     {
         return 'senha';
+    }
+
+    public function ehAdmin(): bool
+    {
+        return $this->papel === 'ADMIN';
+    }
+
+    public function ehDemo(): bool
+    {
+        return $this->papel === 'DEMO';
+    }
+
+    /** @return HasMany<Acesso, $this> */
+    public function acessos(): HasMany
+    {
+        return $this->hasMany(Acesso::class);
+    }
+
+    /** @return HasMany<Pedido, $this> */
+    public function pedidos(): HasMany
+    {
+        return $this->hasMany(Pedido::class);
     }
 }

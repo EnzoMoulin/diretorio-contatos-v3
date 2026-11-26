@@ -338,7 +338,7 @@ CREATE TABLE IF NOT EXISTS historico (
 COMMENT ON TABLE historico IS
   'Histórico do dado, não auditoria de permissão. Guarda a chave lógica e o retrato antes/depois em JSONB; exclusão física do contato não apaga a linha.';
 COMMENT ON COLUMN historico.entidade IS
-  'Entidades do dado: contato, no, local, comarca, util. `usuario`, `acesso` e `pedido` NÃO entram aqui: são tabelas do app (migrations do Laravel, mesmo banco) e a auditoria delas não está sujeita ao expurgo de 180 dias.';
+  'Entidades do dado: contato, no, local, comarca, util. `usuario`, `acesso` e `pedido` NÃO entram aqui: são tabelas do app (migrations do Laravel, mesmo banco), com auditoria própria na tabela `auditoria`, que não está sujeita ao expurgo de 180 dias.';
 COMMENT ON COLUMN historico.entidade_chave IS
   'Chave lógica da linha alterada (C000001, UNI0027, MUN0001, FOR0001, UTL0001). Vazia quando a ação não aponta uma linha, como o registro do próprio expurgo.';
 COMMENT ON COLUMN historico.antes IS

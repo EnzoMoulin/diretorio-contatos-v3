@@ -17,8 +17,46 @@ class UsuarioFactory extends Factory
             'nome' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'senha' => 'password',
-            'papel' => 'ADMIN',
-            'ativo' => true,
         ];
+    }
+
+    /**
+     * `papel` e `ativo` não são fillable; a factory os define depois do make,
+     * antes do save, para não depender de mass assignment.
+     */
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Usuario $usuario): void {
+            $usuario->papel ??= 'EDITOR';
+            $usuario->ativo ??= true;
+        });
+    }
+
+    public function admin(): static
+    {
+        return $this->afterMaking(function (Usuario $usuario): void {
+            $usuario->papel = 'ADMIN';
+        });
+    }
+
+    public function gestor(): static
+    {
+        return $this->afterMaking(function (Usuario $usuario): void {
+            $usuario->papel = 'GESTOR_COMARCA';
+        });
+    }
+
+    public function demo(): static
+    {
+        return $this->afterMaking(function (Usuario $usuario): void {
+            $usuario->papel = 'DEMO';
+        });
+    }
+
+    public function inativo(): static
+    {
+        return $this->afterMaking(function (Usuario $usuario): void {
+            $usuario->ativo = false;
+        });
     }
 }

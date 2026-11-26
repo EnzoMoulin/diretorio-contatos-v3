@@ -28,14 +28,19 @@ O comparador mantém `contatos` como **PENDENTE**: ele recorta por
 *nome* de comarca e o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade
 dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.md`.
 
+A camada de autorização por nó também está versionada: `EscopoResolvido` + `DiretorioPolicy` decidem
+edição por comarca, local ou nó (`ADMIN` edita tudo; `GESTOR_COMARCA` e `EDITOR` dentro do escopo;
+`DEMO` só lê), com testes de Policy sem HTTP. O painel Filament ainda não a consome.
+
 | Já feito | Onde |
 | :--- | :--- |
 | Decisão de stack: **Laravel 13 + TALL + Filament + Postgres (Neon), um serviço Docker no Render free** | `docs/arquitetura-v3.md` |
 | DDL completo e idempotente do banco `db_diretorio`, com invariantes e expurgo LGPD | `db/schema.sql`, `db/README.md` |
-| **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
+| **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`, `auditoria`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
 | **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
 | **Índice reverso de ramais em `/ramais`** (issue #7, fila F-1): 444 ramais com comarca · local · unidade · setor, busca por prefixo e folha A4 de 17 páginas | `apps/web/app/Actions/ListarRamais.php`, `apps/web/resources/views/ramais.blade.php` |
 | **Listagens de contatos por canal** (issue #43): `GET /api/v1/contatos` com `tipo` (`Telefone`, `WhatsApp`, `Ramal`, `E-mail`, `Fax`), comarca, local, nó e `q`; nó inclui os filhos, paginação com teto de 200 e contagem por canal no recorte; as três telas (`/telefones`, `/whatsapp`, `/emails`) com filtro por comarca, local, unidade ou setor e busca, e a **folha A4 do recorte** (`canal.*.impressao`), o recorte inteiro e sem os controles da tela | `apps/web/app/Actions/ListarContatos.php`, `apps/web/resources/views/lista-contatos-impressao.blade.php` |
+| **Escopo e autorização por nó** (item 3): `EscopoResolvido` calculado uma vez por requisição, `DiretorioPolicy`, `Contato::editaveisPor()`, `ConcederAcesso`/`RevogarAcesso` com chave validada e `auditoria` das tabelas do app | `apps/web/app/Escopo`, `apps/web/app/Policies`, `apps/web/app/Actions`, `apps/web/tests/Feature/EscopoTest.php` |
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |

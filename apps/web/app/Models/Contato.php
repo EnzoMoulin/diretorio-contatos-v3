@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Escopo\EscopoResolvido;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,5 +51,32 @@ class Contato extends Model
     public function no(): BelongsTo
     {
         return $this->belongsTo(No::class);
+    }
+
+    /**
+     * Contatos que o escopo pode editar. A Policy e a listagem usam a mesma
+     * resolução — não há regra duplicada.
+     *
+     * @param  Builder<Contato>  $query
+     * @return Builder<Contato>
+     */
+    public function scopeEditaveisPor(Builder $query, EscopoResolvido $escopo): Builder
+    {
+        $escopo->filtrarEditaveis($query);
+
+        return $query;
+    }
+
+    /**
+     * Contatos que o escopo pode ver (o demo vê tudo, inclusive sem escrever).
+     *
+     * @param  Builder<Contato>  $query
+     * @return Builder<Contato>
+     */
+    public function scopeVisiveisPor(Builder $query, EscopoResolvido $escopo): Builder
+    {
+        $escopo->filtrarVisiveis($query);
+
+        return $query;
     }
 }

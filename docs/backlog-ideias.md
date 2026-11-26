@@ -245,4 +245,4 @@ o fórum inteiro.
 | PWA / offline | O uso é balcão com rede; service worker em Blade server-rendered é complexidade sem retorno. |
 | `Next.js`/SPA no front | A v3 é Blade + Livewire de propósito (stack do portfólio). SPA reabriria a decisão de 10/11. |
 | Mapa com tiles pagos | Restrição vigente: só free tier. OSM raster basta. |
-| Autenticação própria (senha local) | Google OAuth já decidido; senha local traz recuperação, hash e política sem ganho de portfólio. |
+| OAuth (Socialite) | D-1 fechou e-mail/senha no Filament para o `v3.0`; OAuth traz consent screen e allowlist sem ganho para o demo. |

@@ -1007,7 +1007,7 @@ leitura em lote; envelope de erro com código; circuit breaker de 60 s; log JSON
 
 | # | Ponto | Por que decide antes |
 | :--- | :--- | :--- |
-| A-5 | **Login:** manter Google OAuth no Laravel (Socialite) e matar o login local em produção, ou abrir e-mail/senha para demonstração | Afeta consent screen, allowlist, o texto do README e o que o recrutador consegue fazer no demo |
+| A-5 | **Login:** manter Google OAuth no Laravel (Socialite) e matar o login local em produção, ou abrir e-mail/senha para demonstração | Afeta consent screen, allowlist, o texto do README e o que o recrutador consegue fazer no demo. **Fechado em 26/11/2026: e-mail/senha no `/admin` do Filament; sem OAuth no `v3.0` (D-1).** |
 
 A-1 a A-4 estão fechados nesta revisão: Neon free (B-1), árvore única de nós (ADR-006), `pg_trgm` +
 `unaccent` (ADR-007) e `jobs_relatorio` em `db_diretorio` (2.4).

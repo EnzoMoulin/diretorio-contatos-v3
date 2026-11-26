@@ -42,3 +42,20 @@ services:
         value: database
       - key: QUEUE_CONNECTION
         value: sync
+      # SMTP do item 6 (pedido aprovado/recusado). O host e as credenciais
+      # entram no painel; sem eles o envio falha alto, em vez de fingir que
+      # mandou. Não há OAuth: o login é e-mail/senha no Filament.
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: Ramal
