@@ -18,3 +18,6 @@
 # `busca_digitos` — no texto normalizado os grupos ficam separados por espaço
 # e só a coluna de dígitos casa. O valor é fictício, do contato de fixture.
 33330002
+# apps/web/tests/Feature/ListagemContatosTest.php: o mesmo número do fixture,
+# com o DDD, como aparece no href `tel:` que a tela monta.
+2733330002
