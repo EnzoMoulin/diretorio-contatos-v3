@@ -1,6 +1,8 @@
 # Revisão do wireframe pelo Claude — triagem
 
 **Data:** 16/11/2026 · **Fonte:** resposta do Claude ao PDF `wireframe-v3-telas.pdf` (15 páginas)
+**Material enviado sobre:** não registrado no envio — PDF de 15 páginas de 16/11/2026 (o rastreio de
+base por commit começou em 26/11/2026).
 **Método:** cada apontamento foi conferido no código do protótipo (`IDEIAS PARA O V3/wireframe`),
 arquivo e linha citados. Onde não conferi, está dito.
 
