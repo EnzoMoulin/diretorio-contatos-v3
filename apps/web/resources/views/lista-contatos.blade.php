@@ -67,7 +67,7 @@
 
         .acoes { display: flex; align-items: center; gap: 18px; }
 
-        .acoes a {
+        .acoes a:not(.botao-imprimir) {
             display: inline-flex;
             align-items: center;
             min-height: 44px;
@@ -79,7 +79,7 @@
             color: var(--suave);
         }
 
-        .acoes a:hover { color: var(--verde); }
+        .acoes a:not(.botao-imprimir):hover { color: var(--verde); }
 
         .botao-imprimir {
             display: inline-flex;
@@ -95,6 +95,7 @@
             font-size: 13px;
             letter-spacing: .04em;
             text-transform: uppercase;
+            text-decoration: none;
             cursor: pointer;
         }
 
@@ -160,7 +161,7 @@
 
         .filtros {
             display: grid;
-            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr) auto;
+            grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr) minmax(0, 1.4fr) minmax(0, .9fr) auto;
             gap: 12px;
             align-items: end;
             padding: 18px;
@@ -210,6 +211,34 @@
             padding: 0 4px;
             font-size: 13px;
             color: var(--suave);
+        }
+
+        .recorte-ativo {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin: 14px 0 0;
+            font-size: 13px;
+            color: var(--suave);
+        }
+
+        .recorte-ativo .rotulo {
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--dourado-escuro);
+        }
+
+        .recorte-ativo .chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 2px 11px;
+            border: 1px solid var(--linha);
+            border-radius: 999px;
+            background: #fffdf8;
+            color: var(--verde);
         }
 
         .resultado-topo {
@@ -362,7 +391,7 @@
 
             body { background: #fff; font-size: 10pt; }
             .pagina { max-width: none; padding: 0; }
-            .topo, .heroi, .canais, .filtros, .paginacao, .rodape, .copiar { display: none !important; }
+            .topo, .heroi, .canais, .filtros, .recorte-ativo, .paginacao, .rodape, .copiar { display: none !important; }
 
             .impressao-topo {
                 display: flex;
@@ -406,8 +435,14 @@
     @php
         $filtros = $lista['filtros'];
         $temMascara = collect($lista['itens'])->contains(fn (array $i): bool => str_contains($i['valor'], 'X'));
-        $temFiltro = $filtros['comarca'] !== null || $filtros['local'] !== null || $filtros['q'] !== '';
+        $temFiltro = $filtros['comarca'] !== null || $filtros['local'] !== null || $filtros['no'] !== null || $filtros['q'] !== '';
         $plural = $rotulo['plural'];
+        $queryFolha = array_filter([
+            'comarca' => $filtros['comarca'],
+            'local' => $filtros['local'],
+            'no' => $filtros['no'],
+            'q' => $filtros['q'],
+        ]);
         $tituloResultado = $temFiltro
             ? number_format($lista['total'], 0, ',', '.').' '.($lista['total'] === 1 ? $rotulo['singular'] : $plural).' no recorte'
             : number_format($lista['total'], 0, ',', '.').' '.$plural;
@@ -431,13 +466,14 @@
             <div class="acoes">
                 <a href="{{ route('inicio') }}">Capa</a>
                 <a href="{{ route('ramais') }}">Ramais</a>
-                <button class="botao-imprimir" type="button" onclick="window.print()">
+                <a class="botao-imprimir" href="{{ route($rotulo['folha'], $queryFolha) }}"
+                   title="Abrir a folha A4 com {{ number_format($lista['total'], 0, ',', '.') }} {{ $plural }} do recorte">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M7 9V4h10v5M7 18H5a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M7 14h10v6H7z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
                     </svg>
-                    Imprimir
-                </button>
+                    Folha A4
+                </a>
             </div>
         </header>
 
@@ -464,7 +500,7 @@
 
             <nav class="canais" aria-label="Canais do diretório">
                 @foreach ($canais as $item)
-                    <a href="{{ route($item['rota'], array_filter(['comarca' => $filtros['comarca'], 'local' => $filtros['local'], 'q' => $filtros['q']])) }}"
+                    <a href="{{ route($item['rota'], array_filter(['comarca' => $filtros['comarca'], 'local' => $filtros['local'], 'no' => $filtros['no'], 'q' => $filtros['q']])) }}"
                        @if ($item['atual']) aria-current="page" @endif>
                         {{ $item['rotulo'] }}
                         @if ($item['total'] !== null)
@@ -489,10 +525,26 @@
                     <label for="local">Local</label>
                     <select id="local" name="local">
                         <option value="">Todos</option>
-                        @foreach ($locais as $grupo => $itens)
-                            <optgroup label="{{ $grupo }}">
-                                @foreach ($itens as $item)
+                        @foreach ($locais as $grupo)
+                            <optgroup label="{{ $grupo['rotulo'] }}" data-comarca="{{ $grupo['comarca'] }}">
+                                @foreach ($grupo['itens'] as $item)
                                     <option value="{{ $item['chave'] }}" @selected($filtros['local'] === $item['chave'])>{{ $item['nome'] }}</option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="no">Unidade ou setor</label>
+                    <select id="no" name="no">
+                        <option value="">Todas</option>
+                        @foreach ($nos as $grupo)
+                            <optgroup label="{{ $grupo['rotulo'] }}"
+                                      data-comarca="{{ $grupo['comarca'] }}"
+                                      data-local="{{ $grupo['local'] }}">
+                                @foreach ($grupo['itens'] as $no)
+                                    <option value="{{ $no['chave'] }}" @selected($filtros['no'] === $no['chave'])>{{ $no['nome'] }}</option>
                                 @endforeach
                             </optgroup>
                         @endforeach
@@ -512,6 +564,15 @@
                 </div>
             </form>
 
+            @if ($recorte !== [])
+                <p class="recorte-ativo">
+                    <span class="rotulo">Recorte</span>
+                    @foreach ($recorte as $parte)
+                        <span class="chip">{{ $parte }}</span>
+                    @endforeach
+                </p>
+            @endif
+
             <div class="resultado-topo">
                 <h2>{{ $tituloResultado }}</h2>
                 <span>{{ $lista['paginas'] > 1 ? 'página '.$lista['pagina'].' de '.$lista['paginas'] : 'página única' }}</span>
@@ -523,7 +584,7 @@
                     <p>
                         @if ($filtros['q'] !== '')
                             Nenhum {{ $rotulo['singular'] }} casa com “{{ $filtros['q'] }}” neste recorte —
-                            <a href="{{ route('canal.'.$canal, array_filter(['comarca' => $filtros['comarca'], 'local' => $filtros['local']])) }}">tirar a busca</a>.
+                            <a href="{{ route('canal.'.$canal, array_filter(['comarca' => $filtros['comarca'], 'local' => $filtros['local'], 'no' => $filtros['no']])) }}">tirar a busca</a>.
                         @else
                             <a href="{{ route('canal.'.$canal) }}">Ver a lista inteira</a>.
                         @endif
@@ -648,6 +709,70 @@
             document.body.removeChild(campo);
             pronto();
         });
+
+        // O filtro por nó só oferece as unidades do local/comarca escolhidos.
+        // O servidor aceita a combinação que vier; aqui é só para a lista de
+        // 856 nós não virar um paredão. Sem JS, todos continuam escolhíveis.
+        (function () {
+            var comarca = document.getElementById('comarca');
+            var local = document.getElementById('local');
+            var no = document.getElementById('no');
+
+            if (!comarca || !local || !no) { return; }
+
+            function filtrarLocais() {
+                var c = comarca.value;
+                var selecionadoVisivel = local.value === '';
+
+                Array.prototype.forEach.call(local.querySelectorAll('optgroup'), function (grupo) {
+                    var cabe = !c || grupo.getAttribute('data-comarca') === c;
+
+                    grupo.hidden = !cabe;
+                    grupo.disabled = !cabe;
+
+                    Array.prototype.forEach.call(grupo.querySelectorAll('option'), function (opcao) {
+                        opcao.hidden = !cabe;
+                        opcao.disabled = !cabe;
+
+                        if (cabe && opcao.selected) { selecionadoVisivel = true; }
+                    });
+                });
+
+                if (!selecionadoVisivel) { local.value = ''; }
+            }
+
+            function filtrarNos() {
+                var c = comarca.value;
+                var l = local.value;
+                var selecionadoVisivel = no.value === '';
+
+                Array.prototype.forEach.call(no.querySelectorAll('optgroup'), function (grupo) {
+                    var cabe = (!c || grupo.getAttribute('data-comarca') === c)
+                        && (!l || grupo.getAttribute('data-local') === l);
+
+                    grupo.hidden = !cabe;
+                    grupo.disabled = !cabe;
+
+                    Array.prototype.forEach.call(grupo.querySelectorAll('option'), function (opcao) {
+                        opcao.hidden = !cabe;
+                        opcao.disabled = !cabe;
+
+                        if (cabe && opcao.selected) { selecionadoVisivel = true; }
+                    });
+                });
+
+                if (!selecionadoVisivel) { no.value = ''; }
+            }
+
+            comarca.addEventListener('change', function () {
+                filtrarLocais();
+                filtrarNos();
+            });
+            local.addEventListener('change', filtrarNos);
+
+            filtrarLocais();
+            filtrarNos();
+        })();
     </script>
 </body>
 </html>

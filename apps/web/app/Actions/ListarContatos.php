@@ -70,6 +70,10 @@ final class ListarContatos
      *     totais: array<string, int>,
      *     itens: list<array<string, mixed>>
      * }
+     *
+     * `$porPagina = null` devolve o recorte inteiro, sem `LIMIT`: é o que a
+     * folha A4 usa, porque papel não pagina. Na API o parâmetro continua
+     * limitado por `POR_PAGINA_MAXIMO`.
      */
     public function executar(
         ?string $tipo = null,
@@ -78,12 +82,12 @@ final class ListarContatos
         ?string $no = null,
         string $q = '',
         int $pagina = 1,
-        int $porPagina = self::POR_PAGINA,
+        ?int $porPagina = self::POR_PAGINA,
     ): array {
         $rotulo = self::rotulo($tipo);
         $q = trim($q);
         $pagina = max(1, $pagina);
-        $porPagina = max(1, min(self::POR_PAGINA_MAXIMO, $porPagina));
+        $porPagina = $porPagina === null ? null : max(1, min(self::POR_PAGINA_MAXIMO, $porPagina));
 
         [$core, $parametros] = $this->consulta($comarca, $local, $no);
         [$condicaoTexto, $parametrosTexto] = $this->condicaoTexto($q);
@@ -107,15 +111,18 @@ final class ListarContatos
 
         $sql = 'SELECT b.* FROM ('.$core.') b'.$this->onde($onde)
             .' ORDER BY b.ordem_local NULLS LAST, b.ordem_local_idx,'
-            .' b.ordem_contato_idx, b.chave'
-            .' LIMIT ? OFFSET ?';
+            .' b.ordem_contato_idx, b.chave';
+
+        $parametrosSql = array_merge($parametros, $parametrosOnde);
+
+        if ($porPagina !== null) {
+            $sql .= ' LIMIT ? OFFSET ?';
+            $parametrosSql[] = $porPagina;
+            $parametrosSql[] = ($pagina - 1) * $porPagina;
+        }
 
         /** @var list<object> $linhas */
-        $linhas = DB::select($sql, array_merge(
-            $parametros,
-            $parametrosOnde,
-            [$porPagina, ($pagina - 1) * $porPagina],
-        ));
+        $linhas = DB::select($sql, $parametrosSql);
 
         $itens = [];
 
@@ -151,8 +158,10 @@ final class ListarContatos
             ],
             'total' => $total,
             'pagina' => $pagina,
-            'por_pagina' => $porPagina,
-            'paginas' => $total === 0 ? 0 : (int) ceil($total / $porPagina),
+            'por_pagina' => $porPagina ?? $total,
+            'paginas' => $total === 0
+                ? 0
+                : ($porPagina === null ? 1 : (int) ceil($total / $porPagina)),
             'totais' => $totais,
             'itens' => $itens,
         ];

@@ -21,3 +21,16 @@ Route::get('/whatsapp', ListagemContatosController::class)
 Route::get('/emails', ListagemContatosController::class)
     ->name('canal.emails')
     ->defaults('canal', 'emails');
+
+// A folha A4 é o recorte inteiro, sem paginação e sem os controles da tela.
+Route::get('/telefones/impressao', [ListagemContatosController::class, 'impressao'])
+    ->name('canal.telefones.impressao')
+    ->defaults('canal', 'telefones');
+
+Route::get('/whatsapp/impressao', [ListagemContatosController::class, 'impressao'])
+    ->name('canal.whatsapp.impressao')
+    ->defaults('canal', 'whatsapp');
+
+Route::get('/emails/impressao', [ListagemContatosController::class, 'impressao'])
+    ->name('canal.emails.impressao')
+    ->defaults('canal', 'emails');
