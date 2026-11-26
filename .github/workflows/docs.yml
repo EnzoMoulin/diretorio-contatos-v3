@@ -1,22 +1,21 @@
-name: Docs (SHAs citados)
+name: Docs (SHAs citados e contagens)
 
-# Informativo de proposito: este job **nao** e required status check do ruleset
-# `protege-default`, e o script sai com 0. Ele existe para SHA morto aparecer na
-# aba "Files changed" do PR no dia em que o doc foi escrito, em vez de aparecer
-# numa sessao de revisao semanas depois — foi assim que duas rodadas foram
-# revisar um retrato que nao era mais o estado do repositorio.
+# Dois checks informativos, de proposito **fora** dos required checks do ruleset
+# `protege-default`: os scripts saem com 0 e o sinal e `::warning` na linha do
+# arquivo, na aba "Files changed" do PR. O modo `--estrito` (codigo 1) existe
+# para o checklist de envio ao revisor, nao para travar merge de documentacao.
 #
-# A regra e ancestralidade, nao existencia: SHA que resolve mas nao esta na
-# historia da `main` e o caso que causou o problema (tip de PR fechado por
-# squash). Por isso `fetch-depth: 0` — clone raso nao tem a historia para
-# `git merge-base --is-ancestor` medir, e todo SHA antigo apareceria como fora
-# da main.
+# 1. `shas` — SHA citado nos .md tem de ser ancestral da `main`, nao apenas
+#    existir como objeto. Foi assim que duas rodadas foram revisar um retrato
+#    vencido (tip de PR fechado por squash). Por isso `fetch-depth: 0`: clone
+#    raso nao tem a historia para `git merge-base --is-ancestor` medir.
+# 2. `contagens` — o manifesto `.contagens` contra as declaracoes canonicas do
+#    README. Nao carimba todo `N contatos` do repo: 286, 166 e 84 sao valores
+#    legitimos de recorte e fixture. O manifesto contra o seed roda com
+#    `--seed` na maquina, onde o seed do v2 existe.
 #
-# SHA de outro repositorio (o v2, congelado) nao resolve aqui e nao e defeito:
-# vai declarado em `.shas-citados`, na raiz, com motivo.
-#
-# Para o checklist de envio ao revisor, o modo estrito sai com 1:
-#     python3 scripts/verificar-shas-citados.py --estrito
+#    python3 scripts/verificar-shas-citados.py --estrito
+#    python3 scripts/verificar-contagens.py --seed ../diretorio-contatos-v2/seed_mascarado.json --estrito
 
 on:
   push:
@@ -44,3 +43,15 @@ jobs:
       - name: Conferir SHAs citados nos docs
         run: |
           python3 scripts/verificar-shas-citados.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+  contagens:
+    name: Contagens citadas
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir contagens contra o manifesto
+        run: |
+          python3 scripts/verificar-contagens.py | tee -a "$GITHUB_STEP_SUMMARY"
+
