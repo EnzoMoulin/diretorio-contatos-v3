@@ -3,10 +3,10 @@
 --  Rodar DEPOIS de db/carregar-seed.py, no mesmo banco.
 --  Uso: db/testar-schema.sh (com SEED_JSON=... ) ou
 --       psql "$URL" -v ON_ERROR_STOP=1 -f db/verificar-carga.sql
---  Os números abaixo são os medidos no seed do v2 (HEAD fcdb719,
---  sha256 7ccf1a9c…3a308c) e conferidos contra os dois volumes do catálogo e o
---  ofício de março/2024. Mudou o seed? Recolha as contagens antes de tocar na
---  lista: o oráculo segue o dado, nunca o contrário.
+--  Os números abaixo são os medidos no seed do v2 (HEAD bb9b62b — o `fcdb719`
+--  morreu na limpeza de 26/11 —, sha256 7ccf1a9c…3a308c) e conferidos contra os
+--  dois volumes do catálogo e o ofício de março/2024. Mudou o seed? Recolha as
+--  contagens antes de tocar na lista: o oráculo segue o dado, nunca o contrário.
 --  (838/226/631/1.176 são de antes dos passes de 19/11 que criaram 18 nós e
 --  moveram 59 contatos para dentro de unidades — não voltar a esses números.)
 -- =============================================================================
