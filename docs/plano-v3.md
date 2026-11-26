@@ -36,7 +36,7 @@
 
 | Peça | Estado | Onde |
 |---|---|---|
-| Contrato de rotas, modelo e testes do v2 | Pronto, congelado | `~/Emprego/Projetos/diretorio-contatos-v2` (HEAD `a93aeb1`; SHA apagado na limpeza de 20/11 — HEAD em 25/11: `fcdb719`) |
+| Contrato de rotas, modelo e testes do v2 | Pronto, congelado | `~/Emprego/Projetos/diretorio-contatos-v2` (HEAD `bb9b62b`; `a93aeb1` e `fcdb719` morreram nas limpezas de 20/11 e 26/11) |
 | Seed mascarado | 1.807 contatos, 70 comarcas (69 com IBGE + Sede), 72 fóruns, 856 nós, 11 úteis | `seed_mascarado.json` |
 | DDL PostgreSQL | 7 tabelas, extensões, funções e invariantes já escritas | `db/schema.sql` |
 | Wireframe navegável | 7 estados, desktop e celular, dado real | `IDEIAS PARA O V3/wireframe/` (Laravel/TALL, descartável) |

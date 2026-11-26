@@ -52,7 +52,8 @@ dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
 > 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
-> `diretorio-contatos-v2` @ `7320a46`, não copiadas de texto. A perna
+> `diretorio-contatos-v2` em 24/11/2026 — hoje o marco `bb9b62b`, que só acrescentou documentação
+> depois do commit medido (`7320a46`) —, não copiadas de texto. A perna
 > `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 24/11/2026: `Ran 95`,
 > 1 pulado, OK. A perna 0 e o resto das contagens estão em
 > `diretorio-contatos-v2/scripts/contagens.json`, que o CI confere contra o README.
