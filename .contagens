@@ -1,0 +1,18 @@
+# Contagens canonicas do projeto — a verdade do seed do v2, que e o que o v3
+# carrega (scripts/verificar-contagens.py). Uma linha por contagem, com motivo.
+#
+# O script compara este arquivo com as declaracoes do README (sempre) e com o
+# seed (com `--seed`); se o seed crescer, ele lista cada linha de doc que ainda
+# cita o total antigo. Nao serve para carimbar todo numero de doc: `N contatos`
+# tambem aparece como 286 (Sede), 166 (Vitoria) e valores de fixture.
+
+contatos 1807         # total de `contatos` no seed
+nos 856               # `nos` (unidades da arvore)
+locais 73             # `foruns` (72) + a Sede como local proprio
+comarcas 69           # com `ibge` preenchido; a Sede nao e comarca
+comarcas_sede 70      # linhas em `comarcas` do seed (69 + Sede)
+uteis 11              # `uteis` (telefones uteis)
+
+# sha256 do seed_mascarado.json (v2) em que as contagens foram medidas.
+# Se o seed mudar, este hash muda e o script avisa antes de qualquer contagem.
+seed_sha256 7ccf1a9cc41813288f6a406e4a066558fc71ee3dc075420f96712599db3a308c
