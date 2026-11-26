@@ -1,8 +1,10 @@
 # Pré-mortem do item 3 — resolução (26/11/2026)
 
+**Material enviado sobre:** `c290fc5` (tip do PR #47, fora da main) e `fcdb719` (morto no v2) —
+pedido de 26/11/2026.
 Base: `diretorio-contatos-v3` em `724e28e`/`a99256f` (main) e `diretorio-contatos-v2` em `bb9b62b`.
-O texto do pré-mortem de 26/11 foi escrito sobre `c290fc5` (tip do PR #47, fora da main) e `fcdb719`
-(morto no v2); a moldura foi corrigida, o miolo não.
+O texto do pré-mortem de 26/11 foi escrito sobre `c290fc5` e `fcdb719`; a moldura foi corrigida, o
+miolo não.
 
 ## Riscos
 

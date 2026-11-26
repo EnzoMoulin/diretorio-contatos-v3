@@ -2,6 +2,8 @@
 
 **Data:** 16/11/2026 · **Fonte:** `IDEIAS PARA O V3/ramal-revisao-wireframe-2.md`, resposta ao
 `wireframe-v3-telas.pdf` de 16 páginas (gerado às 13:05).
+**Material enviado sobre:** não registrado no envio — PDF de 16 páginas de 16/11/2026 (o rastreio de
+base por commit começou em 26/11/2026).
 **Método:** cada afirmação foi conferida no protótipo (`IDEIAS PARA O V3/wireframe`), no seed do v2
 ou no texto vetorial do PDF. Onde não reconferi, está dito.
 

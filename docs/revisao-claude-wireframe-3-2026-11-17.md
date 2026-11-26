@@ -2,6 +2,8 @@
 
 **Data:** 17/11/2026 · **Fonte:** `IDEIAS PARA O V3/ramal-revisao-wireframe-3-capturas.md`, resposta
 às 12 capturas de 17/11/2026 (`IDEIAS PARA O V3/capturas-rodada-3/`).
+**Material enviado sobre:** não registrado no envio — 12 capturas de 17/11/2026 (o rastreio de base
+por commit começou em 26/11/2026).
 **Método:** cada afirmação foi conferida no protótipo (`IDEIAS PARA O V3/wireframe`, com
 `arquivo:linha`) ou contradita por ele. As medições em pixel das imagens **não** foram refeitas; onde
 o número é inferência, está dito. A lista "conferido como resolvido" dele não foi reauditada.
