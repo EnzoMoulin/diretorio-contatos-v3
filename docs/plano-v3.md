@@ -573,7 +573,7 @@ de execução sugerida, não a de valor.
 
 | # | Ideia | Por que | Custo |
 |---|---|---|---|
-| F-1 | **Índice reverso de ramais** (`/ramais`) | o produto é organizado por lugar, mas a pergunta do balcão é "quem é o ramal 1234?". Lista dos 444 ramais em ordem numérica, com comarca · unidade · setor ao lado, imprimível. **Tela nova**: entra na §5.5 e no escopo do v3, não é acabamento | baixo: uma rota, uma view, item no índice |
+| F-1 | **Índice reverso de ramais** (`/ramais`) | o produto é organizado por lugar, mas a pergunta do balcão é "quem é o ramal 1234?". Lista dos 444 ramais em ordem numérica, com comarca · unidade · setor ao lado, imprimível. **Tela nova**: entra na §5.5 e no escopo do v3, não é acabamento | baixo: uma rota, uma view, item no índice — **aplicado em 25/11/2026** (issue #7): `ListarRamais`, view própria, 6 testes de feature, 17 páginas A4 |
 | F-2 | **Selo de procedência no contato** | "ofício de março/2024 · desde 03/2024" ao lado do canal: o diferencial do v2 que o wireframe perdeu, porque o `seed_mascarado.json` não tem `fonte`/`vigente_desde`. Depende do **export do seed** (D-3) | baixo depois do seed |
 | F-3 | **`Ctrl K` como paleta de verdade** | hoje o atalho só foca o campo. Paleta com resultados agrupados (comarcas, unidades, setores, contatos), ↑↓ e Enter, destino já com âncora | médio (~150 linhas de JS) |
 | F-4 | **Página "v1 → v2 → v3"** | uma captura por versão, os números de cada uma e a decisão que a definiu. Serve à candidatura: mostra arco, não três repositórios soltos | baixo, e vive nos docs |
@@ -588,13 +588,16 @@ de execução sugerida, não a de valor.
 
 **Status em 20/11/2026:** F-7 e F-11 foram aplicados na rodada 6 (19/11), F-9 foi descartado por
 medição (valor-primeiro vence: 843 de 1.807 contatos não têm `desc`) e **F-5 foi decidido: o painel
-fica em 424 px**. Nenhuma decisão de interface da §13 segue aberta; F-6, F-8 e F-12 entram com a v3 e
-F-10 pertence ao Filament. F-1…F-4 continuam na fila de retomada, depois do deploy do v2.
+fica em 424 px**. **Em 25/11/2026 a F-1 foi aplicada** (issue #7: `/ramais`, 444 ramais, busca por
+prefixo e folha A4). Nenhuma decisão de interface da §13 segue aberta; F-6, F-8 e F-12 entram com a v3
+e F-10 pertence ao Filament. F-2…F-4 continuam na fila de retomada, depois do deploy do v2.
 
 ### Testes a escrever quando a primeira rota Laravel existir (anotado em 17/11)
 
-Nada disso se escreve antes da primeira rota: o v3 tem hoje 45 invariantes de schema, 20 de carga, 5 de
-plano e 33 casos de autoteste do scanner, e nenhuma linha de aplicação além das migrations de banco. A ordem abaixo é de custo, não
+Nada disso se escreve antes da primeira rota: quando a nota foi feita (17/11), o v3 tinha 45
+invariantes de schema, 20 de carga, 5 de plano e 33 casos de autoteste do scanner, e nenhuma linha de
+aplicação além das migrations de banco. Hoje a primeira rota e a suíte Pest já existem (19 casos em
+25/11), então estes testes passam a entrar por issue, não por bloco. A ordem abaixo é de custo, não
 de valor.
 
 | # | Teste | Por que | Custo |

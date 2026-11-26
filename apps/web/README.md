@@ -6,6 +6,8 @@ PR #34; este é o esqueleto da aplicação, com Pint, Larastan e Pest ligados.
 ## O que já funciona
 
 - `GET /` — capa com os totais do diretório (comarcas, fóruns, nós, telefones úteis).
+- `GET /ramais?q=` — índice reverso dos 444 ramais, com comarca · local · unidade · setor,
+  busca por número (prefixo curto incluído) e folha A4 própria.
 - `GET /api/v1/hierarquia` — mesma leitura em JSON, no formato do contrato do v2
   (`docs/paridade/esperado.json`, rota `hierarquia`).
 - `GET /api/v1/busca?q=&limite=` — busca por trigrama sobre comarcas, locais, nós,

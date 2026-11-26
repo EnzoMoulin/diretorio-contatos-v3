@@ -15,7 +15,8 @@ banco é a capa (`GET /`) e o `GET /api/v1/hierarquia`, no contrato do v2. A int
 antes num **protótipo navegável em Laravel + TALL** que vive fora do repositório (`IDEIAS PARA O V3/
 wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e respostas em
 `IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
-aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); a interface de
+aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); o índice reverso de ramais
+já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; a interface de
 busca e o mapa seguem como issues abertas, não promessa de README.
 
 | Já feito | Onde |
@@ -24,6 +25,7 @@ busca e o mapa seguem como issues abertas, não promessa de README.
 | DDL completo e idempotente do banco `db_diretorio`, com invariantes e expurgo LGPD | `db/schema.sql`, `db/README.md` |
 | **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
 | **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
+| **Índice reverso de ramais em `/ramais`** (issue #7, fila F-1): 444 ramais com comarca · local · unidade · setor, busca por prefixo e folha A4 de 17 páginas | `apps/web/app/Actions/ListarRamais.php`, `apps/web/resources/views/ramais.blade.php` |
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
