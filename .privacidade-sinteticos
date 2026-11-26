@@ -14,3 +14,7 @@
 (27) 3232-0000
 27991110001
 27991100004
+# apps/web/tests/Feature/ContatosTest.php: a consulta por dígitos que prova o
+# `busca_digitos` — no texto normalizado os grupos ficam separados por espaço
+# e só a coluna de dígitos casa. O valor é fictício, do contato de fixture.
+33330002

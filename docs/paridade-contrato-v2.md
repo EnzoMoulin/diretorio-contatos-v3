@@ -153,11 +153,32 @@ diferença escondida:
 | `busca` | **parcial** | `total` de cada uma das 16 consultas do fixture |
 | `foruns` | **pendente** | falta `/api/v1/locais?comarca=` |
 | `unidades` | **pendente** | falta `/api/v1/locais/{chave}/nos` |
-| `contatos` / `contatos_q` | **pendente** | falta `/api/v1/contatos` |
+| `contatos` / `contatos_q` | **pendente** | rota existe; falta o mapa nome→chave no comparador e o `q` do v2 lê `nome`/`cargo` |
 | `setores` | **sem equivalente** | árvore única de nós no v3 |
 
 O recorte é declarado em `COBERTURA_V3`, ao lado de `CLASSES`: o comparador não pode
 anunciar paridade que a v3 não tem.
+
+### A listagem por canal, medida em 25/11/2026
+
+`GET /api/v1/contatos` existe desde a #43, mas o comparador ainda não mede `contatos` com o
+fixture: os alvos do v2 recortam por **nome** de comarca e o comparador não tem o mapa nome→chave
+(falta `/api/v1/locais`). A paridade foi medida à mão, contra o mesmo seed:
+
+| Consulta | v2 | v3 | Leitura |
+| :--- | --: | --: | :--- |
+| sem filtro | 1.807 | 1.807 | igual |
+| Sede | 286 | 286 | igual |
+| Vitória (comarca) | 166 | 166 | igual |
+| `q=cartório` | 209 | 215 | +6: a árvore de nós do v3 nomeia unidades que as tabelas `unidades`/`setores` do v2 não tinham |
+| `q=cartorio` | 0 | 215 | divergência desejada: `norm_texto` no lugar do `LIKE` |
+| `q=sede` | 286 | 286 | igual |
+| `q=vitoria` | 34 | 166 | divergência desejada: os 34 do v2 casavam e-mail com "vitoria" sem acento |
+| `q=atendimento` | 722 | 166 | **lacuna de modelo**: os 722 vêm de `nome`/`cargo`, que o v3 não guarda |
+
+A ordem também é a do catálogo: local por `ordem_num`/`ordem_idx` e, dentro dele, o `ordem_idx` do
+contato — o `ordem_num` numera por bloco de unidade e espalharia o WhatsApp do gabinete para o fim
+da lista.
 
 ### Recall da busca, medido em 25/11/2026
 
