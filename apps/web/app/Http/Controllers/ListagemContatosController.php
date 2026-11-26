@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\ListarContatos;
 use App\Models\Comarca;
-use App\Models\Local;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -75,7 +75,7 @@ class ListagemContatosController extends Controller
      */
     private function locais(): array
     {
-        $linhas = Local::query()
+        $linhas = DB::table('locais')
             ->leftJoin('comarcas', 'comarcas.id', '=', 'locais.comarca_id')
             ->orderBy('locais.ordem_num')
             ->orderBy('locais.ordem_idx')
