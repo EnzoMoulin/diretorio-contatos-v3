@@ -105,9 +105,12 @@ listado neste plano que a bloqueie (porque os plugins que a bloqueariam saíram 
 
 ### 3.4 Regras e dados que vêm do v2
 
-- **Escopo por nó com herança** (`_escopo`, `_cadeia`, `_pais`, `_cobre` no `app.py`): vira Policy
-  (`DirectoryPolicy`) + enum de papel (`ADMIN`, `GESTOR_COMARCA`, `EDITOR`). Papel decide *se entra no
-  painel*; o escopo decide *quais linhas vê*. Duas perguntas diferentes, duas ferramentas diferentes.
+- **Escopo por nó com herança** (`_escopo`, `_cadeia`, `_pais`, `_cobre` no `app.py`): vira
+  `EscopoResolvido` (uma leitura de `acessos` por requisição, chaves → ids) + `DiretorioPolicy`. O papel
+  decide *se entra no painel*; o escopo decide *o que pode editar*. Leitura pública não é escopada.
+  `ADMIN` edita tudo; `GESTOR_COMARCA` e `EDITOR` editam dentro do escopo; `DEMO` lê tudo e não escreve
+  (decisão de 26/11). Pedido de acesso é anônimo (nome/e-mail) e pode ser ligado a `usuarios.id` quando
+  houver sessão; a aprovação do admin é a prova de identidade — não há OAuth no `v3.0`.
 - **Procedência entra no `v3.0`.** `fonte` e `vigente_desde` já existem na tabela `contatos` do v2 e
   **não existem no `seed_mascarado.json`** (o v2 as extrai da observação livre e grava no SQLite). O
   seed do v3 é exportado do banco do v2 (somente leitura) **trazendo os valores** — no wireframe deu
@@ -140,8 +143,9 @@ Um único histórico (`historico` no `schema.sql`), escrito por observers/açõe
 retrato **antes/depois em JSONB** (`antes`, `depois`), ancorado pela chave lógica `entidade_chave`.
 Filament não ganha pacote de auditoria paralelo. O que o visitante vê é a trilha desse histórico;
 o que o admin vê é a mesma trilha com diff. O histórico é do **dado** (`contato`, `no`, `local`,
-`comarca`, `util`); `usuario`, `acesso` e `pedido` são tabelas do app, com auditoria própria, e não
-entram nessa tabela nem no expurgo de 180 dias.
+`comarca`, `util`); `usuario`, `acesso` e `pedido` são tabelas do app, com auditoria própria na tabela
+`auditoria` (ator, ação, entidade, antes/depois em JSONB), e não entram nessa tabela nem no expurgo de
+180 dias. Revogar acesso apaga a linha de `acessos`, mas deixa o retrato em `auditoria`.
 
 ### 3.7 Deploy
 
@@ -305,7 +309,7 @@ desktop.
 | Favorito de setor | mesmo mecanismo do nó (código, índice do servidor, `localStorage`), com a estrela **ao lado** do cabeçalho recolhível, nunca dentro dele — o toque na estrela não recolhe a seção; o destino é a unidade, na âncora do setor (24/11) |
 | Fórum no mapa | losango de 13 px num **alvo de 44 px**, a partir do zoom de comarca, vazado quando a posição é aproximada. **Fórum e losango são o mesmo objeto visto duas vezes**: hover (ou foco de teclado) no cartão acende o losango e abre a dica dele; hover no losango acende o cartão — estado de interface derivado da mesma `chave`, sem dado nem rota novos (24/11) |
 | Alternador de tema | escuro é o padrão; o controle só aparece quando o tema claro estiver medido |
-| Favorito | `localStorage` no demo; a tabela `favoritos` (com `usuario_id`) já nasce nas migrações |
+| Favorito | `localStorage` no demo; a tabela `favoritos` entra com a sincronização, depois do `v3.0` |
 | Estado vazio | diz o que falta e por quê, com o código IBGE à vista quando for o caso |
 
 **Ordem das listas.** Comarca aparece na ordem original do catálogo (a ordem em que foi levantado,
@@ -366,6 +370,10 @@ Adota a tela de gestão das referências, com quatro correções:
 Grupos de navegação: Estrutura (comarcas, locais, nós), Contatos (canais, úteis), Controle (histórico,
 usuários, papéis), e "Voltar para a consulta".
 
+A **Conferência** mostra a fila inteira ao admin; a ação `conferir` só habilita dentro do escopo
+(decisão de 26/11). O `v3.0` não tem `POST /entrar`: o login é `/admin` do Filament; o teste do demo é
+"sem `APP_DEMO` o usuário demo não existe ou não entra".
+
 ### 5.8 Tema e favoritos
 
 **Tema.** Escuro é o padrão e não muda (decisão de 11/11). O claro é derivado dos mesmos tokens com as
@@ -385,7 +393,8 @@ mesmas medições — não é "inverter as cores". Regras:
    crus / 21 KB gzip). O índice manda no nome: nome guardado no navegador fica velho depois de uma
    edição. No v3 isso vira um endpoint por código, não o índice inteiro.
 2. Pessoal autenticado: sincroniza com a tabela `favoritos` (`usuario_id`, `chave` do nó, criado_em).
-   A tabela nasce nas migrações do `v3.0`; a sincronização entra depois.
+   A tabela e a sincronização entram depois do `v3.0`, junto com o favorito de conta; o demo não
+   escreve no banco.
 3. Ao entrar, o que estava no `localStorage` é oferecido para importar — nunca mesclado em silêncio.
 4. Favorito é sempre de **nó** (local, unidade ou setor), nunca de contato: contato muda, nó permanece.
 
@@ -502,11 +511,15 @@ implementa.
 |---|---|---|
 | 1 | ~~Esqueleto Laravel 13 + PHP 8.4, Docker, Pint, Pest, CI (lint + testes)~~ — **entregue em 25/11/2026** (PR #35, `aa9a0c9`) | `pest` verde no CI — **cumprido**: quatro jobs verdes e required no ruleset (Docker versionado, build não exercitado) |
 | 2 | Migrações do `db/schema.sql` (FKs e CHECK reais) + carga do seed do v2 (com `fonte`/`vigente_desde`) | seed idempotente, contagens conferidas |
-| 3 | Policies de escopo por nó + testes portados da tabela do v2 | casos do `test_regras` cobertos |
+| 3 | Policies de escopo por nó + testes de Policy sem HTTP | paridade dos 36 casos do v2 em `docs/paridade-testes-v2.md`; `ADMIN` ∨ escopo (`GESTOR_COMARCA`/`EDITOR`), `DEMO` só lê; nenhum teste depende de rota do Filament |
 | 4 | API `/api/v1` só leitura + testes de contrato | rotas do contrato respondendo |
 | 5 | Consulta pública (Livewire): topbar, rail, mapa, painel, 7 estados, celular, tema escuro e claro | estados 1–7 navegáveis com dado real; os dois temas medidos |
 | 6 | Admin Filament: CRUD, pedidos, aprovação, histórico | editar contato muda o histórico |
 | 7 | Deploy Render + Neon, README com quadro de estado, ADR-010 | URL viva e `/up` sem banco |
+
+O item 3 não porta o `test_regras` inteiro: dos 20 casos, 3 são de escopo, 7 são do fluxo de pedidos
+por HTTP (item 6) e 3 exigem `motivo_recusa`; a tabela de paridade dos 36 casos está em
+`docs/paridade-testes-v2.md`.
 
 Depois do `v3.0`: exportação CSV (fila `sync`), favoritos com conta (sincronização do `localStorage`),
 notificações.
@@ -540,7 +553,7 @@ notificações.
 |---|---|---|---|
 | 1 | Nome | **Ramal**, com a ressalva de colisão em softphones e as alternativas registradas | topbar e wordmark seguem "Ramal"; checagem de INPI antes do item 5 |
 | 2 | Procedência no `v3.0` | **entra** (confirmado em 15/11): selo no contato e fila "Reconferir" | item 2 exporta `fonte`/`vigente_desde`; item 5 desenha o selo e a fila |
-| 3 | Favoritos | **híbrido**: `localStorage` no demo, tabela `favoritos` já migrada, sincronização depois | seção 5.8 |
+| 3 | Favoritos | **híbrido**: `localStorage` no demo; a tabela `favoritos` entra com a sincronização, depois do `v3.0` | seção 5.8 |
 | 4 | Tema | **escuro é o padrão**, claro com alternador de verdade | item 5 mede os dois temas |
 
 Ainda em aberto (nada disso bloqueia o começo):

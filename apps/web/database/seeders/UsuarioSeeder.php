@@ -18,14 +18,17 @@ class UsuarioSeeder extends Seeder
             $this->command?->warn("Senha gerada para {$email}: {$senha}");
         }
 
-        Usuario::firstOrCreate(
-            ['email' => $email],
-            [
-                'nome' => 'Administrador',
-                'senha' => $senha,
-                'papel' => 'ADMIN',
-                'ativo' => true,
-            ],
-        );
+        $usuario = Usuario::firstOrNew(['email' => $email]);
+
+        if (! $usuario->exists) {
+            $usuario->nome = 'Administrador';
+            $usuario->senha = $senha;
+        }
+
+        // `papel` e `ativo` não são fillable; o seeder escreve direto, como as
+        // Actions de administração.
+        $usuario->papel = 'ADMIN';
+        $usuario->ativo = true;
+        $usuario->save();
     }
 }
