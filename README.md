@@ -18,10 +18,13 @@ wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e r
 aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); o índice reverso de ramais
 já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; as listagens por
 canal respondem na API (`GET /api/v1/contatos`, com `tipo` e os filtros do v2) e nas três telas —
-`/telefones` (1.019), `/emails` (297) e `/whatsapp` (47) —, com filtro por comarca, local e texto,
-copiar e `tel:`/`mailto:`/`wa.me`. O que falta da **issue #43** é a folha A4 por recorte. A interface
+`/telefones` (1.019), `/emails` (297) e `/whatsapp` (47) —, com filtro por comarca, local, unidade
+ou setor e texto, copiar e `tel:`/`mailto:`/`wa.me`. Cada tela tem a **folha A4 do recorte**
+(`/telefones/impressao`, `/whatsapp/impressao`, `/emails/impressao`), que leva os mesmos filtros e
+imprime o recorte inteiro, não a página. Com isso, os itens de tela e de API da #43 estão
+entregues; a issue segue aberta pelo comparador, que ainda não mede `contatos`. A interface
 de busca e o mapa seguem como issues abertas, não promessa de README.
-O comparador de contrato mantém `contatos` como **PENDENTE**, mas por outro motivo: ele recorta por
+O comparador mantém `contatos` como **PENDENTE**: ele recorta por
 *nome* de comarca e o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade
 dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.md`.
 
@@ -32,7 +35,7 @@ dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.
 | **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
 | **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
 | **Índice reverso de ramais em `/ramais`** (issue #7, fila F-1): 444 ramais com comarca · local · unidade · setor, busca por prefixo e folha A4 de 17 páginas | `apps/web/app/Actions/ListarRamais.php`, `apps/web/resources/views/ramais.blade.php` |
-| **Listagem de contatos por canal na API** (issue #43): `GET /api/v1/contatos` com `tipo` (`Telefone`, `WhatsApp`, `Ramal`, `E-mail`, `Fax`), comarca, local, nó e `q`; nó inclui os filhos, paginação com teto de 200 e contagem por canal no recorte | `apps/web/app/Actions/ListarContatos.php`, `apps/web/tests/Feature/ContatosTest.php` |
+| **Listagens de contatos por canal** (issue #43): `GET /api/v1/contatos` com `tipo` (`Telefone`, `WhatsApp`, `Ramal`, `E-mail`, `Fax`), comarca, local, nó e `q`; nó inclui os filhos, paginação com teto de 200 e contagem por canal no recorte; as três telas (`/telefones`, `/whatsapp`, `/emails`) com filtro por comarca, local, unidade ou setor e busca, e a **folha A4 do recorte** (`canal.*.impressao`), o recorte inteiro e sem os controles da tela | `apps/web/app/Actions/ListarContatos.php`, `apps/web/resources/views/lista-contatos-impressao.blade.php` |
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
@@ -137,14 +140,18 @@ Medido contra o seed em 25/11/2026: 1.807 contatos, `q=cartorio` 215, `q=sede` 2
 ### As telas
 
 `/telefones`, `/whatsapp` e `/emails` são a mesma listagem com o eixo trocado (`ListagemContatosController`
-recebe o canal por `defaults`). A tela tem barra de canais com a contagem do recorte, filtro por comarca
-e local (agrupado por comarca, com a Sede no começo), busca por texto, 100 linhas por página, copiar e
-o link do canal — `tel:`, `mailto:` ou `wa.me/55`. Valor mascarado (`XXXX`) aparece como texto, sem
-link: não há número para discar. O `no` fica só na API por ora; na tela o nó aparece como unidade e
-setor de cada linha.
+recebe o canal por `defaults`). A tela tem barra de canais com a contagem do recorte, filtro por comarca,
+local (agrupado por comarca, com a Sede no começo) e **unidade ou setor** (`UNI####`, com os filhos
+diretos — escolher a vara traz o cartório — e o rótulo mostrando o pai), busca por texto, 100 linhas por
+página, copiar e o link do canal — `tel:`, `mailto:` ou `wa.me/55`. Valor mascarado (`XXXX`) aparece como
+texto, sem link: não há número para discar. O filtro por nó é encadeado na tela (comarca → local →
+unidade), mas o servidor aceita qualquer combinação; sem JavaScript a lista continua escolhível.
 
-A impressão é A4 em retrato, com o cabeçalho de data e a contagem, e sem a barra de filtros —
-falta o recorte por comarca/local virar folha própria (o que resta da #43).
+Cada tela tem a **folha A4 do recorte** em rota própria (`/telefones/impressao`, `/whatsapp/impressao`,
+`/emails/impressao`): o link "Folha A4" leva comarca, local, nó e busca, a folha não repete os controles
+da tela e imprime o recorte inteiro, não a página de 100 — `ListarContatos` com `$porPagina = null` tira
+o `LIMIT`. O papel pagina sozinho e o `<thead>` corrente (canal · recorte · total) se repete em cada
+página. O `@media print` da tela continua imprimindo só a página; a peça completa é a folha.
 
 ## Busca por sinônimos (ideia 04)
 
@@ -274,15 +281,15 @@ commit; o squash preserva um commit por funcionalidade na `main`.
 O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
 não em promessa de README. Duas listas se complementam:
 
-- **issues abertas** — trabalho reconhecido: o mapa geocodificado, as listagens por canal (#43) e o
-  plano de testes com rastreabilidade;
+- **issues abertas** — trabalho reconhecido: o mapa geocodificado, o comparador de `contatos`
+  (#43) e o plano de testes com rastreabilidade;
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
-Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A rota das
-listagens de telefone, WhatsApp e e-mail já existe (`GET /api/v1/contatos`); o que falta da **#43**
-são as três telas com os filtros do v2, o copiar e o `tel:`/`mailto:`/`wa.me`, e a folha A4 por
-recorte.
+Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A **#43** está
+entregue nas telas e na API: `GET /api/v1/contatos`, as três telas com os filtros do v2 — inclusive
+o nó, que inclui os filhos —, o copiar, o `tel:`/`mailto:`/`wa.me` e a folha A4 por recorte. Falta
+ligá-la ao comparador de contrato, que depende de `/api/v1/locais`.
 
 ## Deploy
 
