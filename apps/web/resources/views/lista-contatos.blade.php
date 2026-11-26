@@ -463,7 +463,7 @@
 
             <nav class="canais" aria-label="Canais do diretório">
                 @foreach ($canais as $item)
-                    <a href="{{ route('canal.'.$item['rota'], array_filter(['comarca' => $filtros['comarca'], 'local' => $filtros['local'], 'q' => $filtros['q']])) }}"
+                    <a href="{{ route($item['rota'], array_filter(['comarca' => $filtros['comarca'], 'local' => $filtros['local'], 'q' => $filtros['q']])) }}"
                        @if ($item['atual']) aria-current="page" @endif>
                         {{ $item['rotulo'] }}
                         @if ($item['total'] !== null)

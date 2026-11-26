@@ -88,8 +88,11 @@ class ListagemContatosController extends Controller
         $grupos = [];
 
         foreach ($linhas as $linha) {
-            $grupo = $linha->comarca_nome === null ? 'Sede' : (string) $linha->comarca_nome;
-            $grupos[$grupo][] = ['chave' => (string) $linha->chave, 'nome' => (string) $linha->nome];
+            /** @var array<string, mixed> $campos */
+            $campos = (array) $linha;
+
+            $grupo = $campos['comarca_nome'] === null ? 'Sede' : (string) $campos['comarca_nome'];
+            $grupos[$grupo][] = ['chave' => (string) $campos['chave'], 'nome' => (string) $campos['nome']];
         }
 
         return $grupos;
@@ -102,9 +105,9 @@ class ListagemContatosController extends Controller
     private function canais(array $totais, string $canal): array
     {
         return [
-            ['rota' => 'telefones', 'rotulo' => 'Telefones', 'total' => $totais['Telefone'] ?? 0, 'atual' => $canal === 'telefones'],
-            ['rota' => 'whatsapp', 'rotulo' => 'WhatsApp', 'total' => $totais['WhatsApp'] ?? 0, 'atual' => $canal === 'whatsapp'],
-            ['rota' => 'emails', 'rotulo' => 'E-mails', 'total' => $totais['E-mail'] ?? 0, 'atual' => $canal === 'emails'],
+            ['rota' => 'canal.telefones', 'rotulo' => 'Telefones', 'total' => $totais['Telefone'] ?? 0, 'atual' => $canal === 'telefones'],
+            ['rota' => 'canal.whatsapp', 'rotulo' => 'WhatsApp', 'total' => $totais['WhatsApp'] ?? 0, 'atual' => $canal === 'whatsapp'],
+            ['rota' => 'canal.emails', 'rotulo' => 'E-mails', 'total' => $totais['E-mail'] ?? 0, 'atual' => $canal === 'emails'],
             ['rota' => 'ramais', 'rotulo' => 'Ramais', 'total' => null, 'atual' => false],
         ];
     }
