@@ -19,7 +19,8 @@ aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de si
 já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; a interface de
 busca e o mapa seguem como issues abertas, não promessa de README. As outras três listagens de
 contato do seed — **Telefones** (1.019), **E-mails** (297) e **WhatsApp** (47) — existem no banco e
-no contrato, mas ainda não têm rota nem tela: o único recorte exposto hoje é o de ramais, e o
+no contrato, mas ainda não têm rota nem tela: estão na **issue #43**, com o contrato proposto
+(`GET /api/v1/contatos?tipo=`) e a definição de pronto. O único recorte exposto hoje é o de ramais, e o
 comparador de contrato marca `contatos` como **PENDENTE** para que a lacuna não suma.
 
 | Já feito | Onde |
@@ -237,15 +238,15 @@ commit; o squash preserva um commit por funcionalidade na `main`.
 O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
 não em promessa de README. Duas listas se complementam:
 
-- **issues abertas** — trabalho reconhecido: o mapa geocodificado e o plano de testes com
-  rastreabilidade;
+- **issues abertas** — trabalho reconhecido: o mapa geocodificado, as listagens por canal (#43) e o
+  plano de testes com rastreabilidade;
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
 Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A lacuna
 funcional mais visível face ao v2 são as **listagens de telefone, WhatsApp e e-mail**: existem no
-seed e no contrato, mas ainda não têm rota, tela nem issue — o comparador de paridade as marca como
-pendentes.
+seed e no contrato, mas ainda não têm rota nem tela — a **issue #43** tem o contrato proposto e a
+definição de pronto, e o comparador de paridade as marca como pendentes.
 
 ## Deploy
 
