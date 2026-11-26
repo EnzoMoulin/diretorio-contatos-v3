@@ -1,0 +1,46 @@
+name: Docs (SHAs citados)
+
+# Informativo de proposito: este job **nao** e required status check do ruleset
+# `protege-default`, e o script sai com 0. Ele existe para SHA morto aparecer na
+# aba "Files changed" do PR no dia em que o doc foi escrito, em vez de aparecer
+# numa sessao de revisao semanas depois — foi assim que duas rodadas foram
+# revisar um retrato que nao era mais o estado do repositorio.
+#
+# A regra e ancestralidade, nao existencia: SHA que resolve mas nao esta na
+# historia da `main` e o caso que causou o problema (tip de PR fechado por
+# squash). Por isso `fetch-depth: 0` — clone raso nao tem a historia para
+# `git merge-base --is-ancestor` medir, e todo SHA antigo apareceria como fora
+# da main.
+#
+# SHA de outro repositorio (o v2, congelado) nao resolve aqui e nao e defeito:
+# vai declarado em `.shas-citados`, na raiz, com motivo.
+#
+# Para o checklist de envio ao revisor, o modo estrito sai com 1:
+#     python3 scripts/verificar-shas-citados.py --estrito
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shas:
+    name: SHAs citados
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Conferir SHAs citados nos docs
+        run: |
+          python3 scripts/verificar-shas-citados.py | tee -a "$GITHUB_STEP_SUMMARY"
