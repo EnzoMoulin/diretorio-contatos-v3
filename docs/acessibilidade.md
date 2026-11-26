@@ -22,10 +22,10 @@ fora de propósito: o gate é AA, não um placar de estilo.
 
 ## O que ele já corrigiu
 
-A primeira execução reprovou três coisas reais, todas corrigidas antes do gate fechar:
+A primeira execução reprovou quatro coisas reais, todas corrigidas antes do gate fechar:
 
 - **contraste do dourado**: `#b98a3c` sobre `#f6f3ec` dava **2,8:1** (mínimo 4,5:1 para
-  texto normal). O texto pequeno passou a usar `--dourado-escuro: #7d5a22` (**5,65:1**); o
+  texto normal). O texto pequeno passou a usar `--dourado-escuro: #7d5a22` (**5,64:1**); o
   dourado claro ficou só em filete decorativo;
 - **nome acessível do link da marca**: `aria-label="Ramal — voltar à capa"` não continha o
   texto visível ("Ramal Diretório de contatos"). O `aria-label` saiu e a dica "voltar à

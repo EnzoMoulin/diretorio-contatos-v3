@@ -174,7 +174,7 @@ todas as ocorrências; por isso a coluna v3 quase nunca bate com a v2, e isso é
 | `distribuicao` | 9 | 21 | idem |
 | `vitoria` / `vitória` | 20 | 71 | idem |
 | `273134` | 0 | 17 | v2 mascara o telefone e perde o prefixo; v3 busca nos dígitos |
-| `a` | 20 | 0 | v3 ignora palavra com menos de 3 letras (`PARADAS`); v2 casa tudo |
+| `a` | 20 | 0 | v3 descarta palavra com menos de 3 letras (`termos()`), então a consulta fica vazia; v2 casa tudo |
 | `cartorio de registro` | 20 | 1 | v2 é OR; v3 exige todos os termos |
 | `vara do trabalho` | 20 | 9 | idem |
 | `sede` | 1 | 8 | v3 indexa nós e unidades, não só contatos |
