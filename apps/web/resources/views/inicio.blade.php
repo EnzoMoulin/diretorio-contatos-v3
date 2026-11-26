@@ -144,6 +144,40 @@
             border-radius: 0 6px 6px 0;
         }
 
+        .atalho {
+            margin: 18px 0 0;
+            padding: 16px 18px;
+            border: 1px solid var(--linha);
+            border-radius: 10px;
+            background: #fffdf8;
+        }
+
+        .atalho { transition: background-color .15s ease, border-color .15s ease; }
+
+        .atalho:hover { background: var(--verde-claro); border-color: #b9c9bd; }
+
+        .atalho a {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px;
+            color: var(--verde);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .atalho a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+        .atalho small {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--suave);
+            white-space: nowrap;
+        }
+
         footer {
             margin-top: 44px;
             padding-top: 16px;
@@ -194,6 +228,13 @@
                     <small>telefones úteis</small>
                 </div>
             </div>
+
+            <p class="atalho">
+                <a href="{{ route('ramais') }}">
+                    <span>Índice de ramais — quem é o ramal 1234?</span>
+                    <small>Consultar →</small>
+                </a>
+            </p>
 
             @php
                 $sede = $hierarquia['ordem'][0] ?? null;
