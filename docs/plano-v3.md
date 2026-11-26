@@ -528,7 +528,8 @@ notificações.
 
 1. Esqueleto + migrações + seed (itens 1–2): é onde o plano pode falhar rápido.
 2. Policies e API (itens 3–4): fecha o contrato antes de desenhar tela.
-3. UI pública (item 5): só então o wireframe vira implementação.
+3. UI pública (item 5): só então a direção do wireframe é implementada no `apps/web` — o protótipo é
+   régua, não código, e o markup dele não é promovido.
 4. Admin e deploy (itens 6–7).
 
 ---
