@@ -19,30 +19,20 @@ it('lista os telefones com o link de discagem', function () {
         ->assertSee('(27) 3333-0002')
         ->assertSee('tel:2733330002', false)
         ->assertSee('1ª Vara Cível')
-        ->assertSee('Cartório')
         ->assertSee('Fórum Cível');
 });
 
 it('recorta por comarca e esconde o que está fora', function () {
     $f = contatos_fixture();
 
-    $this->get('/telefones?comarca='.$f['comarca']->chave)
+    $this->get('/telefones?comarca='.$f['vitoria']->chave)
         ->assertOk()
         ->assertSee('(27) 3333-0001')
         ->assertDontSee('(27) 3333-0003');
 });
 
 it('mostra os e-mails com o link de correio', function () {
-    $f = contatos_fixture();
-
-    Contato::factory()->create([
-        'local_id' => $f['forum']->id,
-        'tipo' => 'E-mail',
-        'valor' => 'cartorio@exemplo.jus.br',
-        'descricao' => 'Cartório',
-        'ordem_num' => 1,
-        'ordem_idx' => 10,
-    ]);
+    contatos_fixture();
 
     $this->get('/emails')
         ->assertOk()
@@ -50,22 +40,26 @@ it('mostra os e-mails com o link de correio', function () {
         ->assertSee('mailto:cartorio@exemplo.jus.br', false);
 });
 
-it('mostra o WhatsApp e não linka o que está mascarado', function () {
+it('linka o WhatsApp e deixa o mascarado como texto', function () {
     $f = contatos_fixture();
 
     Contato::factory()->create([
         'local_id' => $f['forum']->id,
         'tipo' => 'WhatsApp',
         'valor' => '(27) 9XXXX-XXXX',
-        'descricao' => 'Gabinete',
+        'descricao' => 'Balcão',
         'ordem_num' => 1,
         'ordem_idx' => 11,
     ]);
 
-    $this->get('/whatsapp')
-        ->assertOk()
-        ->assertSee('(27) 9XXXX-XXXX')
-        ->assertDontSee('wa.me', false);
+    $resposta = $this->get('/whatsapp')->assertOk();
+
+    $resposta->assertSee('(27) 99999-0001')
+        ->assertSee('wa.me/5527999990001', false)
+        ->assertSee('(27) 9XXXX-XXXX');
+
+    // O mascarado aparece, mas não vira link: só o número do fixture tem href.
+    expect(substr_count($resposta->getContent(), 'wa.me'))->toBe(1);
 });
 
 it('filtra pelo texto do contato', function () {

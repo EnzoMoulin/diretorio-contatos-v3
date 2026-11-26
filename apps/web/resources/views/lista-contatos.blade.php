@@ -71,6 +71,7 @@
             display: inline-flex;
             align-items: center;
             min-height: 44px;
+            padding: 0 6px;
             font-size: 13px;
             letter-spacing: .04em;
             text-transform: uppercase;
