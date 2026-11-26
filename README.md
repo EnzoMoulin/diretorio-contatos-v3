@@ -21,9 +21,10 @@ canal respondem na API (`GET /api/v1/contatos`, com `tipo` e os filtros do v2) e
 `/telefones` (1.019), `/emails` (297) e `/whatsapp` (47) —, com filtro por comarca, local, unidade
 ou setor e texto, copiar e `tel:`/`mailto:`/`wa.me`. Cada tela tem a **folha A4 do recorte**
 (`/telefones/impressao`, `/whatsapp/impressao`, `/emails/impressao`), que leva os mesmos filtros e
-imprime o recorte inteiro, não a página. Com isso, a #43 está implementada. A interface
+imprime o recorte inteiro, não a página. Com isso, os itens de tela e de API da #43 estão
+entregues; a issue segue aberta pelo comparador, que ainda não mede `contatos`. A interface
 de busca e o mapa seguem como issues abertas, não promessa de README.
-O comparador de contrato mantém `contatos` como **PENDENTE**, mas por outro motivo: ele recorta por
+O comparador mantém `contatos` como **PENDENTE**: ele recorta por
 *nome* de comarca e o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade
 dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.md`.
 
@@ -280,14 +281,15 @@ commit; o squash preserva um commit por funcionalidade na `main`.
 O que ainda não existe está em [issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues),
 não em promessa de README. Duas listas se complementam:
 
-- **issues abertas** — trabalho reconhecido: o mapa geocodificado e o plano de testes com
-  rastreabilidade;
+- **issues abertas** — trabalho reconhecido: o mapa geocodificado, o comparador de `contatos`
+  (#43) e o plano de testes com rastreabilidade;
 - `docs/backlog-ideias.md` — ideias com fase, gatilho e veredito, inclusive as descartadas e o
   motivo. Issue sem gatilho não entra em execução.
 
 Com o esqueleto fechado, a prioridade seguinte é o **mapa geocodificado** (issue #5). A **#43** está
-implementada: rota de leitura (`GET /api/v1/contatos`), as três telas com os filtros do v2 — inclusive
-o nó, que inclui os filhos —, o copiar, o `tel:`/`mailto:`/`wa.me` e a folha A4 por recorte.
+entregue nas telas e na API: `GET /api/v1/contatos`, as três telas com os filtros do v2 — inclusive
+o nó, que inclui os filhos —, o copiar, o `tel:`/`mailto:`/`wa.me` e a folha A4 por recorte. Falta
+ligá-la ao comparador de contrato, que depende de `/api/v1/locais`.
 
 ## Deploy
 
