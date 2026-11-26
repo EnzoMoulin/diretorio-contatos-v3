@@ -1,9 +1,9 @@
-# Diretório de Contatos — v3 (Laravel + TALL)
+# Diretório de Contatos — v3 (Laravel 13)
 
 [![Testes](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/testes.yml/badge.svg)](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/testes.yml)
 
-> Terceira fase do mesmo produto das versões [v1](https://github.com/EnzoMoulin/diretorio-contatos)
-> (Apps Script) e [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2) (Python stdlib): consulta
+> Terceira fase do mesmo produto das versões **v1** (Apps Script, repositório privado) e
+> [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2) (Python stdlib): consulta
 > pública de contatos de fóruns e unidades, com backoffice. Projeto de portfólio;
 > **todos os dados são fictícios** — ver `LICENSE`.
 
@@ -59,9 +59,11 @@ dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.
 
 ## Stack
 
-- **Laravel 13 / PHP 8.4** serve HTML e JSON do mesmo processo (Blade + Livewire).
-- **Tailwind + Alpine** no front; **Filament** no backoffice — é o que fecha a lacuna de
-  Laravel no portfólio sem construir dois backends.
+- **Laravel 13 / PHP 8.4** serve HTML e JSON do mesmo processo (Blade).
+- A stack decidida inclui **Tailwind + Alpine** no front e **Filament** no backoffice, mas **nenhum
+  dos três está instalado ainda**: hoje as views usam CSS próprio e o app não tem `package.json`
+  nem `livewire`/`filament` no `composer.lock`. É o que fecha a lacuna de Laravel no portfólio sem
+  construir dois backends.
 - **Postgres no Neon free**, fora do Render: o Postgres free do Render expira em 30 dias e o
   demo quebraria sozinho.
 - **FastAPI na v4, adiada** (ADR-010): só entra com medição que justifique — importação com
@@ -75,7 +77,7 @@ fase em curso: o `v3.0` tem **um** deployável. O app está em `apps/web/`: migr
 factories, seeders, a primeira leitura (capa e `/api/v1/hierarquia`) e a régua de estilo/tipo/teste.
 
 ```
-apps/web/          Laravel 13 + TALL + Filament   → deployável 1 (Dockerfile próprio)
+apps/web/          Laravel 13 + Blade            → deployável 1 (Dockerfile próprio)
   app/             models, Action, Resource, controllers
   database/        migrations + factories + seeders
   docker/producao/ nginx, php.ini, entrypoint
