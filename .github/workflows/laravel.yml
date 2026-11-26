@@ -193,3 +193,99 @@ jobs:
           php artisan route:clear
           php artisan view:clear
           php artisan config:clear
+
+  acessibilidade:
+    name: Acessibilidade (WCAG 2.1 AA)
+    needs: esqueleto
+    if: needs.esqueleto.outputs.existe == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: enzo
+          POSTGRES_PASSWORD: enzo
+          POSTGRES_DB: diretorio_teste
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: '5432'
+      DB_DATABASE: diretorio_teste
+      DB_USERNAME: enzo
+      DB_PASSWORD: enzo
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, intl, pdo_pgsql, pgsql, bcmath, zip
+          coverage: none
+          tools: composer:v2
+      - name: Cache do Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ runner.os }}-${{ hashFiles('apps/web/composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+      - name: Instalar dependências
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Preparar ambiente
+        run: |
+          set -euo pipefail
+          cp .env.example .env
+          php artisan key:generate --force
+      - name: Migrar e semear
+        run: php artisan migrate --seed --force
+      - name: Subir o servidor para a medição
+        run: |
+          set -euo pipefail
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/laravel-serve.log 2>&1 &
+          echo $! > /tmp/laravel-serve.pid
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8000/up > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/laravel-serve.log
+          exit 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/acessibilidade/package-lock.json
+      - name: Cache dos navegadores do Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('tests/acessibilidade/package-lock.json') }}
+      - name: Instalar o harness
+        working-directory: tests/acessibilidade
+        run: npm ci --no-audit --no-fund
+      - name: Instalar o Chromium
+        working-directory: tests/acessibilidade
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Medir acessibilidade (falha bloqueia o PR)
+        working-directory: tests/acessibilidade
+        run: node acessibilidade.mjs http://127.0.0.1:8000 relatorio
+      - name: Anexar o relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: acessibilidade-relatorio
+          path: tests/acessibilidade/relatorio
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Logs do servidor (só em falha)
+        if: failure()
+        run: cat /tmp/laravel-serve.log 2>/dev/null || true
