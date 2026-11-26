@@ -17,9 +17,10 @@ wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e r
 `IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
 aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); o índice reverso de ramais
 já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; as listagens por
-canal já respondem na API (`GET /api/v1/contatos`, com `tipo` e os filtros do v2) — as telas de
-**Telefones** (1.019), **E-mails** (297) e **WhatsApp** (47) são o que falta da **issue #43**, com a
-folha A4 por recorte. A interface de busca e o mapa seguem como issues abertas, não promessa de README.
+canal respondem na API (`GET /api/v1/contatos`, com `tipo` e os filtros do v2) e nas três telas —
+`/telefones` (1.019), `/emails` (297) e `/whatsapp` (47) —, com filtro por comarca, local e texto,
+copiar e `tel:`/`mailto:`/`wa.me`. O que falta da **issue #43** é a folha A4 por recorte. A interface
+de busca e o mapa seguem como issues abertas, não promessa de README.
 O comparador de contrato mantém `contatos` como **PENDENTE**, mas por outro motivo: ele recorta por
 *nome* de comarca e o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade
 dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.md`.
@@ -132,6 +133,18 @@ diretos: o contato do cartório é o telefone que o balcão procura pelo nome da
 A ordem é a do seed — local, depois o `ordem_idx` do catálogo —, não a data de criação. `q` aqui é
 filtro, não busca: semelhança, ranking e erro de digitação continuam em `GET /api/v1/busca`.
 Medido contra o seed em 25/11/2026: 1.807 contatos, `q=cartorio` 215, `q=sede` 286, `q=vitoria` 166.
+
+### As telas
+
+`/telefones`, `/whatsapp` e `/emails` são a mesma listagem com o eixo trocado (`ListagemContatosController`
+recebe o canal por `defaults`). A tela tem barra de canais com a contagem do recorte, filtro por comarca
+e local (agrupado por comarca, com a Sede no começo), busca por texto, 100 linhas por página, copiar e
+o link do canal — `tel:`, `mailto:` ou `wa.me/55`. Valor mascarado (`XXXX`) aparece como texto, sem
+link: não há número para discar. O `no` fica só na API por ora; na tela o nó aparece como unidade e
+setor de cada linha.
+
+A impressão é A4 em retrato, com o cabeçalho de data e a contagem, e sem a barra de filtros —
+falta o recorte por comarca/local virar folha própria (o que resta da #43).
 
 ## Busca por sinônimos (ideia 04)
 

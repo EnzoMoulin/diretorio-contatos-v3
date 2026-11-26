@@ -237,6 +237,13 @@
                 </a>
             </p>
 
+            <p class="atalho">
+                <a href="{{ route('canal.telefones') }}">
+                    <span>Telefones, WhatsApp e e-mails — por comarca e unidade</span>
+                    <small>Consultar →</small>
+                </a>
+            </p>
+
             @php
                 $sede = $hierarquia['ordem'][0] ?? null;
                 $comarcas = array_slice($hierarquia['ordem'], $sede ? 1 : 0, 12);
