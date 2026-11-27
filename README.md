@@ -7,30 +7,29 @@
 > pública de contatos de fóruns e unidades, com backoffice. Projeto de portfólio;
 > **todos os dados são fictícios** — ver `LICENSE`.
 
+> **Como este repositório foi feito.** Parte da documentação e das rodadas de revisão foi produzida
+> com apoio de agentes de IA (Hermes e Claude). As decisões de produto, o código e a verificação são
+> meus; os documentos registram o processo, inclusive os caminhos descartados.
+
 ## Status
 
-**Fase de fundação concluída: a camada de banco e o esqueleto da aplicação estão versionados.** O
-`apps/web/` tem Laravel 13 + PHP 8.4 com Pint, Larastan, Pest e Sail; a primeira leitura ligada no
-banco é a capa (`GET /`) e o `GET /api/v1/hierarquia`, no contrato do v2. A interface foi validada
-antes num **protótipo navegável em Laravel + TALL** que vive fora do repositório (`IDEIAS PARA O V3/
-wireframe`, no `.gitignore`): nove rodadas de revisão externa, com capturas e respostas em
-`IDEIAS PARA O V3/`. A fumaça desse protótipo está versionada em `tests/e2e/` e vira o e2e da
-aplicação. A busca já responde na API (`GET /api/v1/busca`, com léxico de sinônimos); o índice reverso de ramais
-já responde em `/ramais` (issue #7), com os 444 ramais em ordem numérica e folha A4; as listagens por
-canal respondem na API (`GET /api/v1/contatos`, com `tipo` e os filtros do v2) e nas três telas —
-`/telefones` (1.019), `/emails` (297) e `/whatsapp` (47) —, com filtro por comarca, local, unidade
-ou setor e texto, copiar e `tel:`/`mailto:`/`wa.me`. Cada tela tem a **folha A4 do recorte**
-(`/telefones/impressao`, `/whatsapp/impressao`, `/emails/impressao`), que leva os mesmos filtros e
-imprime o recorte inteiro, não a página. Com isso, os itens de tela e de API da #43 estão
-entregues; a issue segue aberta pelo comparador, que ainda não mede `contatos`. A interface
-de busca e o mapa seguem como issues abertas, não promessa de README.
-O comparador mantém `contatos` como **PENDENTE**: ele recorta por
-*nome* de comarca e o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade
-dessa rota é de resultado e está medida à mão em `docs/paridade-contrato-v2.md`.
+**Fase de fundação concluída: banco e esqueleto versionados.** O `apps/web/` tem Laravel 13 + PHP
+8.4, migrations, models, seeders e a primeira leitura no banco (`GET /` e `GET /api/v1/hierarquia`).
+A busca (`GET /api/v1/busca`, com léxico de sinônimos), o índice reverso de ramais (`/ramais`, issue
+#7, com os 444 ramais em ordem numérica e folha A4) e as listagens por canal (`/telefones` 1.019,
+`/emails` 297, `/whatsapp` 47, com filtro por comarca, local, unidade ou setor e folha A4 do recorte)
+estão entregues. A interface de busca e o mapa seguem como issues abertas; o painel Filament e a v4
+estão adiados.
 
-A camada de autorização por nó também está versionada: `EscopoResolvido` + `DiretorioPolicy` decidem
-edição por comarca, local ou nó (`ADMIN` edita tudo; `GESTOR_COMARCA` e `EDITOR` dentro do escopo;
-`DEMO` só lê), com testes de Policy sem HTTP. O painel Filament ainda não a consome.
+A camada de autorização por nó está versionada: `EscopoResolvido` + `DiretorioPolicy` decidem edição
+por comarca, local ou nó (`ADMIN` edita tudo; `GESTOR_COMARCA` e `EDITOR` dentro do escopo; `DEMO` só
+lê), com testes de Policy sem HTTP. O comparador mantém `contatos` como **pendente** porque o `q` do
+v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem; a paridade dessa rota está medida à mão em
+`docs/paridade-contrato-v2.md`.
+
+O protótipo navegável da direção A, em Laravel + TALL, vive fora do repositório (`IDEIAS PARA O V3/`,
+no `.gitignore`) e foi validado em nove rodadas de revisão, três delas com o Claude; a fumaça dele
+está em `tests/e2e/` e vira o e2e da aplicação quando a rota do mapa existir.
 
 | Já feito | Onde |
 | :--- | :--- |
@@ -38,7 +37,7 @@ edição por comarca, local ou nó (`ADMIN` edita tudo; `GESTOR_COMARCA` e `EDIT
 | DDL completo e idempotente do banco `db_diretorio`, com invariantes e expurgo LGPD | `db/schema.sql`, `db/README.md` |
 | **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`, `auditoria`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
 | **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
-| **Índice reverso de ramais em `/ramais`** (issue #7, fila F-1): 444 ramais com comarca · local · unidade · setor, busca por prefixo e folha A4 de 17 páginas | `apps/web/app/Actions/ListarRamais.php`, `apps/web/resources/views/ramais.blade.php` |
+| **Índice reverso de ramais em `/ramais`** (issue #7): 444 ramais com comarca · local · unidade · setor, busca por prefixo e folha A4 de 17 páginas | `apps/web/app/Actions/ListarRamais.php`, `apps/web/resources/views/ramais.blade.php` |
 | **Listagens de contatos por canal** (issue #43): `GET /api/v1/contatos` com `tipo` (`Telefone`, `WhatsApp`, `Ramal`, `E-mail`, `Fax`), comarca, local, nó e `q`; nó inclui os filhos, paginação com teto de 200 e contagem por canal no recorte; as três telas (`/telefones`, `/whatsapp`, `/emails`) com filtro por comarca, local, unidade ou setor e busca, e a **folha A4 do recorte** (`canal.*.impressao`), o recorte inteiro e sem os controles da tela | `apps/web/app/Actions/ListarContatos.php`, `apps/web/resources/views/lista-contatos-impressao.blade.php` |
 | **Escopo e autorização por nó** (item 3): `EscopoResolvido` calculado uma vez por requisição, `DiretorioPolicy`, `Contato::editaveisPor()`, `ConcederAcesso`/`RevogarAcesso` com chave validada e `auditoria` das tabelas do app | `apps/web/app/Escopo`, `apps/web/app/Policies`, `apps/web/app/Actions`, `apps/web/tests/Feature/EscopoTest.php` |
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
@@ -56,13 +55,10 @@ edição por comarca, local ou nó (`ADMIN` edita tudo; `GESTOR_COMARCA` e `EDIT
 | Briefing original da direção A (11/11/2026) — executado como protótipo fora do repositório; registro da decisão, não briefing vigente | `docs/v3-interface.md`, `tests/e2e/` |
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
-> 70 entradas em `comarcas` (69 com IBGE + a Sede), 11 úteis, 94 casos de teste — foram medidas no
-> `diretorio-contatos-v2` em 24/11/2026 — o commit medido (`7320a46`) e o HEAD de 25/11 (`fcdb719`)
-> morreram na limpeza de 26/11; o marco atual, `bb9b62b`, preserva o mesmo seed
-> (`sha256 7ccf1a9c…3a308c`) e difere do medido só em LICENSE, README e no screencast —, não
-> copiadas de texto. A perna
-> `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida em 24/11/2026: `Ran 95`,
-> 1 pulado, OK. A perna 0 e o resto das contagens estão em
+> 69 comarcas, 73 locais (72 fóruns + a Sede), 11 úteis, 94 casos de teste — foram medidas no
+> `diretorio-contatos-v2` em 24/11/2026 e conferidas no marco `bb9b62b` (mesmo seed,
+> `sha256 7ccf1a9c…3a308c`). A perna `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida
+> em 24/11/2026: `Ran 95`, 1 pulado, OK. O resto das contagens está em
 > `diretorio-contatos-v2/scripts/contagens.json`, que o CI confere contra o README.
 
 ## Stack
@@ -89,7 +85,6 @@ apps/web/          Laravel 13 + Blade            → deployável 1 (Dockerfile p
   app/             models, Action, Resource, controllers
   database/        migrations + factories + seeders
   docker/producao/ nginx, php.ini, entrypoint
-services/busca/    FastAPI (v4, adiada)           → sem deployável enquanto o ADR-010 valer
 db/                schema.sql, invariantes, carga do seed — fonte única do v3
 docs/              ADRs, planos, backlog
 render.yaml        Blueprint do Render, aponta para apps/web/
@@ -317,7 +312,7 @@ Ainda não deployado.
 | `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026 (a fase do FastAPI é a **v4**) e em 25/11/2026: a v4 está **adiada** (ADR-010). |
 | `docs/v3-arquitetura-preparacao.md` | Plano anterior à consolidação do `plano-v3.md`; preservado como registro do que a v3 entrega e do que o v2 deixa como especificação. |
 | `docs/v3-interface.md` | Briefing original da direção A (11/11/2026): mapa real do ES, layout de celular, sete estados, restrições de marca. Executado como protótipo fora do repositório; hoje é registro da decisão. |
-| `docs/revisao-claude-wireframe-*-2026-11-1*.md` | Triagem das três rodadas de revisão externa do wireframe: o que procedia, o que foi corrigido no protótipo e o que virou decisão de produto. |
+| `docs/revisao-claude-wireframe-*-2026-11-1*.md` | Triagem das três rodadas de revisão com o Claude do wireframe: o que procedia, o que foi corrigido no protótipo e o que virou decisão de produto. |
 | `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR de 12/11/2026: v3 com um serviço só, banco único. **Substituído pelo ADR-010 na parte do FastAPI.** |
 | `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR de 12/11/2026: v3 e v4 num repositório, `db/` compartilhado. **Revisado em 25/11: um deployável, v4 adiada.** |
 | `docs/adr-010-backend-unico-em-laravel.md` | ADR de 14/11/2026: backend único em Laravel, sem serviço FastAPI; aposenta o marco "v4". |
