@@ -16,6 +16,20 @@ limpo não há página para medir. O arquivo está versionado para não se perde
 protótipo e para virar o e2e da v3.0, quando o alvo passar a ser a aplicação (só o `BASE_URL`
 muda). Quem rodar precisa do protótipo em disco e do Playwright.
 
+### Quando entra no CI
+
+Gatilho único: a página do mapa existir em `apps/web` — rota com `#mapa` e `window.__mapa`, que é o
+que estes casos medem. Nesse dia o job é curto, porque o alvo já é a aplicação e o script não muda:
+
+1. `setup-php` 8.4 + `composer install` em `apps/web`, migrar e semear;
+2. subir em `127.0.0.1:8001` e esperar `/up` responder;
+3. `npm i playwright` + `npx playwright install --with-deps chromium` e
+   `BASE_URL=http://127.0.0.1:8001 node tests/e2e/fumaca.js --json`.
+
+Se a página do mapa precisar do seed para renderizar, o job herda a regra do `testes.yml` — seed
+que vem do clone do v2 não bloqueia push — e nasce como `workflow_dispatch`, igual ao `contrato`,
+até existir fixture própria. Enquanto o gatilho não acontece, este script roda à mão, como acima.
+
 Sai com `0` se os sete passarem, `1` se algum falhar (o JSON traz `resultados`, `detalhes` e
 `falhas`). Depende de Playwright com Chromium; sem `node_modules` local, aponte o `NODE_PATH`
 para uma instalação existente:
