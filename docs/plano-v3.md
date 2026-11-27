@@ -712,24 +712,29 @@ extração possível.
 | `docs/backlog-ideias.md` | mover para "adiado" o que a seção 9 deixa fora do `v3.0` — **nota de status em 25/11; itens v4 ficam congelados** |
 | `IDEIAS PARA O V3/` | ficar **fora** do repositório público: contém PDFs e imagens com marca institucional — **feito** (`.gitignore`) |
 
-## Anexo C — o wireframe como especificação viva (revisão 15/11)
+## Anexo C — o wireframe como especificação viva (revisão 27/11)
 
-O protótipo em `IDEIAS PARA O V3/wireframe/` **não é descartável**. Ele já está na stack do v3
-(Laravel + Blade + Alpine + Vite + Leaflet), então o que foi validado ali vira código, não só
-referência. A partilha é:
+O protótipo em `IDEIAS PARA O V3/wireframe/` **não é descartável como referência**: ele já está na
+stack do v3 (Laravel + Blade + Alpine + Vite + Leaflet), então o que foi validado ali vira **regra de
+implementação**, não código. A **direção** é implementada no `apps/web`; o markup não é promovido
+(decisão de 26/11, `d4f7155`) — o que se copia é a medida, não o arquivo. A partilha é:
 
 | Peça | Destino | Regra |
 |---|---|---|
-| `resources/css/app.css` | **aproveitado** | tokens `--color-*` e `--mapa-*`, `.topbar`, `.rail`, `.painel`, `.folha`, `.selo`, estados de foco. Copiar como base do tema do v3 e só então componentizar |
-| Fontsource (`Space Grotesk`, `JetBrains Mono`, OFL 1.1) | **aproveitado** | mesma configuração do Vite; nenhuma fonte de CDN |
-| `resources/js/mapa.js` | **aproveitado** | Leaflet sem tiles, cores por CSS var, hachura de sem-comarca, discos de densidade, inset da Grande Vitória e `enquadrar()`. Depende só do payload `cfg` (`geo_url`, `comarcas`, `selecionada`, `foco_ibge`, `modo`) — a v3 emite o mesmo formato |
-| `layouts/app.blade.php` | **aproveitado com adaptação** | a moldura (topbar, rail, inset, `data-theme`) vira o layout autenticado; `<title>`, `aria-*` e o trilha ficam |
-| `x-icone`, `x-selo`, `x-busca` | **aproveitado com adaptação** | viram componentes do v3; `x-selo` passa a receber `fonte`/`vigente_desde` do banco |
+| `resources/css/app.css` | **referência** | tokens `--color-*` e `--mapa-*`, `.topbar`, `.rail`, `.painel`, `.folha`, `.selo`, estados de foco: a régua do tema. O CSS do v3 é escrito no `apps/web` contra esses valores, sem copiar a folha |
+| Fontsource (`Space Grotesk`, `JetBrains Mono`, OFL 1.1) | **referência** | mesmas famílias e versões no build do `apps/web`; nenhuma fonte de CDN |
+| `resources/js/mapa.js` | **referência de comportamento** | Leaflet sem tiles, cores por CSS var, hachura de sem-comarca, discos de densidade, inset da Grande Vitória e `enquadrar()` são regras a reproduzir e medir; o arquivo não é promovido |
+| `layouts/app.blade.php` | **referência de estrutura** | a moldura (topbar, rail, inset, `data-theme`) orienta o layout do v3; a marcação é reescrita no `apps/web` |
+| `x-icone`, `x-selo`, `x-busca` | **referência de estrutura** | os componentes do v3 têm o mesmo papel; `x-selo` recebe `fonte`/`vigente_desde` do banco. Marcação reescrita, não copiada |
 | telas `painel/*.blade.php` | **referência de estrutura** | a marcação orienta a implementação; não é copiada porque os dados vêm de Eloquent com paginação |
 | `app/Support/Diretorio.php` | **descartado** | lê `seed.json` em memória; vira repositório Eloquent sobre `comarcas`/`locais`/`nos`/`contatos` |
 | `app/Http/Controllers/PainelController.php` | **descartado** | arrays estáticos; vira controller com queries e paginação |
 | `data/seed.json` | **descartado como fonte** | o seed do v3 é exportado do SQLite do v2 com `fonte` + `vigente_desde` |
 | botão "Gestão", atalho `Ctrl K`, avisos de "fora do protótipo" | **descartado** | placeholders de demonstração |
+
+**Revisão de 27/11/2026:** a coluna dizia "aproveitado" para CSS, fontes, `mapa.js`, layout e
+componentes, o que lia como autorização para copiar arquivo — o oposto da decisão de 26/11. A
+partilha agora é de **medida e comportamento**; nenhum arquivo do protótipo é promovido ao `apps/web`.
 
 Régua de enquadramento medida (para o v3 não regredir): o mapa enquadra no **retângulo livre** — rail
 (64 px) + 28 px à esquerda, painel + 28 px à direita, 28 px em cima e embaixo —, nunca no container

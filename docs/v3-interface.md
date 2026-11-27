@@ -1,15 +1,16 @@
 # V3: interface na direção A (mapa protagonista). Decisão e briefing para o Hermes
 
-> **Status (25/11/2026): registro de 11–12/11, superado onde conflitar.** A fonte vigente do sistema
-> visual é a §5 do `plano-v3.md`, e a partilha com o protótipo é o Anexo C: CSS de tokens, `mapa.js`,
-> layout e `x-icone`/`x-selo`/`x-busca` são **aproveitados**; o descartado é só a camada de dados
-> (`Diretorio.php`, `PainelController`, `seed.json`). Onde este documento disser "escrito do zero",
+> **Status (25/11/2026, complementado em 27/11): registro de 11–12/11, superado onde conflitar.** A
+> fonte vigente do sistema visual é a §5 do `plano-v3.md`, e a partilha com o protótipo é o Anexo C
+> (revisão de 27/11): a **direção** e as medidas são implementadas no `apps/web`; o markup não é
+> promovido (decisão de 26/11). O descartado inclui a camada de dados (`Diretorio.php`,
+> `PainelController`, `seed.json`). Onde este documento disser "escrito do zero" ou "aproveitado",
 > vale o Anexo C. As decisões de navegação de 24/11 estão na última seção.
 
 Decisão do usuário em 11/11/2026, depois de comparar as três direções do arquivo `direcoes-visuais.html` (A mapa protagonista, B command-first, C editorial): **A**, com mapa em Leaflet **sem camada de tiles** e geometria municipal do ES **versionada** no repositório. Este documento é autossuficiente: quem executa não precisa do histórico da conversa. Revisado em 12/11/2026: os números do seed foram reconferidos no HEAD a93aeb1 do v2 (SHA apagado na limpeza de histórico de 20/11; os números continuam valendo).
 
 ## O que se quer
-Refazer o mockup da direção A como arquivos estáticos, com o mapa real do Espírito Santo, o layout de celular e os estados que o mockup atual não tem. O mockup é especificação de design para a v3 (Laravel + Blade + Livewire + Alpine + Tailwind). **Não é código a ser aproveitado**: a implementação em Laravel será escrita do zero. (Superado em 15/11/2026: o protótipo já está na stack do v3, e CSS, `mapa.js` e componentes são aproveitados — Anexo C do `plano-v3.md`.)
+Refazer o mockup da direção A como arquivos estáticos, com o mapa real do Espírito Santo, o layout de celular e os estados que o mockup atual não tem. O mockup é especificação de design para a v3 (Laravel + Blade + Livewire + Alpine + Tailwind). **Não é código a ser aproveitado**: a implementação em Laravel será escrita do zero. (Superado em 15/11/2026: o protótipo já está na stack do v3; desde 26/11/2026 a direção é implementada no `apps/web` e o markup não é promovido — Anexo C do `plano-v3.md`.)
 
 Ponto de partida do design: `direcoes-visuais.html` (direção A). Se o arquivo não estiver acessível, parar e pedir ao usuário; não reconstruir de memória.
 
