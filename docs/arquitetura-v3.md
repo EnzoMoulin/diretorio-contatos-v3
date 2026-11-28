@@ -10,14 +10,14 @@ aparecia aqui, no README e no `PROJETOS-FUTUROS.md`), e o plano de dois serviço
 `fase-3-arquitetura-e-adrs.md` fica preservado como especificação da v4. A v3 é um serviço só —
 o ETL e a hierarquia que a tabela abaixo mandava portar para FastAPI são reescritos em seeders e
 models do Laravel. Decisão: `adr-008-v3-um-servico-e-fastapi-na-v4.md`; o FastAPI e o marco "v4"
-foram adiados pelo `adr-010-backend-unico-em-laravel.md`, e o plano vigente é `plano-v3.md`.
+foram aposentados pelo `adr-010-backend-unico-em-laravel.md`, e o plano vigente é `plano-v3.md`.
 
 ## Decisão
 
 **v3 — Laravel 13 (PHP 8.3+) + TALL (Tailwind, Alpine, Livewire) + Filament + Postgres (Neon),
 em um único serviço Docker no Render free.** HTML e JSON saem do mesmo processo.
 
-**v4 — serviço FastAPI separado (adiada pelo ADR-010)**, apontado para o mesmo Postgres do Neon, com trabalho
+**v4 — serviço FastAPI separado (fora de escopo pelo ADR-010)**, apontado para o mesmo Postgres do Neon, com trabalho
 que o Laravel faria mal e com degradação graciosa: se o serviço estiver dormindo ou fora, o
 Laravel responde a consulta básica.
 
