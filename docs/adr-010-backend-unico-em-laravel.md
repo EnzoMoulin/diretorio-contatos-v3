@@ -13,7 +13,7 @@ contatos, poucas escritas, um único mantenedor e hospedagem gratuita com partid
 
 ## Decisão
 
-Um único aplicativo Laravel (monólito modular, módulos `Directory` e `Access`). Não há serviço Python
+Um único aplicativo Laravel (monólito modular; no código, as fronteiras são `app/Escopo`, `app/Actions` e `app/Policies`, antes descritas como módulos `Directory` e `Access`). Não há serviço Python
 nesta versão. Uma API JSON de leitura (`/api/v1`) é exposta pelo próprio Laravel sobre as mesmas classes
 de serviço usadas pela interface.
 
@@ -34,7 +34,7 @@ de serviço usadas pela interface.
 ## Quando revisitar
 
 Só diante de um requisito medido que PHP e PostgreSQL não atendam, capaz de rodar fora do ciclo de
-requisição. As fronteiras entre `Directory` e `Access` e o uso de `chave` como chave lógica mantêm uma
+requisição. As fronteiras entre escopo e acesso, e o uso de `chave` como chave lógica, mantêm uma
 extração possível.
 
 ## Consequências no DDL (25/11/2026)
