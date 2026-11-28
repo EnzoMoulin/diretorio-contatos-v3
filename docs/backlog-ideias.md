@@ -7,7 +7,8 @@ wireframe. Cada ideia tem **fase**, **gatilho** (quando ela pode começar) e **v
 Regra de leitura: uma ideia só entra na fila quando o gatilho aconteceu. Ideia com gatilho futuro não
 autoriza código agora.
 
-> **Status (25/11/2026): a v4 está adiada** (`adr-010-backend-unico-em-laravel.md`). Os itens
+> **Status (25/11/2026; redação alinhada em 28/11/2026): o marco v4 está aposentado**
+> (`adr-010-backend-unico-em-laravel.md`). Os itens
 > marcados **v4** ficam congelados: não são fila, não têm gatilho próximo e o veredito deles não
 > vale como autorização. O que está marcado v3 segue a fila do `plano-v3.md`.
 
