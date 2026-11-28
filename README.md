@@ -1,31 +1,53 @@
 # Diretório de Contatos — v3 (Laravel 13)
 
 [![Testes](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/testes.yml/badge.svg)](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/testes.yml)
+[![Laravel](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/laravel.yml/badge.svg)](https://github.com/EnzoMoulin/diretorio-contatos-v3/actions/workflows/laravel.yml)
 
-> Terceira fase do mesmo produto das versões **v1** (Apps Script, repositório privado) e
-> [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2) (Python stdlib): consulta
-> pública de contatos de fóruns e unidades, com backoffice. Projeto de portfólio;
-> **todos os dados são fictícios** — ver `LICENSE`.
+**O que este repositório é, em engenharia:** consulta pública de contatos de uma estrutura em quatro
+níveis (comarca → local → unidade → setor), com 1.807 contatos e 856 nós na base de demonstração, em
+Laravel 13 + PHP 8.4 + PostgreSQL. HTML e JSON saem do mesmo processo (Blade e `/api/v1`), e a API
+segue o formato da [v2](https://github.com/EnzoMoulin/diretorio-contatos-v2). A autorização de edição por escopo já está
+modelada e testada em Policies; a área de gestão ainda não tem tela. É a terceira fase do mesmo
+produto — v1 em Apps Script (repositório privado), v2 em Python stdlib. Projeto de portfólio;
+**todos os dados são fictícios** — ver `LICENSE`.
 
 > **Como este repositório foi feito.** Parte da documentação e das rodadas de revisão foi produzida
 > com apoio de agentes de IA (Hermes e Claude). As decisões de produto, o código e a verificação são
 > meus; os documentos registram o processo, inclusive os caminhos descartados.
 
-## Status
+## Estado
+
+- **Na `main`:** busca na API com léxico de sinônimos (`GET /api/v1/busca`); listagens por canal em
+  `/telefones` (1.019), `/emails` (297) e `/whatsapp` (47), com filtro por comarca, local, unidade ou
+  setor e folha A4 do recorte; índice reverso de ramais em `/ramais` (444 ramais); autorização por
+  escopo (`DiretorioPolicy`) com testes.
+- **Em aberto** ([issues](https://github.com/EnzoMoulin/diretorio-contatos-v3/issues)): o mapa geocodificado por CEP (#5), a
+  paridade de `contatos` e `contatos_q` com a v2 (#43) e o plano de testes com rastreabilidade (#10). A interface
+  de busca ainda não tem issue.
+- **Adiado:** o painel Filament. **Fora de escopo:** o marco v4 (FastAPI), aposentado pelo ADR-010; a especificação fica congelada e só reabre com requisito medido.
+- **Deploy:** blueprint do Render pronto (`render.yaml`, Postgres no Neon); ainda não publicado.
+
+## O que olhar no código
+
+| Para ver | Comece por |
+| :--- | :--- |
+| Autorização por escopo e gestão de acesso | `apps/web/app/Escopo/`, `apps/web/app/Policies/DiretorioPolicy.php`, `apps/web/app/Actions/ConcederAcesso.php`, `apps/web/tests/Feature/EscopoTest.php` |
+| Leitura com filtros, paginação e contagem por canal | `apps/web/app/Actions/ListarContatos.php`, `apps/web/tests/Feature/ListagemContatosTest.php` |
+| Busca com sinônimos | `apps/web/app/Actions/Buscar.php`, `apps/web/tests/Feature/BuscaTest.php` |
+| Modelo de dados e invariantes | `db/schema.sql`, `db/README.md` |
+| CI | `.github/workflows/laravel.yml` (Pint, Larastan, Pest e acessibilidade) e `testes.yml` (privacidade, DDL em Postgres 16 e contrato v2 × v3 sob demanda) |
+
+## Status em detalhe
 
 **Fase de fundação concluída: banco e esqueleto versionados.** O `apps/web/` tem Laravel 13 + PHP
 8.4, migrations, models, seeders e a primeira leitura no banco (`GET /` e `GET /api/v1/hierarquia`).
-A busca (`GET /api/v1/busca`, com léxico de sinônimos), o índice reverso de ramais (`/ramais`, issue
-#7, com os 444 ramais em ordem numérica e folha A4) e as listagens por canal (`/telefones` 1.019,
-`/emails` 297, `/whatsapp` 47, com filtro por comarca, local, unidade ou setor e folha A4 do recorte)
-estão entregues. A interface de busca e o mapa seguem como issues abertas; o painel Filament e a v4
-estão adiados.
 
 A camada de autorização por nó está versionada: `EscopoResolvido` + `DiretorioPolicy` decidem edição
 por comarca, local ou nó (`ADMIN` edita tudo; `GESTOR_COMARCA` e `EDITOR` dentro do escopo; `DEMO` só
-lê), com testes de Policy sem HTTP. O comparador mantém `contatos` como **pendente** porque o `q` do
-v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem; a paridade dessa rota está medida à mão em
-`docs/paridade-contrato-v2.md`.
+lê), com testes de Policy sem HTTP. No comparador, `contatos` segue **pendente** porque o fixture
+recorta por nome de comarca e falta `/api/v1/locais` para traduzir nome em chave; `contatos_q`
+também, porque o `q` do v2 lê `nome`/`cargo`, colunas que o modelo do v3 não tem — a paridade dessa
+rota está medida à mão em `docs/paridade-contrato-v2.md`.
 
 O protótipo navegável da direção A, em Laravel + TALL, vive fora do repositório (`IDEIAS PARA O V3/`,
 no `.gitignore`) e foi validado em nove rodadas de revisão, três delas com o Claude; a fumaça dele
@@ -33,7 +55,7 @@ está em `tests/e2e/` e vira o e2e da aplicação quando a rota do mapa existir.
 
 | Já feito | Onde |
 | :--- | :--- |
-| Decisão de stack: **Laravel 13 + TALL + Filament + Postgres (Neon), um serviço Docker no Render free** | `docs/arquitetura-v3.md` |
+| Decisão de stack: **Laravel 13 + Postgres (Neon), um serviço Docker no Render free**; TALL e Filament decididos, ainda não instalados (ver *Stack*) | `docs/arquitetura-v3.md` |
 | DDL completo e idempotente do banco `db_diretorio`, com invariantes e expurgo LGPD | `db/schema.sql`, `db/README.md` |
 | **Migrations da camada de banco**: baseline que executa o `schema.sql`, identidade/escopo (`usuarios`, `acessos`, `pedidos`, `auditoria`) e sessions/cache do framework | `apps/web/database/migrations`, `apps/web/database/README.md` |
 | **Esqueleto Laravel 13 em `apps/web/`**: models, factories sintéticas, seeders (seed mascarado da v2 por caminho), action + resource + controller da primeira leitura, capa em Blade | `apps/web/`, `apps/web/README.md` |
@@ -43,22 +65,22 @@ está em `tests/e2e/` e vira o e2e da aplicação quando a rota do mapa existir.
 | Direção visual escolhida: **A — mapa protagonista**, paleta slate + turquesa | `docs/identidade-visual.md` |
 | Blueprint de deploy e imagem Docker (nginx + php-fpm, migrations no entrypoint) | `render.yaml`, `apps/web/Dockerfile`, `apps/web/docker/producao/` |
 | CI: varredura de privacidade + DDL em Postgres 16 real | `.github/workflows/testes.yml` |
-| **Gate de acessibilidade WCAG 2.1 AA** (issue #9): axe-core, foco por Tab, alvo de toque ≥ 44 px e relatório como artefato | `tests/acessibilidade/`, `docs/acessibilidade.md` |
+| **Gate de acessibilidade** (issue #9): axe-core com as regras WCAG 2.1 A/AA, foco por Tab, alvo de toque ≥ 44 px e relatório como artefato | `tests/acessibilidade/`, `docs/acessibilidade.md` |
 | **Paridade de contrato v2 × v3 executável** (issue #8): `--v3 <url>` compara campo a campo e marca rota pendente em vez de escondê-la | `scripts/comparar-contrato.py`, `docs/paridade-contrato-v2.md` |
 | **Fluxo de PR com rastreabilidade**: formulário de PR (`Closes #N`), formulários de issue e checks obrigatórios para entrar na `main` | `.github/`, seção *Fluxo de contribuição* abaixo |
 | **Régua Laravel ativa**: Pint (PSR-12), Larastan (nível 5), Pest e cache de rotas/views, com os quatro jobs rodando em todo PR | `.github/workflows/laravel.yml`, `docs/convencoes-laravel.md` |
 | **Protótipo navegável da direção A em Laravel + TALL**, com mapa real do ES e o seed da v2 — nove rodadas de revisão, mantido fora do git | `IDEIAS PARA O V3/wireframe`, `docs/plano-v3.md` |
 | **Fumaça e2e do protótipo**: sete verificações em Chromium, saída em JSON | `tests/e2e/` |
-| **Plano do v3 encerrado em 20/11/2026**: arquitetura, interface, telas e critérios de aceite | `docs/plano-v3.md` |
-| Plano do v3 — e o que ficou fora dele, inclusive a v4 adiada | `docs/plano-v3.md` (vence onde houver conflito), `docs/adr-010-backend-unico-em-laravel.md` |
-| **Decisão de 12/11/2026, revisada em 25/11: a v4 moraria neste repositório** — hoje um só deployável (`apps/web`), porque a v4 está adiada | `docs/adr-009-um-repo-para-v3-e-v4.md`, `docs/adr-010-backend-unico-em-laravel.md` |
+| **Plano do v3 encerrado em 20/11/2026**: arquitetura, interface, telas, critérios de aceite e o que ficou fora, com o marco v4 hoje aposentado (ADR-010) | `docs/plano-v3.md` (vence onde houver conflito), `docs/adr-010-backend-unico-em-laravel.md` |
+| **Decisão de 12/11/2026, revisada em 25/11: a v4 moraria neste repositório** — hoje um só deployável (`apps/web`), porque o marco v4 foi aposentado (ADR-010) | `docs/adr-009-um-repo-para-v3-e-v4.md`, `docs/adr-010-backend-unico-em-laravel.md` |
 | Briefing original da direção A (11/11/2026) — executado como protótipo fora do repositório; registro da decisão, não briefing vigente | `docs/v3-interface.md`, `tests/e2e/` |
 
 > **Números verificados.** As contagens que este repositório cita — 1.807 contatos, 856 nós,
-> 69 comarcas, 73 locais (72 fóruns + a Sede), 11 úteis, 94 casos de teste — foram medidas no
+> 69 comarcas, 73 locais (72 fóruns + a Sede), 11 úteis e os 94 casos de teste do v2 — foram medidas no
 > `diretorio-contatos-v2` em 24/11/2026 e conferidas no marco `bb9b62b` (mesmo seed,
-> `sha256 7ccf1a9c…3a308c`). A perna `SIMULACAO_AUTO_APROVAR=1` com `ADMIN_EMAILS` foi reconferida
-> em 24/11/2026: `Ran 95`, 1 pulado, OK. O resto das contagens está em
+> `sha256 7ccf1a9c…3a308c`). No seed, há 70 entradas em `comarcas` (69 com IBGE + a Sede);
+> na v3, a Sede vira o local `MUN0000` e a tabela `comarcas` fica com 69. A perna `SIMULACAO_AUTO_APROVAR=1`
+> com `ADMIN_EMAILS` foi reconferida em 24/11/2026: `Ran 95`, 1 pulado, OK. O resto das contagens está em
 > `diretorio-contatos-v2/scripts/contagens.json`, que o CI confere contra o README.
 
 ## Stack
@@ -70,10 +92,10 @@ está em `tests/e2e/` e vira o e2e da aplicação quando a rota do mapa existir.
   construir dois backends.
 - **Postgres no Neon free**, fora do Render: o Postgres free do Render expira em 30 dias e o
   demo quebraria sozinho.
-- **FastAPI na v4, adiada** (ADR-010): só entra com medição que justifique — importação com
+- **FastAPI na v4, fora de escopo** (ADR-010): a especificação fica congelada; só entra com medição que justifique — importação com
   `ftfy`, deduplicação e busca fonética em português. O `v3.0` é Laravel sozinho.
 
-## Estrutura (v3 agora; v4 adiada)
+## Estrutura (v3 agora; v4 fora de escopo)
 
 Decidido em 12/11/2026 (`docs/adr-009-um-repo-para-v3-e-v4.md`) e revisado em 25/11/2026
 (`docs/adr-010-backend-unico-em-laravel.md`). A v4 não é um quarto repositório — mas também não é
@@ -102,17 +124,18 @@ db/testar-schema.sh
 # com o seed da v2 ao lado (1.807 contatos, 856 nós) — os repos são irmãos por desenho
 SEED_JSON=../diretorio-contatos-v2/seed_mascarado.json db/testar-schema.sh
 
-# app
+# app — num clone novo, instale as dependências antes (vendor/ não é versionado)
+(cd apps/web && docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html \
+  laravelsail/php84-composer:latest composer install --ignore-platform-reqs)
 (cd apps/web && { test -f .env || cp .env.example .env; } && ./vendor/bin/sail up -d \
   && ./vendor/bin/sail artisan key:generate && ./vendor/bin/sail artisan migrate --seed)
-# sem Docker: DB_DATABASE=... php artisan migrate --seed (ver apps/web/README.md)
+# sem o repo irmão montado, o seeder cria 12 contatos sintéticos (ver apps/web/README.md)
+# sem Docker: DB_DATABASE=... php artisan migrate --seed
 
 # imagem de produção (contexto apps/web)
 docker build -t diretorio-contatos-v3 apps/web
 
-# fumaça do protótipo — o alvo vive fora do repositório (ver tests/e2e/README.md)
-cd "IDEIAS PARA O V3/wireframe" && php artisan serve --port=8123   # noutro terminal
-BASE_URL=http://127.0.0.1:8123 node tests/e2e/fumaca.js
+# a fumaça do protótipo depende de um alvo fora do repositório: ver tests/e2e/README.md
 ```
 
 O script só age em banco terminado em `_teste`, então produção nunca é atingida por acidente.
@@ -185,54 +208,10 @@ frases canônicas. O critério de aceite é literal e está em teste: a consulta
 ### As 39 consultas medidas
 
 Contagem de linhas por consulta, com `limite` desligado, no seed da v2 (1.807 contatos, 856 nós,
-73 locais, 69 comarcas, 11 úteis) em 25/11/2026. "Antes" é a mesma busca com a expansão desligada — é o número
-que o usuário veria hoje; "Depois" é com o léxico. Quando "antes" é maior que "depois", o trigrama
-estava devolvendo letra parecida, não o serviço.
+73 locais, 69 comarcas, 11 úteis) em 25/11/2026. A tabela completa, com a leitura de cada termo e a
+metodologia, está em [`docs/busca.md`](docs/busca.md).
 
-| Termo digitado | Expansão | Antes | Depois |
-| :--- | :--- | ---: | ---: |
-| `reconhecimento de firma` | `cartorio` | 0 | **154** |
-| `firma reconhecida` | `cartorio` | 0 | **154** |
-| `tabelionato` | `cartorio` | 0 | **154** |
-| `escritura publica` | `cartorio` | 0 | **154** |
-| `registro de imoveis` | `registro` | 0 | **18** |
-| `certidao de nascimento` | `registro` | 0 | **18** |
-| `pensao alimenticia` | `familia` | 0 | **42** |
-| `divorcio` | `familia` | 0 | **42** |
-| `guarda de filho` | `familia` | 0 | **42** |
-| `heranca` | `sucessoes` | 13 | **11** |
-| `inventario` | `sucessoes` | 0 | **11** |
-| `testamento` | `sucessoes` | 56 | **11** |
-| `tutela de menor` | `orfaos` | 0 | **15** |
-| `conselho tutelar` | `infancia juventude` | 0 | **28** |
-| `crianca e adolescente` | `infancia juventude` | 0 | **28** |
-| `menor infrator` | `socioeducativo` | 0 | **1** |
-| `justica do trabalho` | `trabalho` | 0 | **9** |
-| `processo do trabalho` | `trabalho` | 0 | **9** |
-| `inss` | `previdencia` | 98 | **8** |
-| `aposentadoria` | `previdencia` | 73 | **8** |
-| `pericia medica` | `previdencia` | 0 | **8** |
-| `auxilio doenca` | `previdencia` | 0 | **8** |
-| `intimacao` | `mandados` | 0 | **28** |
-| `oficial de justica` | `oficiais de justica` | 37 | **37** |
-| `marcar audiencia` | `audiencias` | 0 | **35** |
-| `pequenas causas` | `juizado` | 0 | **148** |
-| `juizado de pequenas causas` | `juizado` | 0 | **148** |
-| `medida protetiva` | `violencia mulher` | 0 | **8** |
-| `crime` | `criminal` | 96 | **131** |
-| `juri popular` | `juri` | 0 | **23** |
-| `tribunal do juri` | `juri` | 2 | **23** |
-| `divida ativa` | `execucao fiscal` | 0 | **1** |
-| `divida` | `execucao` | 1 | **15** |
-| `iptu` | `fazenda` | 0 | **23** |
-| `tributo` | `fazenda` | 4 | **23** |
-| `balcao` | `atendimento` | 0 | **119** |
-| `atendimento ao publico` | `atendimento` | 13 | **119** |
-| `plantao judiciario` | `plantao` | 10 | **27** |
-| `urgencia` | `plantao` | 0 | **27** |
-
-A medição é reproduzível: `SinonimoSeeder::LEXICO` percorrido com `Buscar::executar($termo, 0, false)`
-e `Buscar::executar($termo, 0, true)`. O critério de aceite é verificado no léxico inteiro: um teste de
+O critério de aceite é verificado no léxico inteiro: um teste de
 feature percorre os 39 pares comparando o conjunto com o da consulta canônica, e três deles (cartório,
 família, sucessões) têm caso explícito com fixture de diretório em
 `apps/web/tests/Feature/BuscaTest.php`. Um teste de unidade recusa termo com acento, caixa alta ou
@@ -247,7 +226,7 @@ expansão vazia antes de o `CHECK` do banco derrubar o `migrate --seed`.
 - `pontuacao` ordena, não filtra: o conjunto é o da consulta canônica, e a nota serve para o
   desempate na tela.
 - A tabela fala de linhas do banco, não de telas; agrupar contatos por nó na interface é trabalho da
-  issue de busca na UI.
+  interface de busca, que ainda não tem issue.
 
 ## Fluxo de contribuição
 
@@ -309,18 +288,19 @@ Ainda não deployado.
 | Documento | Conteúdo |
 | :--- | :--- |
 | `docs/plano-v3.md` | **Plano vigente** (14/11/2026, encerrado em 20/11/2026): arquitetura, interface, telas e critérios de aceite. Onde houver conflito, vence sobre `fase-3`, `arquitetura-v3`, `v3-interface` e `v3-arquitetura-preparacao`. |
-| `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026 (a fase do FastAPI é a **v4**) e em 25/11/2026: a v4 está **adiada** (ADR-010). |
+| `docs/arquitetura-v3.md` | Decisão de 10/11/2026: por que Laravel é a casca, por que o FastAPI fica para depois, o que acontece com o v2. Revisado em 12/11/2026 (a fase do FastAPI é a **v4**) e em 25/11/2026: o marco v4 está **aposentado** (ADR-010). |
+| `docs/busca.md` | As 39 consultas medidas do léxico de sinônimos: a tabela, a leitura de cada termo e a metodologia. |
 | `docs/v3-arquitetura-preparacao.md` | Plano anterior à consolidação do `plano-v3.md`; preservado como registro do que a v3 entrega e do que o v2 deixa como especificação. |
 | `docs/v3-interface.md` | Briefing original da direção A (11/11/2026): mapa real do ES, layout de celular, sete estados, restrições de marca. Executado como protótipo fora do repositório; hoje é registro da decisão. |
 | `docs/revisao-claude-wireframe-*-2026-11-1*.md` | Triagem das três rodadas de revisão com o Claude do wireframe: o que procedia, o que foi corrigido no protótipo e o que virou decisão de produto. |
 | `docs/adr-008-v3-um-servico-e-fastapi-na-v4.md` | ADR de 12/11/2026: v3 com um serviço só, banco único. **Substituído pelo ADR-010 na parte do FastAPI.** |
-| `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR de 12/11/2026: v3 e v4 num repositório, `db/` compartilhado. **Revisado em 25/11: um deployável, v4 adiada.** |
+| `docs/adr-009-um-repo-para-v3-e-v4.md` | ADR de 12/11/2026: v3 e v4 num repositório, `db/` compartilhado. **Revisado em 25/11: um deployável; marco v4 aposentado (ADR-010).** |
 | `docs/adr-010-backend-unico-em-laravel.md` | ADR de 14/11/2026: backend único em Laravel, sem serviço FastAPI; aposenta o marco "v4". |
 | `docs/backlog-ideias.md` | Ideias de produto com fase, gatilho e veredito — inclusive as descartadas, com motivo. |
 | `docs/paridade-contrato-v2.md` | Contrato de leitura congelado: o que a v3 tem de devolver igual ao v2, e onde a diferença é decisão. Inclui o modo `--v3` e o recall medido da busca. |
-| `docs/acessibilidade.md` | Gate WCAG 2.1 AA: o que mede, o que corrigiu, como rodar e por que é required check. |
+| `docs/acessibilidade.md` | Gate de acessibilidade (axe-core, regras WCAG 2.1 A/AA): o que mede, o que corrigiu, como rodar e por que é required check. |
 | `docs/reconciliacao-2026-11-12.md` | Laudo de aderência da base aos três catálogos oficiais, com as divergências e o que o método não prova. É a **base final de demonstração** da v3. |
-| `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4, que está adiada. Tem aviso no topo; não é o plano da v3. |
+| `docs/fase-3-arquitetura-e-adrs.md` | **Documento histórico**: o desenho de dois serviços (Laravel + motor FastAPI), preservado como especificação da v4, fora de escopo. Tem aviso no topo; não é o plano da v3. |
 | `docs/identidade-visual.md` | Direção A, mapa protagonista. Inclui o que **não** fazer: `direcoes-visuais.html` é instrumento de decisão, não markup. |
 | `db/README.md` | O banco lógico: tabelas, invariantes, medições e as regras que ficam na aplicação. |
 
@@ -331,9 +311,9 @@ oficiais: **69 comarcas + Sede · 72 fóruns · 856 nós · 1.807 contatos · 11
 úteis**, com 296 dos 297 e-mails confirmados por documento. Não há segunda conferência
 a fazer enquanto a fonte não mudar.
 
-Duas garantias baratas acompanham isso:
+Três garantias baratas acompanham isso:
 
-- `../dados/catalogo-2026/base-verificada.json` — manifesto com as contagens e o SHA-256
+- `../dados/catalogo-2026/base-verificada.json` (no workspace do autor, fora deste repositório) — manifesto com as contagens e o SHA-256
   de cada CSV **e do `seed_mascarado.json` da v2** (o arquivo que o app serve de fato).
   Regerado por `scripts/reconciliar-catalogo.py --manifesto … --seed …`; o `estado.sh` do
   workspace recomputa os hashes e avisa se a base ou o seed mudaram depois da conferência.
@@ -356,8 +336,9 @@ O v2 não ganha funcionalidade nova: continua público, como evidência do arco 
 muda por correção pontual ou por evidência visual (screencast e capturas). O único
 acréscimo de escopo permitido é teste de privacidade, que não muda a aplicação (o detector de
 nome de pessoa mora lá também, ver `tests/test_sem_telefone_real.py`). O que se escreve
-do zero é esta versão — e um dos critérios é não herdar código: a similaridade com o v1 fica
-em ≤10%. A comparação lado a lado dos três está no README do v1 e do v2.
+do zero é esta versão — e um dos critérios é não herdar código: similaridade de linhas ≤ 10% com o
+v1 e o v2 (`docs/identidade-visual.md`), a medir quando a interface pública existir. A comparação
+lado a lado das fases está no README do v2.
 
 ## Licença
 
