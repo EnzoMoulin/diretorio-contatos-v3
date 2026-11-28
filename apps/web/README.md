@@ -38,13 +38,27 @@ O seed mascarado do v2 não é copiado para este repositório. O seeder procura,
 nesta ordem:
 
 1. `SEED_JSON` (caminho absoluto ou relativo);
-2. o irmão `../../diretorio-contatos-v2/seed_mascarado.json`;
+2. o irmão `../../../diretorio-contatos-v2/seed_mascarado.json` (no host);
 3. se nenhum existir, gera 3 comarcas, 4 fóruns, 4 nós e 12 contatos sintéticos.
+
+O caminho relativo vale para rodar no host. No contêiner do Sail, `apps/web` é o
+único código montado: `../../..` vira `/` e o irmão só existe em
+`/diretorio-contatos-v2` se o volume correspondente estiver descomentado no
+`compose.yaml`. Sem ele, o seeder avisa e cai nos 12 sintéticos.
 
 Para carregar o seed real a partir do clone do v2:
 
+**No host, sem Sail:**
+
 ```bash
-SEED_JSON=../../diretorio-contatos-v2/seed_mascarado.json \
+SEED_JSON=../../../diretorio-contatos-v2/seed_mascarado.json \
+    php artisan db:seed --class=DiretorioSeeder
+```
+
+**Com Sail**, com o volume do repo irmão descomentado:
+
+```bash
+SEED_JSON=/diretorio-contatos-v2/seed_mascarado.json \
     ./vendor/bin/sail artisan db:seed --class=DiretorioSeeder
 ```
 

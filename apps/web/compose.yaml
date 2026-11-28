@@ -19,6 +19,9 @@ services:
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
             - '.:/var/www/html'
+            # Base de demonstração: descomente para o seeder achar o seed do v2.
+            # O repo irmão não vem no clone; sem o volume, o seeder gera 12 sintéticos.
+            # - '../../../diretorio-contatos-v2:/diretorio-contatos-v2:ro'
         networks:
             - sail
         depends_on:
